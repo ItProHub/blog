@@ -1,38 +1,44 @@
 ---
-title: Hello World
+title: 欢迎来到 ITProHub！
 ---
-Welcome to [Hexo](https://hexo.io/)! This is your very first post. Check [documentation](https://hexo.io/docs/) for more info. If you get any problems when using Hexo, you can find the answer in [troubleshooting](https://hexo.io/docs/troubleshooting.html) or you can ask me on [GitHub](https://github.com/hexojs/hexo/issues).
+![background](/images/hello-bg.png)
+# 🌐 欢迎来到 ITProHub！
 
-## Quick Start
+## 🚀 你的信息技术专业中心 🚀
 
-### Create a new post
+在 ITProHub，我们致力于成为信息技术领域的中心枢纽，为专业人士、学习者和技术爱好者提供丰富的资源、技能培训和社区交流平台。
 
-``` bash
-$ hexo new "My New Post"
-```
+### 🔍 ITPro: 专业的信息技术支持
 
-More info: [Writing](https://hexo.io/docs/writing.html)
+无论你是正在寻找IT职业发展的道路，还是想提升你的专业技能，ITProHub都为你提供了全面的资源和指导。我们关注行业趋势，分享最新的技术知识，助你成为更专业的IT从业者。
 
-### Run server
+### 💼 Hub: 中心化的资源和社区
 
-``` bash
-$ hexo server
-```
+ITProHub是一个汇聚各种IT资源的中心，包括职业指导、技术文章、培训课程等。在我们的社区中，你可以与其他IT专业人士建立联系，分享经验，共同成长。
 
-More info: [Server](https://hexo.io/docs/server.html)
+#### ✨ 我们的特色服务和内容包括：
 
-### Generate static files
+🎓 专业的IT技能培训课程
 
-``` bash
-$ hexo generate
-```
+📰 行业趋势和技术文章分享
 
-More info: [Generating](https://hexo.io/docs/generating.html)
+🚀 职业发展指导和招聘信息
 
-### Deploy to remote sites
+💬 与专业人士互动的社交平台
 
-``` bash
-$ hexo deploy
-```
+👥 加入我们的社区，你将获得：
 
-More info: [Deployment](https://hexo.io/docs/one-command-deployment.html)
+与同行专业人士的互动和交流机会
+
+获取实用的职业发展建议和技术支持
+
+参与丰富多彩的线上和线下活动
+
+无论你是刚刚踏入IT领域，还是寻求更高级别的技术挑战，ITProHub都是你信息技术之旅的理想伴侣。
+
+
+## 🌐 探索无限可能，加入 ITProHub ！🌐
+
+公众号将不定期更新，欢迎订阅！
+
+#ITProHub #信息技术 #专业发展 #社区交流
