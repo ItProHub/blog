@@ -10,9 +10,6 @@ on:
 
 jobs:
   build:
-    permissions:
-      pages: write
-      id-token: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
