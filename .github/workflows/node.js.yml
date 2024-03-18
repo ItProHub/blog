@@ -20,7 +20,7 @@ jobs:
       - name: Use Node.js 21.7.1
         uses: actions/setup-node@v2
         with:
-          node-version: '16'
+          node-version: '21.7.1'
       - name: Cache NPM dependencies
         uses: actions/cache@v2
         with:
