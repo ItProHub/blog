@@ -8,7 +8,7 @@ signature: witness me
 # SNS (you can custom the order)
 social:
   email: 287678478@qq.com
-  github: //github.com/kiss-the-rain
+  github: //github.com/ItProHub
   # wechat should be a path of qr-code image path
   wechat: /assets/wechat_qr.jpg
   # qq should be a path of qr-code image path
