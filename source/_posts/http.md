@@ -1,5 +1,5 @@
 ---
-title: 深入了解 HTTP 状态码和消息头
+title: 深入了解 HTTP 消息头
 date: 2024-03-19 16:11:52
 tags: http 协议 http协议
 ---
