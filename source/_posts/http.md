@@ -1,153 +1,118 @@
 ---
-title: 深入了解 HTTP 消息头
+title: 深入理解 HTTP Connection 头
 date: 2024-03-19 16:11:52
-tags: http 协议 http协议
+tags: http http协议 Connection
 ---
-HTTP（Hypertext Transfer Protocol）是现代网络通信的基础，它通过消息头来传递关键信息，从而实现客户端和服务器之间的通信。在本文中，我们将探讨 HTTP 消息头的作用、结构以及常见的使用方式，并通过详细的代码例子来说明。
+HTTP Connection 头是 HTTP 协议中的一个重要头部字段，它用于控制客户端和服务器之间的连接行为。在本文中，我们将深入探讨 HTTP Connection 头部的作用、用法，并结合实际开发案例展示其在应用程序开发中的应用。
 
 在开始本文的阅读之前，默认屏幕前的老铁已经对HTTP有了基础的认识。如果不是，请移步学习[超文本传输协议](https://zh.wikipedia.org/wiki/%E8%B6%85%E6%96%87%E6%9C%AC%E4%BC%A0%E8%BE%93%E5%8D%8F%E8%AE%AE#)
 
 
-## 什么是HTTP消息头：协议中的精华
-HTTP 消息头是 HTTP 报文中的一部分，它包含了一系列键值对，用于描述报文的属性和特征。每个键值对被称为一个消息头字段，其中键是字段名，值是字段值，它们由一个冒号（:）分隔。消息头字段通常用于控制缓存、身份验证、内容协商、内容类型、内容编码等方面的行为。
+## 作用与语法
+HTTP Connection头是通用类型标头，允许发送方或客户端指定该特定连接所需的选项。Connection 帮助使用单个 TCP 连接发送或接收多个 HTTP 请求/响应，而不是为每个请求/响应打开一个新连接。它还控制当前事务完成后网络是否保持打开或关闭状态。
 
-## HTTP 消息头的类型
-HTTP 消息头由若干个字段组成，每个字段占据一行，以 CRLF（Carriage Return Line Feed）作为分隔符。通常，消息头分为请求头和响应头两种类型。请求头出现在客户端发送的 HTTP 请求中，而响应头出现在服务器返回的 HTTP 响应中。
-
+### 语法
 ```http request
-Host: www.itprohub.site
 Connection: keep-alive
-Content-Length: 1823
-sec-ch-ua: "Chromium";v="122", "Not(A:Brand";v="24", "Google Chrome";v="122"
-sec-ch-ua-platform: "Windows"
-sec-ch-ua-mobile: ?0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36
-Content-Type: application/json
-Accept: */*
-Origin: https://www.itprohub.site
-Sec-Fetch-Site: cross-site
-Sec-Fetch-Mode: cors
-Sec-Fetch-Dest: empty
-Referer: https://www.itprohub.site
-Accept-Encoding: gzip, deflate, br, zstd
-Accept-Language: zh-CN,zh;q=0.9
-```
-
-1. 通用头部（General Headers）：适用于请求和响应的通用头部，如：Cache-Control、Connection、Date、Pragma、Trailer。
-2. 请求头部（Request Headers）：出现在 HTTP 请求中，描述客户端的信息和请求的属性，如：Host，User-Agent，Accept，Authorization。
-3. 响应头部（Response Headers）：出现在 HTTP 响应中，描述服务器的信息和响应的属性，如：Content-Type,Content-Length，Location,Server。
-   > 关于响应头里面的类型也可以参考老夫另外一篇分享[了解 MIME 类型：Web 开发中的重要概念](https://juejin.cn/post/7340286503505592330)
-4. 实体头部（Entity Headers）：描述请求或响应的主体内容，如：Content-Encoding,Content-Language，Content-Disposition。
-
-## HTTP消息头的常见字段
-+ Cache-Control：控制缓存行为。
-+ Content-Type：指定消息主体的媒体类型。
-+ Content-Length：指定消息主体的长度。
-+ Host：指定服务器的主机名和端口号。
-+ User-Agent：客户端标识，描述客户端的软件和操作系统信息。
-+ Server：服务器标识，描述服务器的软件和操作系统信息。
-
-其他字段的含义就不在这里赘述了，感兴趣的老铁可以移步[HTTP头字段](https://zh.wikipedia.org/wiki/HTTP%E5%A4%B4%E5%AD%97%E6%AE%B5#cite_note-29)
-
-## HTTP消息头的使用场景
-### 控制缓存行为：Cache-Control
-假设你正在开发一个新闻网站，用户可以浏览最新的新闻文章。为了提高网站的性能和用户体验，你想要利用缓存来减少服务器的负载并加快页面加载速度。
-
-在这种情况下，你可以使用 Cache-Control 和 Last-Modified（或 ETag）头部来控制新闻文章页面的缓存行为。当用户首次访问新闻文章时，服务器会发送文章内容以及相关的缓存控制头部。如果用户再次访问相同的文章，客户端可以根据这些头部来决定是否使用缓存。
-具体地，你可以采取以下步骤：
-1. 当用户首次访问新闻文章时，服务器会发送文章内容以及相关的缓存控制头部：
-```http request
-HTTP/1.1 200 OK
-Content-Type: text/html
-Cache-Control: max-age=3600
-Last-Modified: Mon, 25 Jan 2024 12:00:00 GMT
-
-<!DOCTYPE html>
-<html>
-<head>
-    <title>News Article</title>
-</head>
-<body>
-    <h1>Breaking News!</h1>
-    <p>This is the latest news article.</p>
-</body>
-</html>
-```
-2. 当用户再次访问相同的文章时，客户端可以向服务器发送条件请求，检查文章是否发生了变化：
-```http request
-GET /news/article?id=123 HTTP/1.1
-Host: example.com
-If-Modified-Since: Mon, 25 Jan 2024 12:00:00 GMT
-```
-3. 如果文章未发生变化，服务器可以返回一个 304 Not Modified 响应，表示文章仍然有效，客户端可以使用缓存：
-```http request
-HTTP/1.1 304 Not Modified
-```
-
-### 控制消息的传输和连接行为
-考虑一个在线文件传输服务的实际场景。在这个服务中，用户可以上传文件到服务器，并且可以从服务器下载已经上传的文件。为了实现更好的用户体验和系统性能，我们需要控制消息的传输和连接行为。
-1. 上传文件请求
-   当用户上传文件时，客户端会向服务器发送上传请求，并将文件数据通过 POST 请求发送给服务器。为了控制消息的传输，我们可以使用流式传输（Streaming）来逐块地上传文件，而不是一次性发送整个文件。
-```http request
-POST /upload HTTP/1.1
-Host: example.com
-Content-Type: application/octet-stream
-Content-Length: <length_of_file_data>
-
-<file_data_chunk>
-```
-
-2. 处理上传请求
-   服务器收到上传文件的请求后，会逐块地接收文件数据，并将其写入到文件系统中的临时文件中。在处理上传请求时，我们需要控制连接的持续性，以便及时释放服务器资源并提高系统的并发性能。
-3. 上传完成响应
-   当文件上传完成时，服务器会向客户端发送上传成功的响应，并包含上传文件的元数据信息，如文件名、大小等。在响应中，我们可以设置连接头部为 Connection: close，表示该请求处理完毕后，关闭连接。
-```http request
-HTTP/1.1 200 OK
-Content-Type: application/json
 Connection: close
-
-{"status": "success", "filename": "example.txt", "size": 1024}
 ```
 
-## 可扩展性
-HTTP 消息头很好的体现了HTTP协议的可扩展性，这使得它可以适应各种不同的应用场景和需求。以下是 HTTP 消息头可扩展性的几个方面：
+HTTP Connection头接受上面提到的两个指令，并如下所述：
 
-### 自定义消息头
-HTTP 协议允许开发者自定义消息头，以满足特定应用程序的需求。这意味着开发者可以定义自己的消息头字段，并在请求和响应中使用它们来传递特定的元数据信息。
++ keep-alive该指令表明客户端在发送响应消息后希望保持连接打开或活动。在 HTTP 1.1 版本中，默认情况下使用持久连接，该连接在事务后不会自动关闭。但HTTP 1.0不会将连接视为持久连接，因此如果要保持连接处于活动状态，则需要包含一个保持活动连接标头。
++ close这个关闭连接指令表明客户端在发送响应消息后想要关闭连接。在 HTTP 1.0 中，默认情况下连接会关闭。但在 HTTP 1.1 中，如果您希望关闭连接，则需要将其包含在标头中。
 
+Http1.1 以后，Keep-Alive已经默认支持并开启。客户端（包括但不限于浏览器）发送请求时会在 Header 中增加一个请求头Connection: Keep-Alive，当服务器收到附带有Connection: Keep-Alive的请求时，也会在响应头中添加 Keep-Alive。这样一来，客户端和服务器之间的 HTTP 连接就会被保持，不会断开（断开方式下面介绍），当客户端发送另外一个请求时，就可以复用已建立的连接。
+
+_保持连接和不保持连接区别可以参考下面的图_
+![handshake](/images/http/perisitent-connection.png)
+
+
+## Keep-Alive的优缺点
+keep-alive 这么完美么？
+### 优点：
+
+1. 减少连接建立和断开的开销： 使用长连接可以避免在每次请求时都重新建立连接，从而减少了连接建立和断开的时间和开销。
+2. 减少网络延迟： 由于连接已经建立，可以直接进行数据传输，不需要等待连接的建立过程，从而减少了网络延迟，提高了数据传输效率。
+3. 提高性能： 长连接可以实现连接的复用，多个请求可以共享同一个连接，从而减少了服务器的负担，提高了系统的整体性能。
+
+### 缺点：
+1. 资源占用： 长连接会占用服务器和客户端的资源，尤其是在连接空闲时，会持续占用资源，可能导致资源浪费。
+2. 可能造成资源不足： 如果长时间保持大量的长连接，可能会耗尽服务器和客户端的资源，导致性能下降甚至崩溃。
+
+## 怎么断开连接
+### 通过 Keep-Alive Timeout 标识
+keep-alive不会永久保持连接，它有一个保持时间，可以在不同的服务器软件（如Apache）中设定这个时间。实现长连接需要客户端和服务端都支持长连接。
+Keep-Alive：如果浏览器请求保持连接，则该头部表明希望 WEB 服务器保持连接多长时间（秒）。例如：
 ```http request
-POST /vab-mock-server/api/summary/site-summary/8/tenant-grid HTTP/1.1
-...
-accessToken: admin-accessToken
-x-bpm-saasops-token: grwekVGIWIjAIFqRHILI1A==
+Keep-Alive:timeout=5
 ```
-上面的例子我们看到，请求头的最后两个属性[accessToken]和[x-bpm-saasops-token]就都是根据业务自定义的两个属性
-### 标准扩展头
-HTTP 协议规范定期更新，并不断添加新的标准消息头字段，以满足日益增长的网络通信需求。例如，HTTP/2 引入了一些新的标准头部，如 :authority 和 :method 等，用于支持新的协议功能。
+<font color="#dd0000">注意：Mozilla 和 Konquor 浏览器能识别 “Keep-Alive：Timeout=Time” 报头字段，而 MSIE 在大约 60 秒内自行关闭保活连接。</font>
 
-当谈到扩展标准消息头时，一个很好的例子是 Accept 消息头。Accept 消息头用于指示客户端所能接受的响应内容类型。通常情况下，它包含一个或多个媒体类型（MIME 类型）和相应的优先级。
+### 通过 Connection close 标识
+通在 Response Header 中增加Connection close标识，来主动告诉发送端，连接已经断开了，不能再复用了；客户端接收到此标示后，会销毁连接，再次请求时会重新建立连接。
 
-例如，一个客户端可以发送如下的 Accept 消息头：
+注意：配置 close 配置后，并不是说每次都新建连接，而是约定此连接可以用几次，达到这个最大次数时，接收端就会返回 close 标识
+
+
+## 动手试一试
+为了更好的理解keep-alive是怎么玩的，我写了一个简单的例子
+
++ 主动断开连接
 ```
-Accept: text/html, application/xhtml+xml, application/xml;q=0.9, */*;q=0.8
+[HttpGet]
+[ActionTitle(Name = "关闭连接")]
+[Route("close.svc")]
+public void Close()
+{
+    Response.Headers.Connection = "close";
+    return;
+}
 ```
-在这个例子中，客户端指示它可以接受 text/html、application/xhtml+xml 和 application/xml 类型的响应内容，并为它们设置了不同的优先级。这种设置允许客户端灵活地控制服务器返回的响应类型，根据客户端的需求和偏好进行适当的选择。
+![主动断开连接](/images/http/handshake-2.png)
+首先，我们第一次调用start接口打开连接，可以看到开始的三次握手。后续我们再次发送请求的时候，由于连接还没有断开，所以就不再有三次握手的过程。
 
-### 消息头参数化
-部分消息头支持参数化，允许在消息头中传递额外的参数信息。例如：
+然后，我们又主动调用了close这个接口，这个接口返回的头部信息种携带了“connection: close”，告诉浏览器要关闭连接。因此在此之后我们立马就看到了4此挥手。
 
-假设服务器要向客户端传送一个名为 "document.pdf" 的 PDF 文件，并且希望客户端将该文件保存到本地而不是直接在浏览器中打开。服务器可以通过设置 Content-Disposition 消息头来指示客户端的行为。下面是服务器可能返回的响应头部分：
-```http request
-Content-Disposition: attachment; filename="document.pdf"
++ 超时断开连接(Mozilla)
+```C#
+[HttpGet]
+[ActionTitle(Name = "开启连接")]
+[Route("start.svc")]
+public void Start()
+{
+    Response.Headers.KeepAlive = "timeout=10, max=3";
+    return;
+}
 ```
-在这个例子中，Content-Disposition 消息头的值是 "attachment"，表示该响应中包含的是一个附件文件。另外，通过 filename 参数指定了文件名为 "document.pdf"，这样客户端就知道该附件应该以什么名字保存。
-当客户端收到这个响应时，会根据 Content-Disposition 消息头的指示，将响应中的内容保存为一个名为 "document.pdf" 的文件，而不是尝试在浏览器中打开它。这样，服务器可以控制客户端对响应的处理方式，实现了更灵活的消息传递和处理。
-
-### 条件请求头
-条件请求头允许客户端在发送请求时附加条件，以控制服务器的行为。
-这一点可以参考上面[控制缓存行为：Cache-Control](#控制缓存行为：Cache-Control)
+  ![主动断开连接](/images/http/timeout-auto-disconnect.png)
+在服务端设置10s超时。第一次主动打开连接，之后我们不再进行请求，10s之后连接自动断开。
 
 
++ 被动断开连接
+![主动断开连接](/images/http/auto-disconnect.png)
+上图可以看到，我们第一次主动打开连接。之后我们不再进行请求，一段时间之后连接自动断开。
+
+**分析上图流程**
++ 首先：10.21.21.6（本机ip）率先向服务端 发起了 Keep-Alive 报文
++ 服务端会进行 Keep-Alive ACK
++ 规律是 客户端一直在发送 Keep-Alive ，服务端呢，一直在 Keep-Alive ACK，且 Seq 和 Ack 一直没有变
++ 大概过了 5min 服务端率先发起 FIN ACK 进入 进入挥手 断开连接阶段
+
+**猜想**
++ 客户端 TCP 在没有数据流通时有自己的探活机制，由客户端上报 Keep-Alive 报文，服务端 ACK ，双方确认彼此活着。
++ 探活有时间限制，超过限定时间，如果一直没有数据交换，即使探活心跳正常，也会进行挥手断连，释放资源。
+
+## TCP  Keep-Alive 机制
+> + TCP Keep-Alive 并不是 TCP 标准的一部分，而是由协议栈实现者进行拓展实现，主流操作系统 Linux、Windows、MacOS 都进行了对应的实现。 
+> + TCP Keep-Alive 报文是由操作系统或网络库实现的，而不是由特定的应用程序（如浏览器或HTTP客户端库）直接发送的。它是一种网络层的功能，用于维持两个网络设备之间的连接状态。这个机制在TCP协议中定义，允许一方在一定时间内没有收到数据时发送探测包，以确认连接的另一端是否仍然可达。 
+> + 在Windows操作系统中，这通常通过发送TCP Keep-Alive探测包来实现，这些探测包是由操作系统的网络堆栈自动发送的。
+
+以下是一些可能发送TCP Keep-Alive报文的实体：
+1. 操作系统网络堆栈：大多数现代操作系统都会实现TCP Keep-Alive功能。例如，在Windows中，可以通过注册表设置或使用netsh命令来配置TCP Keep-Alive参数。
+2. 网络库：某些编程语言的网络库可能实现了自己的Keep-Alive逻辑。例如，Java的HttpURLConnection或C#的HttpClient可能会在底层TCP连接上启用Keep-Alive。
+3. 浏览器：虽然浏览器可能不会在没有HTTP请求的情况下发送Keep-Alive报文，但它们可能会定期发送HTTP/1.1协议中的Keep-Alive头部，这是一种应用层的机制，用于维持HTTP连接的活跃状态。
+4. 其他网络应用程序：任何使用TCP连接的应用程序都可能实现自己的Keep-Alive逻辑，以确保连接的持续性。
 
 ## 结语
-其实关于HTTP消息头还有很多知识点本文没有讲到。本文的介绍，姑且算是入门指引吧。从基础知识到应用场景，希望能够帮助读者更好地理解和应用 HTTP 协议。在实际开发中，合理利用 HTTP 协议能够提升 Web 应用的性能和安全性。
+HTTP Connection 头是 HTTP 协议中非常重要的头部字段之一，它控制着客户端和服务器之间的连接行为，直接影响着通信的效率和性能。在实际开发中，合理使用 HTTP Connection 头可以有效地管理网络资源，提高通信的效率。希望本文能够帮助读者更深入地理解 HTTP Connection 头的作用和用法，并在实际开发中加以应用。
