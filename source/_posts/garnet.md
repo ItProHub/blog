@@ -250,7 +250,7 @@ sealed class TestCustomCommand : CustomTransactionProcedure
      Console.WriteLine($"Redis Client Custom Command Result: {((string?)redisResult)}");
  }
 ```
-
+最后我们可以看到用两种客户端执行自定义命令都输出了同样的结果
 ![custom command result](/images/garnet/custom-command.png)
 
 # 结语
