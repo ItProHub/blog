@@ -193,6 +193,8 @@ static void Main(string[] args)
 
 因此，让我们立即创建一个名为“TEST”的自定义命令。命令很简单，直接返回一个“Hello Garnet!”
 
+注册自定义命令本身非常简单，只需添加一个实现的类，或者与命令名称一起添加即可。
+
 ```Garnet Server
 // 测试自定义命令
 server.Register.NewTransactionProc("TEST", 0, () => new TestCustomCommand());
@@ -250,8 +252,6 @@ sealed class TestCustomCommand : CustomTransactionProcedure
 ```
 
 ![custom command result](/images/garnet/custom-command.png)
-
-注册自定义命令本身非常简单，只需添加一个实现的类，或者与命令名称一起添加即可。
 
 # 结语
 Garnet作为微软最新推出的远程缓存存储系统，为开发者提供了一种全新的选择。它具有高性能、可靠性和可伸缩性的特性，适用于各种规模和类型的应用场景。通过使用Garnet，开发者可以更好地提升应用的性能和用户体验，实现业务的快速发展和持续创新。
