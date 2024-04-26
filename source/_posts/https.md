@@ -156,3 +156,8 @@ HTTPS 不是过滤器。有可能通过 HTTPS 连接接收病毒和其他恶意�
 5. 保护你的计算机免遭黑客攻击
 
 HTTPS 仅保护在你的计算机和 Web 服务器之间移动的数据。它不会为你的实际计算机或服务器本身提供任何保护。这也意味着，如果有恶意软件正在监视连接一端的流量，它就可以读取 HTTPS 流中加密之前和之后的流量。
+
+
+更多一手讯息，可关注公众号：[ITProHub](https://myom-dev.oss-cn-hangzhou.aliyuncs.com/WechatPublicPlatformQrCode.jpg)
+
+![ITProHub](https://myom-dev.oss-cn-hangzhou.aliyuncs.com/WechatPublicPlatformQrCode.jpg)

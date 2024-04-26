@@ -116,3 +116,8 @@ public void Start()
 
 ## 结语
 HTTP Connection 头是 HTTP 协议中非常重要的头部字段之一，它控制着客户端和服务器之间的连接行为，直接影响着通信的效率和性能。在实际开发中，合理使用 HTTP Connection 头可以有效地管理网络资源，提高通信的效率。希望本文能够帮助读者更深入地理解 HTTP Connection 头的作用和用法，并在实际开发中加以应用。
+
+
+更多一手讯息，可关注公众号：[ITProHub](https://myom-dev.oss-cn-hangzhou.aliyuncs.com/WechatPublicPlatformQrCode.jpg)
+
+![ITProHub](https://myom-dev.oss-cn-hangzhou.aliyuncs.com/WechatPublicPlatformQrCode.jpg)

@@ -42,3 +42,9 @@ ITProHub是一个汇聚各种IT资源的中心，包括职业指导、技术文�
 公众号将不定期更新，欢迎订阅！
 
 #ITProHub #信息技术 #专业发展 #社区交流
+
+
+
+更多一手讯息，可关注公众号：[ITProHub](https://myom-dev.oss-cn-hangzhou.aliyuncs.com/WechatPublicPlatformQrCode.jpg)
+
+![ITProHub](https://myom-dev.oss-cn-hangzhou.aliyuncs.com/WechatPublicPlatformQrCode.jpg)

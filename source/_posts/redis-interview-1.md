@@ -4,7 +4,9 @@ date: 2024-04-18 15:09:28
 tags: redis 面试 求职
 ---
 相信很多老铁在求职过程中都看到过类似下面这样的任职要求
+
 <img src="/images/redis-interview/recruitment.png" width="50%">
+
 你申请的岗位上面写着”熟悉Redis”，那么你已经准备好回答面试官可能会问到的问题了么？
 后面我将开启一个针对Redis的系列分享，希望能帮助刚刚开始学习Redis的朋友们。
 
@@ -18,6 +20,8 @@ tags: redis 面试 求职
 
 # 缓存穿透
 在使用 Redis 作为缓存时，缓存穿透是一个常见的问题。缓存穿透指的是恶意请求或者大量不存在的 key 导致缓存无法命中，从而绕过缓存直接访问数据库，导致数据库压力过大，甚至宕机的情况。
+
+![缓存穿透](/images/redis-interview/cache-penetration.png)
 
 ## 缓存穿透的原因
 缓存穿透通常发生在以下情况下：
@@ -122,6 +126,8 @@ class Program
 # 缓存雪崩
 在缓存系统中，缓存雪崩是一种常见的问题，它指的是在缓存失效的瞬间，大量的请求同时涌入数据库或其他数据源，导致数据库负载剧增，甚至造成数据库宕机的情况。
 
+![Cache Avalanche](/images/redis-interview/cache-avalanche.png)
+
 ## 缓存雪崩的原因
 缓存雪崩通常是由于缓存中的大量数据同时失效而引起的。当多个缓存键具有相同的失效时间，并且这些缓存键又在同一时间失效时，就会导致大量请求直接击穿缓存，同时涌入数据源，造成缓存雪崩
 
@@ -140,6 +146,8 @@ class Program
 
 # 缓存击穿
 缓存击穿是指某个热点key突然失效或者未命中，导致大量请求直接访问数据库，造成数据库压力剧增的现象。这种情况通常发生在具有高并发访问量的系统中，特别是在缓存系统中使用了较短的过期时间或者热点数据的访问频率突然增加时。
+
+![缓存击穿](/images/redis-interview/cache-breakdown.png)
 
 1. 设置热点数据永不过期： 对于一些热点数据，可以设置永不过期，或者设置较长的过期时间，保证其不会在短时间内失效，从而避免了缓存击穿的发生。
 2. 加锁机制： 在缓存失效时，可以通过加锁机制确保只有一个线程能够进入数据库查询数据，并将查询结果更新到缓存中，避免了多个线程同时查询数据库的情况。
@@ -239,3 +247,8 @@ class Program
 
 
 今天就不总结了，未完待续😪...
+
+
+更多一手讯息，可关注公众号：[ITProHub](https://myom-dev.oss-cn-hangzhou.aliyuncs.com/WechatPublicPlatformQrCode.jpg)
+
+![ITProHub](https://myom-dev.oss-cn-hangzhou.aliyuncs.com/WechatPublicPlatformQrCode.jpg)

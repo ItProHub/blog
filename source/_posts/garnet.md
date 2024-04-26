@@ -258,3 +258,9 @@ Garnet作为微软最新推出的远程缓存存储系统，为开发者提供�
 
 # 参考文档
 + [Garnet 开发入门](https://microsoft.github.io/garnet/docs)
+
+
+
+更多一手讯息，可关注公众号：[ITProHub](https://myom-dev.oss-cn-hangzhou.aliyuncs.com/WechatPublicPlatformQrCode.jpg)
+
+![ITProHub](https://myom-dev.oss-cn-hangzhou.aliyuncs.com/WechatPublicPlatformQrCode.jpg)

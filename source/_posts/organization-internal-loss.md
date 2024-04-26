@@ -77,3 +77,9 @@ tags: 组织 内耗
 组织内耗是企业发展的致命杀手。
 
 选对人，做对事，拒绝内卷！
+
+
+
+更多一手讯息，可关注公众号：[ITProHub](https://myom-dev.oss-cn-hangzhou.aliyuncs.com/WechatPublicPlatformQrCode.jpg)
+
+![ITProHub](https://myom-dev.oss-cn-hangzhou.aliyuncs.com/WechatPublicPlatformQrCode.jpg)
