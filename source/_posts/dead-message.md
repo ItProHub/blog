@@ -100,7 +100,7 @@ client.CreateQueueBind("Alert-Notify2.voice_wait", null, null, args);
 ```
 ![等待队列1](/images/dead-message/delay_comsuption_1.png)
 
-![死信队列](/images/dead-message/delay_comsuption_1.png)
+![死信队列](/images/dead-message/delay_comsuption_2.png)
 
 3. 生产者产生消息，并且给消息设置了过期时间
 ```C#
