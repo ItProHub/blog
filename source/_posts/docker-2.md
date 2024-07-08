@@ -1,10 +1,10 @@
 ---
-title: 优化Docker镜像：减少Dockerfile层数的技巧
+title: Docker镜像构建优化
 date: 2024-07-08 09:20:55
 tags:
 ---
 
-引言
+# 引言
 在构建Docker镜像时，Dockerfile的层数对镜像的性能和大小有显著影响。本文将深入探讨Dockerfile中的层定义、层数多带来的问题，以及如何通过优化Dockerfile来减少层数，提高构建效率和运行性能。
 
 # Dockerfile中的层定义
