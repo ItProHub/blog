@@ -117,21 +117,21 @@ Routing Key 是生产者发送消息时指定的路由信息，Exchange 根据 R
 1. Direct Exchange：
    - 交换机将消息路由到 RoutingKey 精确匹配的队列。
    - 例如，RoutingKey 为 "orange" 的消息只会路由到绑定了 BindingKey 为 "orange" 的队列。
-
+    ![direct exchange](/images/rabbitmq-basic/direct-exchange.svg)
 2. Topic Exchange：
    - 交换机根据 RoutingKey 和 BindingKey 的模式匹配规则路由消息。
    - RoutingKey 是由点分隔的字符串，BindingKey 可以包含特殊字符 *（匹配一个单词）和 #（匹配零个或多个单词）。
    - 例如，RoutingKey 为 "user.update.info" 的消息可以匹配 BindingKey 为 "user.*.info" 或 "user.#"。
-
+![direct exchange](/images/rabbitmq-basic/topic-exchange.svg)
 3. Fanout Exchange：
    - 交换机将消息广播到所有绑定的队列，忽略 RoutingKey。
    - 在这种情况下，BindingKey 不被使用。
-
-   ![fanout](/images/rabbitmq-basic/16elk-ujaxc.gif)
+![direct exchange](/images/rabbitmq-basic/fanout-exchange.svg)
+   ![fanout](/images/rabbitmq-basic/vro2s-b2mub.gif)
 4. Headers Exchange：
    - 交换机根据消息头属性（Headers）而不是 RoutingKey 进行路由。
    - BindingKey 在这种交换机类型中不被使用。
-
+![direct exchange](/images/rabbitmq-basic/rabbitmq-headers-exchange.svg)
 
 由 Exchange、Queue、RoutingKey 三个才能决定一个从 Exchange 到 Queue的 唯一的线路。
 
