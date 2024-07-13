@@ -120,7 +120,7 @@ public void SubscribeQuorumMessage()
 
 ```
 这里我们往流式队列里面发送了10条消息但是每次消费的时候都从第3条消息(offset为2)开始消费.
-![offset](/images/rabbitmq-quarum/stream-offset.png)
+![offset](/images/rabbitmq-quarum/stream_offset.png)
 
 ## 流式队列的工作原理
 流式队列的工作方式类似于日志系统（如 Apache Kafka）。消息按照顺序追加到队列的末尾，并保存在磁盘上。每个消息都有一个唯一的偏移量（offset），消费者可以通过指定偏移量来读取特定的消息或重新消费消息。
@@ -133,11 +133,11 @@ public void SubscribeQuorumMessage()
 ## PS
 1. Auto-Ack 必须为 false
 在流式队列中，为了确保消息的可靠性和能够实现消息回放，自动确认（autoAck）必须设置为 false。自动确认会导致消息一旦被消费即刻从队列中移除，失去消息的持久性和回放功能。
-![aoto ack](/images/rabbitmq-quarum/stream-error2.png)
+![aoto ack](/images/rabbitmq-quarum/stream_error2.png)
 
 2. 必须设置prefetchCount
 流式队列（Stream Queue）在 RabbitMQ 中主要设计用于高吞吐量和低延迟的消息传输。设置 prefetchCount（每次发送给消费者的消息数量）是为了优化流式队列的性能和资源使用
-![prefetchCount](/images/rabbitmq-quarum/stream-error1.png)
+![prefetchCount](/images/rabbitmq-quarum/stream_error1.png)
 
 3. durable必须设置为true
 与Quorum队列类似， Stream队列的durable参数必须声明为true，exclusive参数必须声明为false。这其中，x-max-length-bytes 表示日志文件的最大字节数。x-stream-max-segment-size-bytes 每一个日志文件的最大大小。这两个是可选参数，通常为了防止stream日志无限制累计，都会配合stream队列一起声明。
