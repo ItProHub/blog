@@ -127,6 +127,7 @@ Routing Key 是生产者发送消息时指定的路由信息，Exchange 根据 R
    - 交换机将消息广播到所有绑定的队列，忽略 RoutingKey。
    - 在这种情况下，BindingKey 不被使用。
 ![direct exchange](/images/rabbitmq-basic/fanout-exchange.svg)
+下面我写了一个简单的fanout交换机的demo​，我们可以看到，往交换机发送一条消息，4个队列都收到了消息。
    ![fanout](/images/rabbitmq-basic/vro2s-b2mub.gif)
 4. Headers Exchange：
    - 交换机根据消息头属性（Headers）而不是 RoutingKey 进行路由。
