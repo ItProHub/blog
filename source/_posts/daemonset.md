@@ -1,5 +1,5 @@
 ---
-title: daemonset
+title: Kubernetes DaemonSet – 它是什么以及如何使用
 date: 2024-08-01 08:54:53
 tags:
 ---
