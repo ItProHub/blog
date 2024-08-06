@@ -73,7 +73,8 @@ SEO_keywords:
 # main_title: fi3ework's Studio.
 main_title: ITProHub
 # subtitle
-subtitle: IT知识与就业分享
+#subtitle: IT知识与就业分享
+subtitle: 个人技术日常分享
 # site haeder image
 site_header_image: '/intro/index-bg.jpg'
 # post haeder image
