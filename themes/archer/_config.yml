@@ -71,10 +71,11 @@ SEO_keywords:
   - 'hexo-blog'
 # main title shown in header image
 # main_title: fi3ework's Studio.
-main_title: ITProHub
+# main_title: ITProHub
+main_title: 个人技术日常分享
 # subtitle
 #subtitle: IT知识与就业分享
-subtitle: 个人技术日常分享
+subtitle: 个人技术文章分享 日常记录 图片分享
 # site haeder image
 site_header_image: '/intro/index-bg.jpg'
 # post haeder image
@@ -182,8 +183,8 @@ copyright:
   license: '本文采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可'
 # Website Approve
 website_approve:
-  enable: false
-  icp_approve: 
+  enable: true
+  icp_approve: 备案号：鄂ICP备2024045313号
   beian_approve: 
   beian_img: /assets/beian.png
 # Blog page article timeliness note
