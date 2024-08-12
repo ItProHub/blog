@@ -1,5 +1,5 @@
 ---
-title: 了解容器镜像层
+title: 深入理解容器镜像层
 date: 2024-08-08 14:58:18
 tags:
 ---
@@ -74,69 +74,91 @@ RUN rm -rf /usr/file1.txt
         "sha256:df7fa7c302ca914532aaa453ec101e5f21b1c3bb81b2f5046321aa40f2de1399"
     ]
 },
-```   
+``` 
 
 实际的快照系统支持插件，可以改善其中一些行为。例如，它可以允许快照预先组合和解包，从而加快该过程。这允许快照远程存储。它还允许进行特殊优化，例如即时下载所需的文件和层。
 
 # 叠加层
-虽然挂载起来很容易，但我们刚刚描述的快照方法会产生大量文件变动和大量重复文件。这会减慢首次启动容器的速度并浪费空间。幸运的是，这是文件系统可以处理的容器化过程的众多方面之一。Linux 本身支持将目录挂载为覆盖层，为我们实现了大部分过程。
+用上面的镜像运行容器，并在容器内部查看文件系统可以看到类似下图内容
+![文件系统](/images/docker-layer/filesystem.png)
 
-在 Linux 中（或以--privileged/--cap-add=SYS_ADMIN 运行的linux容器中）：
+
+看到这里老铁们可能会有疑问，Overlay 是一个什么样的文件系统呢？
+
+在解释之前，我们先来假设有这么一个场景。在一个宿主机上需要运行 100 个容器。
+
+每个容器都需要一个镜像，这个镜像就把容器中程序需要运行的二进制文件、配置文件和其他的依赖文件等全部都打包成一个镜像文件。
+
+如果只是普通的 ext4 或者 xfs 文件系统，那么每次运行一个容器，就需要把一个镜像文件下载并且存储在宿主机上。
+
+这样一来，如果一个镜像文件的大小是 300MB，那么 100 个容器的话，就要下载 300MB*100= 30GB 的文件。并且需要占用 30GB 的磁盘空间。
+
+当我们分析这下载的 30GB 的内容，不难发现，在绝大部分的操作系统里，库文件都是差不多的。而且，在容器运行的时候，这类文件也不会被改动，基本上都是只读的。特别是当我们这 100 个容器镜像都是基于同样的操作系统的时候，每个容器镜像只是额外复制了几十兆自己的应用程序系统里，那么就是说在这30GB的数据里，大部分数据都是重复的。
+
+
+这个时候就会想，如果宿主机上只下载一份Linux系统，而其他所有基于相同系统的镜像容器都可以共享这一份通用的部分。这样设置的话，不同容器启动的时候，只需要下载自己独特的程序部分就可以。这是不是就非常完美。
+
+事实上确实是这样的！不过我们既要共享底层系统，又要保护底层系统不被破坏。
+
+在容器或虚拟环境中，使用 tmpfs 和 overlayfs 结合的方案提供临时写入空间的同时保护底层的只读系统。这种方法允许在容器内进行文件操作，而不改变底层文件系统的内容。
+
+虽然挂载起来很容易，但我们刚刚描述的方法会产生大量文件变动和大量重复文件。这会减慢首次启动容器的速度并浪费空间。幸运的是，这是文件系统可以处理的容器化过程的众多方面之一。Linux 本身支持将目录挂载为覆盖层，为我们实现了大部分过程。
+
+## 测试与分析
+下面我们来看一个简单的例子，来帮助我们理解整个覆盖过程：
 
 1. 创建tmpfs挂载（基于内存的文件系统，将用于探索覆盖过程）
 ```
-mkdir /tmp/overlay
-mount -t tmpfs tmpfs /tmp/overlay
+mkdir /mytmpfs
+mount -t tmpfs tmpfs /mytmpfs
 ```
 
-2. 为我们的进程创建目录。我们将使用lower下层（父层）、upper上层（子层）、work文件系统的工作目录以及merged包含合并的文件系统。
+2. 为我们的进程创建目录。我们将使用lowerdir下层（父层）、upperdir上层（子层）、workdir文件系统的工作目录以及merged包含合并的文件系统。
 ```
-mkdir /tmp/overlay/{lower,upper,work,merged}
+sudo mkdir -p /mytmpfs/lowerdir   # 这是只读的下层目录
+sudo mkdir -p /mytmpfs/upperdir   # 这是可写的上层目录，将放在 tmpfs 上
+sudo mkdir -p /mytmpfs/workdir    # 这是 overlayfs 的工作目录
+sudo mkdir -p /mytmpfs/merged     # 这是最终的合并目录
 ```
 
-3. 为实验创建一些文件。您upper也可以选择添加文件。
+3. 为实验创建一些文件。
 ```
-cd /tmp/overlay
-echo hello > lower/hello.txt
-echo "I'm only here for a moment" > lower/delete-me.txt
-echo message > upper/upper-message.txt
+cd /mytmpfs
+echo hello > lowerdir/hello.txt
+echo "delete me" > lowerdir/delete-me.txt
+echo message > upperdir/upper-message.txt
 ```
 4. 将这些目录挂载为overlay类型文件系统。这将在目录中创建一个新的文件系统，其中包含和目录merged的组合内容。该目录将用于跟踪文件系统的更改。lowerupperwork
 ```
-mount -t overlay overlay -o lowerdir=lower,upperdir=upper,workdir=work merged
+mount -t overlay overlay -o lowerdir=lowerdir,upperdir=upperdir,workdir=workdir merged
 ```
-5. 探索文件系统。您会注意到包含和merged的组合内容。然后进行一些更改：upperlower
+
+5. 查看文件系统。会注意到merged包含了upper和lower的组合内容。然后进行一些更改：
+![merged](/images/docker-layer/merged.png)
 ```
 rm -rf merged/delete-me.txt
-echo "I'm new" > merged/new.txt
+echo "I'm new one" > merged/new.txt
 echo world >> merged/hello.txt
 ```
-6. 正如预期的那样，delete-me.txt被删除，并且在同一目录中创建了merged一个新文件。如果你查看目录，你会看到一些有趣的东西：new.txttree
-```
-   |-- lower
-   |   |-- delete-me.txt
-   |   `-- hello.txt
-   |-- merged
-   |   |-- hello.txt
-   |   |-- new.txt
-   |   `-- upper-message.txt
-   |-- upper
-   |   |-- delete-me.txt
-   |   |-- hello.txt
-   |   |-- new.txt
-   |   `-- upper-message.txt
-```
-还有ls -l upper演出
-```
-total 12
-c--------- 2 root root 0, 0 Jan 20 00:17 delete-me.txt
--rw-r--r-- 1 root root   12 Jan 20 00:20 hello.txt
--rw-r--r-- 1 root root    8 Jan 20 00:17 new.txt
--rw-r--r-- 1 root root    8 Jan 20 00:17 upper-message.txt
-```
-虽然merged显示了我们更改的效果，upper但（作为父层）存储的更改类似于我们手动过程中的示例。它包含新文件new.txt和修改的hello.txt文件。它还创建了一个 whiteout 文件。对于覆盖文件系统，这涉及用字符设备（和 0、0 设备号）替换文件。简而言之，它拥有我们打包目录所需的一切！
+6. 正如预期的那样，delete-me.txt被删除，并且在merged目录中创建了一个新文件new.txt。如果你查看目录，你会看到一些有趣的东西：
+![directory tree](/images/docker-layer/tree.png)
 
-您可以看到这种方法也可以用于实现快照系统。该mount命令可以本机接受以冒号 ( :) 分隔的lowerdir路径列表，所有这些路径都合并到单个文件系统中。这是现代容器的本质 - 容器是使用本机操作系统功能组成的。
+当你在 merged 目录中执行 rm -rf merged/delete-me.txt 时，overlayfs 并不会直接删除 lowerdir 中的文件。相反，它会在 upperdir 中创建一个对应的白名单文件，通常命名为 .wh.delete-me.txt，表示这个文件在视图中已经被删除。
+   
 
-这就是创建一个基本系统的全部内容。事实上，containerdKubernetes（以及最近发布的 Docker Desktop 4.27.0）使用的运行时使用类似的方法来构建和管理其镜像（ 内容流中涵盖了更详细的细节）。希望这有助于揭开容器镜像工作方式的神秘面纱！
+## 最终结果：
 
+upperdir/ 的文件结构：
+
+执行ls -l upperdir 可以看到如下结果
+![directory tree](/images/docker-layer/ls_upper.png)
+
++ delete-me.txt：这是从 lowerdir 复制过来的文件，并未实际删除。取而代之的 .wh.delete-me.txt 白名单文件。
++ hello.txt：这是从 lowerdir 复制过来的文件，因为在它上面执行了追加操作。
++ new.txt：这是你在 merged 目录中新创建的文件，直接存放在 upperdir。
++ upper-message.txt：这是最早在 upperdir 中创建的文件，保持不变。
+
+可以看到这种方法也可以用于实现快照系统。mount命令可以本机接受lowerdir路径列表，所有这些路径都合并到单个文件系统中。这是现代容器的一部分本质 — 容器是通过操作系统的本地功能来构建的。
+
+
+希望这篇博客能帮助你更好地理解容器镜像层。如果你有任何问题或建议，欢迎在评论区留言讨论。
