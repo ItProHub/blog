@@ -62,7 +62,7 @@ profile_links:
 
 # ========== Site ========== #
 # title of the site (good for SEO)
-SEO_title: ITProHub
+SEO_title: 个人技术日常分享
 # keywords for site (good for SEO)
 SEO_keywords:
   - hexo
