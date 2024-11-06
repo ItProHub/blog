@@ -24,6 +24,7 @@
     "core-js": "^3.31.0",
     "eventemitter3": "^4.0.7",
     "graceful-fs": "^4.2.11",
+    "hexo-theme-archer": "file:",
     "instantsearch.js": "^4.56.1",
     "perfect-scrollbar": "^1.5.5",
     "qrcode-generator": "^1.4.4",
