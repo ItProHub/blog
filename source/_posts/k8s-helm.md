@@ -97,7 +97,10 @@ spec:
 ```bash
 helm install txclient /helm/txclient
 ```
-这会根据模板创建一个 txclient 部署。
+这会根据模板创建一个 txclient 部署。安装完成之后我们可以用openlens查看一下部署情况：
+![lens](./images/helm/lens-helm.png)
+可以看到在两个node里面都有一个pod运行起来了。
+![lens](./images/helm/lens-pod.png)
 
 # 实用技巧与最佳实践
 1. 使用 values.yaml 管理配置： 对于复杂的应用，values.yaml 可以帮助你管理不同环境的配置。可以在安装时传递自定义配置文件，支持不同环境下的灵活部署。
