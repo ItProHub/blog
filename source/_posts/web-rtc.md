@@ -61,6 +61,7 @@ WebRTC 使用 SDP 来交换会话的描述，通常通过信令通道（如 WebS
 
 # 使用WebRTC实现文件传输
 下面是一个简单的WebRTC文件传输的示例。我们将用.net实现一个简单的信令服务器，然后通过RTCPeerConnection进行连接，最终实现点对点的文件传输。
+![流程](./images/webrtc/webrtc-overview.svg)
 
 1. 连接信令服务器
 WebRTC 作为 P2P（点对点）通信协议，首先需要通过一个信令通道（通常是通过 WebSocket、HTTP 或其他通信机制）来交换信息，建立两端之间的连接。这个信令过程是 WebRTC 的必备部分，它不属于 WebRTC 标准的一部分，因此需要开发者自行实现。这里我们在前端使用SignalR来实现信令的发送和接收。
