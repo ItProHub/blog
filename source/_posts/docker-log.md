@@ -63,6 +63,20 @@ docker run --log-driver=json-file --log-opt max-size=10m --log-opt max-file=3 --
 }
 ```
 
+要应用更改，还需重启 Docker 服务：
+```bash
+sudo systemctl restart docker
+```
+<font color="#dd0000">需要注意的是，这些更改只会影响新创建的 Docker 容器，而不会影响已经运行的容器</font>
+
+要将更改应用于现有容器，必须先删除它们，然后重新创建它们
+```bash
+docker rm -f <container_id_or_name>
+```
+
+再次查看容器详情，你会看到日志选项已经被设置。
+![日志文件](./images/docker-log/log5.png)
+
 ## 禁用日志
 如果容器的日志完全不需要存储，或者你决定将日志流转到其他地方，可以选择禁用 Docker 容器的日志记录。这种做法适合那些对于日志并不重要的应用。
 
