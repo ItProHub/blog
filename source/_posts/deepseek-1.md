@@ -97,6 +97,7 @@ curl -fsSL https://ollama.com/install.sh | sh
 这个时候，我们可以看到之前在命令行无法正常显示的格式都可以正常显示了。
 ![deepseek模型](./images/deepseek-1/chatbox-answer.png)
 
+
 # 总结
 通过上述步骤，你可以成功在本地部署DeepSeek，并使用Chatbox网页端进行交互。无论是命令行还是网页端，Ollama和DeepSeek都能提供强大的AI模型支持，帮助你完成各种任务。使用Chatbox作为前端应用，可以使与模型的交互更加直观和友好。
 
