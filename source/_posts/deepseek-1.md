@@ -50,6 +50,17 @@ curl -fsSL https://ollama.com/install.sh | sh
 
 ![安装完成](./images/deepseek-1/success.png)
 
+最后我们再用一个稍微复杂点的问题简单试试本地DeepSeek的速度和资源占用情况。
+> ”10克铅头钩和5克铅头钩挂相同的T尾软饵，软饵是塑料材质长度9cm重3克，近似于圆柱体外形，它们在同一片平静水域中下沉的速度有多大差别？
+请按物理学定理或公式给出推理过程以及计算结果。“
+
+![回答速度](./images/deepseek-1/speed.gif)
+可以看到，DeepSeek的回答速度还算让人满意。
+
+不过在回答稍微复杂问题的时候感觉明显主机开始烧开水了。
+![资源使用情况](./images/deepseek-1/resource.png)
+
+
 # 使用Chatbox进行网页端访问
 命令行界面虽然可以使用，但相对不够直观, 很多格式都没办法正常展示出来。如果你希望更方便地与DeepSeek进行交互，可以使用Chatbox来通过网页端访问模型。
 
