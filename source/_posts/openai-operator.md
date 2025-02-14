@@ -19,9 +19,8 @@ OpenAI 展示了一个例子，你不再需要访问旅游网站如 TripAdvisor�
 ![OpenAI Operator](./images/openai-operator/operator-demo.gif)
 
 这一功能的核心在于通过 AI 代理（Computer-Using Agent，CUA）实现高度的自动化和任务执行，使得用户不再直接与传统网站交互，而是通过 AI 来“控制”这些服务。
-<div style="background-color: black; display: inline-block;">
-<img src="/images/openai-operator/principle.png" alt="工作原理" />
-</div>
+
+![工作原理](./images/openai-operator/principle.png)
 
 很遗憾的是笔者还没有机会亲自体验过这个功能！别问为啥，问就是没钱。目前Operator仅对美国的Pro用户开放。
 
