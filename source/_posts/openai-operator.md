@@ -22,7 +22,7 @@ OpenAI 展示了一个例子，你不再需要访问旅游网站如 TripAdvisor�
 
 ![工作原理](./images/openai-operator/principle.png)
 
-很遗憾的是笔者还没有机会亲自体验过这个功能！别问为啥，问就是没钱。目前Operator仅对美国的Pro用户开放。
+很遗憾的是笔者还没有机会亲自体验过这个功能,只能通过OpenAI的发布会和官网了解到这个功能的基本情况。别问为啥，问就是没钱💰💰💰。目前Operator仅对美国的Pro用户开放。
 
 ![价格](./images/openai-operator/price.png)
 
