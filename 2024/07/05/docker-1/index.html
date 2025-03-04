@@ -1,0 +1,1510 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <!-- title -->
+
+
+    
+
+<!-- keywords -->
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="author" content="乐予吕">
+    <meta name="renderer" content="webkit">
+    <meta name="copyright" content="乐予吕">
+    
+        <meta name="keywords" content="hexo,ITProHub,hexo-theme,hexo-blog">
+    
+    <meta name="description" content="">
+    <meta name="description" content="引言Docker已经成为现代软件开发中的一项关键技术，但在学习和使用过程中，许多新手开发者常常会遇到一些不易察觉的问题。本文将从一些不太常见的角度，探讨Docker背后的技术基础和实际应用中容易忽视的问题。 开始本片文章之前默认读者已经对docker有了基本的认识，如果不是可以选择先出门右转Docker教程 为什么需要Docker软件开发最大的麻烦事之一，就是环境配置。用户计算机的环境都不相同，你">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker隐藏在细节中的技术基础">
+<meta property="og:url" content="https://www.itprohub.site/2024/07/05/docker-1/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="引言Docker已经成为现代软件开发中的一项关键技术，但在学习和使用过程中，许多新手开发者常常会遇到一些不易察觉的问题。本文将从一些不太常见的角度，探讨Docker背后的技术基础和实际应用中容易忽视的问题。 开始本片文章之前默认读者已经对docker有了基本的认识，如果不是可以选择先出门右转Docker教程 为什么需要Docker软件开发最大的麻烦事之一，就是环境配置。用户计算机的环境都不相同，你">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.itprohub.site/images/docker-1/multi-env.png">
+<meta property="article:published_time" content="2024-07-05T19:59:06.000Z">
+<meta property="article:modified_time" content="2025-03-04T07:26:14.683Z">
+<meta property="article:author" content="乐予吕">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.itprohub.site/images/docker-1/multi-env.png">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="icon" href="/assets/favicon.ico">
+    
+    <title>Docker隐藏在细节中的技术基础 · 个人技术日常分享</title>
+    <!-- /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+/* This file is meant as a standalone workflow for
+- testing support for link[rel=preload]
+- enabling async CSS loading in browsers that do not support rel=preload
+- applying rel preload css once loaded, whether supported or not.
+*/ -->
+<script>
+    (function (w) {
+        'use strict'
+        // rel=preload support test
+        if (!w.loadCSS) {
+            w.loadCSS = function () {}
+        }
+        // define on the loadCSS obj
+        var rp = (loadCSS.relpreload = {})
+        // rel=preload feature support test
+        // runs once and returns a function for compat purposes
+        rp.support = (function () {
+            var ret
+            try {
+                ret = w.document.createElement('link').relList.supports('preload')
+            } catch (e) {
+                ret = false
+            }
+            return function () {
+                return ret
+            }
+        })()
+
+        // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+        // then change that media back to its intended value on load
+        rp.bindMediaToggle = function (link) {
+            // remember existing media attr for ultimate state, or default to 'all'
+            var finalMedia = link.media || 'all'
+
+            function enableStylesheet() {
+                link.media = finalMedia
+            }
+
+            // bind load handlers to enable media
+            if (link.addEventListener) {
+                link.addEventListener('load', enableStylesheet)
+            } else if (link.attachEvent) {
+                link.attachEvent('onload', enableStylesheet)
+            }
+
+            // Set rel and non-applicable media type to start an async request
+            // note: timeout allows this to happen async to let rendering continue in IE
+            setTimeout(function () {
+                link.rel = 'stylesheet'
+                link.media = 'only x'
+            })
+            // also enable media after 3 seconds,
+            // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+            setTimeout(enableStylesheet, 3000)
+        }
+
+        // loop through link elements in DOM
+        rp.poly = function () {
+            // double check this to prevent external calls from running
+            if (rp.support()) {
+                return
+            }
+            var links = w.document.getElementsByTagName('link')
+            for (var i = 0; i < links.length; i++) {
+                var link = links[i]
+                // qualify links to those with rel=preload and as=style attrs
+                if (
+                    link.rel === 'preload' &&
+                    link.getAttribute('as') === 'style' &&
+                    !link.getAttribute('data-loadcss')
+                ) {
+                    // prevent rerunning on link
+                    link.setAttribute('data-loadcss', true)
+                    // bind listeners to toggle media back
+                    rp.bindMediaToggle(link)
+                }
+            }
+        }
+
+        // if unsupported, run the polyfill
+        if (!rp.support()) {
+            // run once at least
+            rp.poly()
+
+            // rerun poly on an interval until onload
+            var run = w.setInterval(rp.poly, 500)
+            if (w.addEventListener) {
+                w.addEventListener('load', function () {
+                    rp.poly()
+                    w.clearInterval(run)
+                })
+            } else if (w.attachEvent) {
+                w.attachEvent('onload', function () {
+                    rp.poly()
+                    w.clearInterval(run)
+                })
+            }
+        }
+
+        // commonjs
+        if (typeof exports !== 'undefined') {
+            exports.loadCSS = loadCSS
+        } else {
+            w.loadCSS = loadCSS
+        }
+    })(typeof global !== 'undefined' ? global : this)
+</script>
+
+    <style type="text/css">
+    @font-face {
+        font-family: 'Oswald-Regular';
+        src: url("/font/Oswald-Regular.ttf");
+    }
+
+    body {
+        margin: 0;
+    }
+
+    header,
+    footer,
+    .back-top,
+    .sidebar,
+    .container,
+    .site-intro-meta,
+    .toc-wrapper {
+        display: none;
+    }
+
+    .site-intro {
+        position: relative;
+        z-index: 3;
+        width: 100%;
+        /* height: 50vh; */
+        overflow: hidden;
+    }
+
+    .site-intro-placeholder {
+        position: absolute;
+        z-index: -2;
+        top: 0;
+        left: 0;
+        width: calc(100% + 300px);
+        height: 100%;
+        background: repeating-linear-gradient(-45deg, #444 0, #444 80px, #333 80px, #333 160px);
+        background-position: center center;
+        transform: translate3d(-226px, 0, 0);
+        animation: gradient-move 2.5s ease-out 0s infinite;
+    }
+
+    @keyframes gradient-move {
+        0% {
+            transform: translate3d(-226px, 0, 0);
+        }
+        100% {
+            transform: translate3d(0, 0, 0);
+        }
+    }
+</style>
+
+    <link rel="preload" href="/css/style.css?v=20211217" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="/css/dark.css?v=20211217" as="style">
+    <link rel="stylesheet" href="/css/dark.css">
+    <link rel="stylesheet" href="/css/mobile.css?v=20211217" media="(max-width: 960px)">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" as="script">
+    <link rel="preload" href="/scripts/main.js?v=20211217" as="script">
+    <link rel="preload" href="/scripts/dark.js?v=20211217" as="script">
+    <link rel="preload" href="/font/Oswald-Regular.ttf" as="font" crossorigin>
+    <link rel="preload" href="https://at.alicdn.com/t/font_327081_1dta1rlogw17zaor.woff" as="font" crossorigin>
+    <!-- algolia -->
+    
+    <!-- 百度统计  -->
+    
+    <!-- Google tag (gtag.js) -->
+    
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6058253486086884"
+    crossorigin="anonymous"></script>
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>    
+    <script type="text/javascript">
+        if (typeof window.$ == undefined) {
+            console.warn('jquery load from jsdelivr failed, will load local script')
+            document.write('<script src="/lib/jquery.min.js" />')
+        }
+    </script>
+    
+        <body class="post-body">
+    
+        <!-- header -->
+        <header class="header header-mobile">
+    <!-- top read progress line -->
+    <div class="header-element">
+        <div class="read-progress"></div>
+    </div>
+    <!-- sidebar menu button -->
+    <div class="header-element">
+        
+            <div class="header-sidebar-menu">
+        
+            
+                <div style="padding-left: 1px;">&#xe775;</div>
+            
+        </div>
+    </div>
+    <!-- header actions -->
+    <div class="header-actions">
+        <!-- theme mode switch button -->
+        <span class="header-theme-btn header-element">
+            <i class="fas fa-adjust"></i>
+        </span>
+        <!-- back to home page text -->
+        <span class="home-link header-element">
+            <a href=/>个人技术日常分享</a>
+        </span>
+    </div>
+    <!-- toggle banner for post layout -->
+    
+        
+            <div class="banner">
+        
+            <div class="blog-title header-element">
+                <a href="/">个人技术日常分享</a>
+            </div>
+            <div class="post-title header-element">
+                <a href="#" class="post-name">Docker隐藏在细节中的技术基础</a>
+            </div>
+        </div>
+    
+</header>
+
+        <!-- fixed footer -->
+        <footer class="footer-fixed">
+    <!-- back to top button -->
+    <div class="footer-fixed-element">
+        
+            <div class="back-top back-top-hidden">
+        
+        
+            <div>&#xe639;</div>
+        
+        </div>
+    </div>
+</footer>
+
+        <!-- wrapper -->
+        <div class="wrapper">
+            <div class="site-intro" style="
+
+
+
+
+
+
+
+    height:50vh;
+
+">
+    
+    <!-- 主页  -->
+    
+        
+    <!-- 404页  -->
+    
+    <div class="site-intro-placeholder"></div>
+    <div class="site-intro-img" style="background-image: url(/intro/post-bg.jpg)"></div>
+    <div class="site-intro-meta">
+        <!-- 标题  -->
+        <h1 class="intro-title">
+            <!-- 主页  -->
+            
+                Docker隐藏在细节中的技术基础
+            <!-- 404 -->
+            
+        </h1>
+        <!-- 副标题 -->
+        <p class="intro-subtitle">
+            <!-- 主页副标题  -->
+            
+                
+            <!-- 404 -->
+            
+        </p>
+        <!-- 文章页 meta -->
+        
+            <div class="post-intros">
+                <!-- 文章页标签  -->
+                
+                    <div class= post-intro-tags >
+    
+    
+</div>
+
+                
+                <!-- 文章字数统计 -->
+                
+                <div class="post-intro-meta">
+                    <!-- 撰写日期 -->
+                    <span class="iconfont-archer post-intro-calander">&#xe676;</span>
+                    <span class="post-intro-time">2024/07/05</span>
+                    <!-- busuanzi -->
+                    
+                        <span id="busuanzi_container_page_pv" class="busuanzi-pv">
+                            <span class="iconfont-archer post-intro-busuanzi">&#xe602;</span>
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    
+                    <!-- 文章分享 -->
+                    <span class="share-wrapper">
+                        <span class="iconfont-archer share-icon">&#xe71d;</span>
+                        <span class="share-text">Share</span>
+                        <ul class="share-list">
+                            <li class="iconfont-archer share-qr" data-type="qr">&#xe75b;
+                                <div class="share-qrcode"></div>
+                            </li>
+                            <li class="iconfont-archer" data-type="weibo">&#xe619;</li>
+                            <li class="iconfont-archer" data-type="qzone">&#xe62e;</li>
+                            <li class="iconfont-archer" data-type="twitter">&#xe634;</li>
+                            <li class="iconfont-archer" data-type="facebook">&#xe67a;</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
+        
+    </div>
+</div>
+
+            <script>
+  // get user agent
+  function getBrowserVersions() {
+    var u = window.navigator.userAgent
+    return {
+      userAgent: u,
+      trident: u.indexOf('Trident') > -1, //IE内核
+      presto: u.indexOf('Presto') > -1, //opera内核
+      webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+      gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
+      mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
+      ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+      android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器
+      iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者安卓QQ浏览器
+      iPad: u.indexOf('iPad') > -1, //是否为iPad
+      webApp: u.indexOf('Safari') == -1, //是否为web应用程序，没有头部与底部
+      weixin: u.indexOf('MicroMessenger') == -1, //是否为微信浏览器
+      uc: u.indexOf('UCBrowser') > -1, //是否为android下的UC浏览器
+    }
+  }
+  var browser = {
+    versions: getBrowserVersions(),
+  }
+  console.log('userAgent: ' + browser.versions.userAgent)
+
+  // callback
+  function fontLoaded() {
+    console.log('font loaded')
+    if (document.getElementsByClassName('site-intro-meta')) {
+      document
+        .getElementsByClassName('intro-title')[0]
+        .classList.add('intro-fade-in')
+      document
+        .getElementsByClassName('intro-subtitle')[0]
+        .classList.add('intro-fade-in')
+      var postIntros = document.getElementsByClassName('post-intros')[0]
+      if (postIntros) {
+        postIntros.classList.add('post-fade-in')
+      }
+    }
+  }
+
+  // UC不支持跨域，所以直接显示
+  function asyncCb() {
+    if (browser.versions.uc) {
+      console.log('UCBrowser')
+      fontLoaded()
+    } else {
+      WebFont.load({
+        custom: {
+          families: ['Oswald-Regular'],
+        },
+        loading: function () {
+          // 所有字体开始加载
+          // console.log('font loading');
+        },
+        active: function () {
+          // 所有字体已渲染
+          fontLoaded()
+        },
+        inactive: function () {
+          // 字体预加载失败，无效字体或浏览器不支持加载
+          console.log('inactive: timeout')
+          fontLoaded()
+        },
+        timeout: 5000, // Set the timeout to two seconds
+      })
+    }
+  }
+
+  function asyncErr() {
+    console.warn('script load from CDN failed, will load local script')
+  }
+
+  // load webfont-loader async, and add callback function
+  function async(u, cb, err) {
+    var d = document,
+      t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0]
+    o.src = u
+    if (cb) {
+      o.addEventListener(
+        'load',
+        function (e) {
+          cb(null, e)
+        },
+        false
+      )
+    }
+    if (err) {
+      o.addEventListener(
+        'error',
+        function (e) {
+          err(null, e)
+        },
+        false
+      )
+    }
+    s.parentNode.insertBefore(o, s)
+  }
+
+  var asyncLoadWithFallBack = function (arr, success, reject) {
+    var currReject = function () {
+      reject()
+      arr.shift()
+      if (arr.length) async(arr[0], success, currReject)
+    }
+
+    async(arr[0], success, currReject)
+  }
+
+  asyncLoadWithFallBack(
+    [
+      'https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js',
+      'https://cdn.bootcss.com/webfont/1.6.28/webfontloader.js',
+      "/lib/webfontloader.min.js",
+    ],
+    asyncCb,
+    asyncErr
+  )
+</script>
+
+            <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
+            <div class="container container-unloaded">
+                <main class="main post-page">
+    <article class="article-entry">
+        <h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>Docker已经成为现代软件开发中的一项关键技术，但在学习和使用过程中，许多新手开发者常常会遇到一些不易察觉的问题。本文将从一些不太常见的角度，探讨Docker背后的技术基础和实际应用中容易忽视的问题。</p>
+<p>开始本片文章之前默认读者已经对docker有了基本的认识，如果不是可以选择先出门右转<a target="_blank" rel="noopener" href="https://www.runoob.com/docker/docker-tutorial.html">Docker教程</a></p>
+<h2 id="为什么需要Docker"><a href="#为什么需要Docker" class="headerlink" title="为什么需要Docker"></a>为什么需要Docker</h2><p><img src="/images/docker-1/multi-env.png" alt="multi-envs"><br>软件开发最大的麻烦事之一，就是环境配置。用户计算机的环境都不相同，你怎么知道自己的程序能在生产的服务器上跑起来？</p>
+<p>用户必须保证两件事：操作系统的设置，各种库和组件的安装。只有它们都正确，软件才能运行。举例来说，安装一个 .net 应用，计算机必须有对应版本的.net运行时，还必须有各种依赖，可能还要配置环境变量。</p>
+<p>如果某些插件与当前环境不兼容，程序也没办法正常运行。这个时候开发常常会说：”它在我的机器上是正常的呀”，言下之意就是，其他机器很可能跑不了。</p>
+<p>环境配置如此麻烦，换一台机器，就要重来一次，费时费力。特别是很多企业级的应用，配置更是无比的复杂。这个时候就要想，能不能从根本上解决问题，软件可以带环境安装？也就是说，安装的时候，把原始环境一模一样地复制过来。</p>
+<h2 id="虚拟机与容器：理解深层次差异"><a href="#虚拟机与容器：理解深层次差异" class="headerlink" title="虚拟机与容器：理解深层次差异"></a>虚拟机与容器：理解深层次差异</h2><h3 id="资源隔离与共享"><a href="#资源隔离与共享" class="headerlink" title="资源隔离与共享"></a>资源隔离与共享</h3><ul>
+<li>虚拟机：每个虚拟机运行一个完整的操作系统实例，资源隔离性强，但资源开销大。</li>
+<li>容器：容器共享主机操作系统的内核，通过名称空间和控制组（cgroups）实现资源隔离。这种方式极大地减少了资源开销，但也引发了一些隔离性不足的问题。</li>
+</ul>
+<h3 id="常见误区：容器的隔离性"><a href="#常见误区：容器的隔离性" class="headerlink" title="常见误区：容器的隔离性"></a>常见误区：容器的隔离性</h3><p>很多人认为容器与虚拟机一样，具有完全的隔离性。然而，容器的隔离性依赖于主机操作系统，如果主机内核存在漏洞，所有容器都可能受到影响。因此，在使用Docker时，保持主机系统和Docker引擎的更新至关重要。</p>
+<h2 id="文件系统与存储卷：隐形的性能瓶颈"><a href="#文件系统与存储卷：隐形的性能瓶颈" class="headerlink" title="文件系统与存储卷：隐形的性能瓶颈"></a>文件系统与存储卷：隐形的性能瓶颈</h2><h3 id="Union-File-System"><a href="#Union-File-System" class="headerlink" title="Union File System"></a>Union File System</h3><p>Docker镜像基于联合文件系统（UnionFS），如AUFS、OverlayFS等，允许镜像分层构建。这带来了便捷的同时，也可能引发性能问题。</p>
+<h3 id="联合文件系统的分层结构"><a href="#联合文件系统的分层结构" class="headerlink" title="联合文件系统的分层结构"></a>联合文件系统的分层结构</h3><p>联合文件系统通过将多个文件系统层联合在一起，呈现为一个单一文件系统。Docker镜像由多层只读层组成，每一层都是前一层的增量更新。容器启动时，Docker在镜像层的顶部添加一个可写层，这一层称为容器层。</p>
+<h3 id="分层文件系统与写操作"><a href="#分层文件系统与写操作" class="headerlink" title="分层文件系统与写操作"></a>分层文件系统与写操作</h3><p>在联合文件系统中，当进行写操作时，实际的写入发生在容器的可写层。如果写入的数据涉及到底层只读层的数据，系统会执行一个“写时复制”（Copy-on-Write，CoW）操作：</p>
+<ol>
+<li>读取原始文件：从只读层读取文件内容。</li>
+<li>复制到可写层：将读取的文件内容复制到可写层。</li>
+<li>修改文件：在可写层中修改文件内容。</li>
+</ol>
+<h3 id="性能下降的原因"><a href="#性能下降的原因" class="headerlink" title="性能下降的原因"></a>性能下降的原因</h3><ol>
+<li><p>写时复制操作<br>每次写操作都需要执行“写时复制”，这意味着每次写入一个文件时，必须先读取并复制该文件的内容到可写层，再进行修改。这一过程显著增加了I&#x2F;O操作的开销，尤其是在频繁写入或修改大量文件时。</p>
+</li>
+<li><p>层次结构复杂性<br>分层结构使得文件系统的元数据管理变得复杂。每一层都需要管理自己的文件和目录，当有大量写操作时，元数据的处理会成为性能瓶颈。</p>
+</li>
+<li><p>合并视图的开销<br>联合文件系统需要合并多个层的视图，以呈现给用户一个统一的文件系统视图。在频繁写操作的场景下，合并视图的开销也会显著增加。</p>
+</li>
+</ol>
+<h3 id="实际案例：大量文件写入操作"><a href="#实际案例：大量文件写入操作" class="headerlink" title="实际案例：大量文件写入操作"></a>实际案例：大量文件写入操作</h3><p>如果容器中的应用程序频繁进行大量文件写入操作，联合文件系统的分层结构可能导致性能下降。</p>
+<p>在这种情况下，使用Docker卷（Volume）来存储数据可以显著提升性能，因为卷直接挂载到主机文件系统，避免了分层开销。</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Dockerfile 示例</span></span><br><span class="line"><span class="keyword">FROM</span> python:<span class="number">3.8</span>-slim</span><br><span class="line"><span class="keyword">WORKDIR</span><span class="language-bash"> /app</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> . .</span></span><br><span class="line"><span class="keyword">VOLUME</span><span class="language-bash"> /app/data</span></span><br><span class="line"><span class="keyword">CMD</span><span class="language-bash"> [<span class="string">&quot;python&quot;</span>, <span class="string">&quot;app.py&quot;</span>]</span></span><br></pre></td></tr></table></figure>
+
+<p>在docker-compose.yml中配置卷挂载：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">&#x27;3.8&#x27;</span></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">app:</span></span><br><span class="line">    <span class="attr">build:</span> <span class="string">.</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./data:/app/data</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="网络与安全：看不见的陷阱"><a href="#网络与安全：看不见的陷阱" class="headerlink" title="网络与安全：看不见的陷阱"></a>网络与安全：看不见的陷阱</h2><h3 id="网络模式选择"><a href="#网络模式选择" class="headerlink" title="网络模式选择"></a>网络模式选择</h3><p>Docker提供了多种网络模式：bridge、host、overlay等。不同模式适用于不同场景，但选择不当可能引发安全和性能问题。</p>
+<h3 id="安全隐患：默认桥接网络"><a href="#安全隐患：默认桥接网络" class="headerlink" title="安全隐患：默认桥接网络"></a>安全隐患：默认桥接网络</h3><p>默认的桥接网络模式容易遭受ARP欺骗攻击，因为所有容器共享同一个桥接网络。在生产环境中，建议使用用户自定义桥接网络或覆盖网络，并启用网络隔离。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建用户自定义桥接网络</span></span><br><span class="line">docker network create --driver bridge my_bridge_network</span><br><span class="line"></span><br><span class="line"><span class="comment"># 启动容器时指定网络</span></span><br><span class="line">docker run --network my_bridge_network my_app</span><br></pre></td></tr></table></figure>
+
+<h2 id="镜像管理：隐形的资源浪费"><a href="#镜像管理：隐形的资源浪费" class="headerlink" title="镜像管理：隐形的资源浪费"></a>镜像管理：隐形的资源浪费</h2><h3 id="镜像层叠与大小控制"><a href="#镜像层叠与大小控制" class="headerlink" title="镜像层叠与大小控制"></a>镜像层叠与大小控制</h3><p>Docker镜像的分层结构可能导致镜像体积过大，尤其在频繁构建和更新镜像时。如果不注意清理，磁盘空间可能很快耗尽。</p>
+<h3 id="实践建议：定期清理"><a href="#实践建议：定期清理" class="headerlink" title="实践建议：定期清理"></a>实践建议：定期清理</h3><p>定期清理未使用的镜像、容器和卷，可以有效管理磁盘空间。使用以下命令清理无用资源：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 清理未使用的镜像</span></span><br><span class="line">docker image prune -a</span><br><span class="line"></span><br><span class="line"><span class="comment"># 清理未使用的容器</span></span><br><span class="line">docker container prune</span><br><span class="line"></span><br><span class="line"><span class="comment"># 清理未使用的卷</span></span><br><span class="line">docker volume prune</span><br><span class="line"></span><br><span class="line"><span class="comment"># 清理未使用的网络</span></span><br><span class="line">docker network prune</span><br></pre></td></tr></table></figure>
+
+<h2 id="日志管理：忽视的存储负担"><a href="#日志管理：忽视的存储负担" class="headerlink" title="日志管理：忽视的存储负担"></a>日志管理：忽视的存储负担</h2><h3 id="日志驱动与存储策略"><a href="#日志驱动与存储策略" class="headerlink" title="日志驱动与存储策略"></a>日志驱动与存储策略</h3><p>Docker默认将容器日志存储在主机文件系统中，这可能导致日志文件过大，影响系统性能。</p>
+<h3 id="实践建议：日志轮转与外部存储"><a href="#实践建议：日志轮转与外部存储" class="headerlink" title="实践建议：日志轮转与外部存储"></a>实践建议：日志轮转与外部存储</h3><p>配置Docker日志轮转策略或使用外部日志存储系统，可以有效管理日志文件大小。</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;log-driver&quot;</span><span class="punctuation">:</span> <span class="string">&quot;json-file&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;log-opts&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;max-size&quot;</span><span class="punctuation">:</span> <span class="string">&quot;10m&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;max-file&quot;</span><span class="punctuation">:</span> <span class="string">&quot;3&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>或者将日志发送到外部系统，如ELK堆栈：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;log-driver&quot;</span><span class="punctuation">:</span> <span class="string">&quot;gelf&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;log-opts&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;gelf-address&quot;</span><span class="punctuation">:</span> <span class="string">&quot;udp://logstash:12201&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>通过深入探讨虚拟机与容器的差异、文件系统与存储卷的性能瓶颈、网络与安全的隐患、镜像管理的资源浪费以及日志管理的存储负担，我们希望帮助读者更全面地理解Docker背后的技术基础和实际应用中的常见问题。在后续的文章中，我们将继续探讨Docker的高级特性和优化策略，帮助你在实际项目中更好地应用这一强大的容器化技术。</p>
+<hr>
+<p>希望这篇文章能帮助你理解Docker背后的技术基础。如果你有任何问题或建议，欢迎留言讨论！</p>
+
+    </article>
+    <!-- license -->
+    
+        <div class="license-wrapper">
+            <p>原文作者：<a href="https://www.itprohub.site">乐予吕</a>
+            <p>原文链接：<a href="https://www.itprohub.site/2024/07/05/docker-1/">https://www.itprohub.site/2024/07/05/docker-1/</a>
+            <p>发表日期：<a href="https://www.itprohub.site/2024/07/05/docker-1/">July 5th 2024, 7:59:06 pm</a>
+            <p>更新日期：<a href="https://www.itprohub.site/2024/07/05/docker-1/">March 4th 2025, 7:26:14 am</a>
+            <p>版权声明：本文采用<a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
+        </div>
+    
+    <!-- paginator -->
+    <ul class="post-paginator">
+        <li class="next">
+            
+                <div class="nextSlogan">Next Post</div>
+                <a href="/2024/07/08/docker-2/" title="Docker镜像构建优化">
+                    <div class="nextTitle">Docker镜像构建优化</div>
+                </a>
+            
+        </li>
+        <li class="previous">
+            
+                <div class="prevSlogan">Previous Post</div>
+                <a href="/2024/06/20/proxy/" title="代理服务解析：正向代理、反向代理和透明代理">
+                    <div class="prevTitle">代理服务解析：正向代理、反向代理和透明代理</div>
+                </a>
+            
+        </li>
+    </ul>
+    <!-- comment -->
+    
+        <div class="post-comment">
+            <!-- 来必力 City 版安装代码 -->
+
+
+            
+
+            
+
+            
+
+            <!-- utteranc评论 -->
+
+
+            <!-- partial('_partial/comment/changyan') -->
+            <!--PC版-->
+
+
+            
+            
+
+            
+
+        </div>
+    
+    <!-- timeliness note -->
+    <!-- idea from: https://hexo.fluid-dev.com/posts/hexo-injector/#%E6%96%87%E7%AB%A0%E6%97%B6%E6%95%88%E6%80%A7%E6%8F%90%E7%A4%BA -->
+    
+    <!-- Mathjax -->
+    
+</main>
+
+                <!-- profile -->
+                
+            </div>
+            <footer class="footer footer-unloaded">
+    <!-- social  -->
+    
+        <div class="social">
+            
+    
+        
+            
+                <a href="mailto:287678478@qq.com" class="iconfont-archer email" title=email ></a>
+            
+        
+    
+        
+            
+                <a href="//github.com/ItProHub" class="iconfont-archer github" target="_blank" title=github></a>
+            
+        
+    
+        
+            
+                <span class="iconfont-archer wechat" title=wechat>
+                    
+                    <img class="profile-qr" src="/assets/wechat_qr.jpg" />
+                </span>
+            
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+            
+                <a href="//juejin.cn/user/1489196396594523" class="iconfont-archer juejin" target="_blank" title=juejin></a>
+            
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+
+        </div>
+    
+    <!-- powered by Hexo  -->
+    <div class="copyright">
+        <span id="hexo-power">Powered by <a href="https://www.itprohub.site/" target="_blank">ITProHub</a></span><span class="iconfont-archer power">&#xe635;</span><span id="theme-info">theme <a href="https://github.com/fi3ework/hexo-theme-archer" target="_blank">Archer</a></span>
+    </div>
+    <!-- website approve for Chinese user -->
+    
+        <div class="website-approve">
+            
+                <span id="icp-approve" class="icp-approve">
+                    <a href="https://beian.miit.gov.cn/" target="_blank">备案号：鄂ICP备2024045313号</a>
+                </span>
+            
+            
+        </div>
+    
+    <!-- 不蒜子  -->
+    
+        <div class="busuanzi-container">
+            
+            
+                <span id="busuanzi_container_site_pv">PV: <span id="busuanzi_value_site_pv"></span> :)</span>
+            
+        </div>
+    
+</footer>
+
+        </div>
+        <!-- toc -->
+        
+            <div class="toc-wrapper toc-wrapper-loding" style=
+
+
+
+
+
+
+
+    top:50vh;
+
+>
+                <div class="toc-catalog">
+                    <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
+                </div>
+                <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%95%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">引言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81Docker"><span class="toc-number">2.</span> <span class="toc-text">为什么需要Docker</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%99%9A%E6%8B%9F%E6%9C%BA%E4%B8%8E%E5%AE%B9%E5%99%A8%EF%BC%9A%E7%90%86%E8%A7%A3%E6%B7%B1%E5%B1%82%E6%AC%A1%E5%B7%AE%E5%BC%82"><span class="toc-number">3.</span> <span class="toc-text">虚拟机与容器：理解深层次差异</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B5%84%E6%BA%90%E9%9A%94%E7%A6%BB%E4%B8%8E%E5%85%B1%E4%BA%AB"><span class="toc-number">3.1.</span> <span class="toc-text">资源隔离与共享</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81%E8%AF%AF%E5%8C%BA%EF%BC%9A%E5%AE%B9%E5%99%A8%E7%9A%84%E9%9A%94%E7%A6%BB%E6%80%A7"><span class="toc-number">3.2.</span> <span class="toc-text">常见误区：容器的隔离性</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E4%B8%8E%E5%AD%98%E5%82%A8%E5%8D%B7%EF%BC%9A%E9%9A%90%E5%BD%A2%E7%9A%84%E6%80%A7%E8%83%BD%E7%93%B6%E9%A2%88"><span class="toc-number">4.</span> <span class="toc-text">文件系统与存储卷：隐形的性能瓶颈</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Union-File-System"><span class="toc-number">4.1.</span> <span class="toc-text">Union File System</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%81%94%E5%90%88%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%88%86%E5%B1%82%E7%BB%93%E6%9E%84"><span class="toc-number">4.2.</span> <span class="toc-text">联合文件系统的分层结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E5%B1%82%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E4%B8%8E%E5%86%99%E6%93%8D%E4%BD%9C"><span class="toc-number">4.3.</span> <span class="toc-text">分层文件系统与写操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%A7%E8%83%BD%E4%B8%8B%E9%99%8D%E7%9A%84%E5%8E%9F%E5%9B%A0"><span class="toc-number">4.4.</span> <span class="toc-text">性能下降的原因</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E9%99%85%E6%A1%88%E4%BE%8B%EF%BC%9A%E5%A4%A7%E9%87%8F%E6%96%87%E4%BB%B6%E5%86%99%E5%85%A5%E6%93%8D%E4%BD%9C"><span class="toc-number">4.5.</span> <span class="toc-text">实际案例：大量文件写入操作</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E4%B8%8E%E5%AE%89%E5%85%A8%EF%BC%9A%E7%9C%8B%E4%B8%8D%E8%A7%81%E7%9A%84%E9%99%B7%E9%98%B1"><span class="toc-number">5.</span> <span class="toc-text">网络与安全：看不见的陷阱</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%BC%8F%E9%80%89%E6%8B%A9"><span class="toc-number">5.1.</span> <span class="toc-text">网络模式选择</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E5%85%A8%E9%9A%90%E6%82%A3%EF%BC%9A%E9%BB%98%E8%AE%A4%E6%A1%A5%E6%8E%A5%E7%BD%91%E7%BB%9C"><span class="toc-number">5.2.</span> <span class="toc-text">安全隐患：默认桥接网络</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%95%9C%E5%83%8F%E7%AE%A1%E7%90%86%EF%BC%9A%E9%9A%90%E5%BD%A2%E7%9A%84%E8%B5%84%E6%BA%90%E6%B5%AA%E8%B4%B9"><span class="toc-number">6.</span> <span class="toc-text">镜像管理：隐形的资源浪费</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%95%9C%E5%83%8F%E5%B1%82%E5%8F%A0%E4%B8%8E%E5%A4%A7%E5%B0%8F%E6%8E%A7%E5%88%B6"><span class="toc-number">6.1.</span> <span class="toc-text">镜像层叠与大小控制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B5%E5%BB%BA%E8%AE%AE%EF%BC%9A%E5%AE%9A%E6%9C%9F%E6%B8%85%E7%90%86"><span class="toc-number">6.2.</span> <span class="toc-text">实践建议：定期清理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%97%A5%E5%BF%97%E7%AE%A1%E7%90%86%EF%BC%9A%E5%BF%BD%E8%A7%86%E7%9A%84%E5%AD%98%E5%82%A8%E8%B4%9F%E6%8B%85"><span class="toc-number">7.</span> <span class="toc-text">日志管理：忽视的存储负担</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%A5%E5%BF%97%E9%A9%B1%E5%8A%A8%E4%B8%8E%E5%AD%98%E5%82%A8%E7%AD%96%E7%95%A5"><span class="toc-number">7.1.</span> <span class="toc-text">日志驱动与存储策略</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B5%E5%BB%BA%E8%AE%AE%EF%BC%9A%E6%97%A5%E5%BF%97%E8%BD%AE%E8%BD%AC%E4%B8%8E%E5%A4%96%E9%83%A8%E5%AD%98%E5%82%A8"><span class="toc-number">7.2.</span> <span class="toc-text">实践建议：日志轮转与外部存储</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%93%E8%AF%AD"><span class="toc-number">8.</span> <span class="toc-text">结语</span></a></li></ol>
+            </div>
+        
+        <!-- sidebar -->
+        <div class="sidebar sidebar-hide">
+    <ul class="sidebar-tabs sidebar-tabs-active-0">
+        <li class="sidebar-tab-archives"><span class="iconfont-archer">&#xe67d;</span><span class="tab-name">Archive</span></li>
+        <li class="sidebar-tab-tags"><span class="iconfont-archer">&#xe61b;</span><span class="tab-name">Tag</span></li>
+        <li class="sidebar-tab-categories"><span class="iconfont-archer">&#xe666;</span><span class="tab-name">Cate</span></li>
+    </ul>
+    <div class="sidebar-content sidebar-content-show-archive">
+        <div class="sidebar-panel-archives">
+    <!-- 在 ejs 中将 archive 按照时间排序 -->
+    
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    
+    
+    
+    
+    <div class="total-and-search">
+        <div class="total-archive">
+        Total : 34
+        </div>
+        <!-- search  -->
+        
+    </div>
+    
+    <div class="post-archive">
+    
+        
+            
+            
+            <div class="archive-year"> 2025 </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/27</span>
+            <a class="archive-post-title" href="/2025/02/27/midscenejs/">AI驱动的自动化测试：探索MidScene.js的强大功能</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/21</span>
+            <a class="archive-post-title" href="/2025/02/21/function-calling/">让AI模型不再只是“说话”——探索AI模型的函数调用</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/12</span>
+            <a class="archive-post-title" href="/2025/02/12/openai-operator/">「AI」科普向 | OpenAI Operator：推动数字世界的新纪元</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/12</span>
+            <a class="archive-post-title" href="/2025/02/12/deepseek-vscode/">Cursor平替：把 DeepSeek 接入 VS Code</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/07</span>
+            <a class="archive-post-title" href="/2025/02/07/deepseek-1/">DeepSeek 本地部署+web端访问 指南</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/05</span>
+            <a class="archive-post-title" href="/2025/02/05/docker-log/">减少 Docker 日志大小：实用的日志管理指南</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">01/07</span>
+            <a class="archive-post-title" href="/2025/01/07/parallelism/">并发不是并行！</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> 2024 </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/18</span>
+            <a class="archive-post-title" href="/2024/12/18/log/">程序日志设计与存储：实践与注意事项(一)</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/16</span>
+            <a class="archive-post-title" href="/2024/12/16/web-rtc/">WebRTC入门：让浏览器之间的实时通信变得简单</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/11</span>
+            <a class="archive-post-title" href="/2024/12/11/k8s-helm/">Kubernetes 分享：如何使用 Helm 优化 Kubernetes 应用部署</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/29</span>
+            <a class="archive-post-title" href="/2024/11/29/rspack/">Rspack：一个新一代的 JavaScript 打包工具</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/20</span>
+            <a class="archive-post-title" href="/2024/11/20/mfa/">深入解读 MFA 和 TOTP 的实现原理与应用</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/08</span>
+            <a class="archive-post-title" href="/2024/11/08/stream-output/">解读大型语言模型（LLM）API：了解流式输出的工作原理</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/06</span>
+            <a class="archive-post-title" href="/2024/11/06/encrypt-hash-signature/">加密、哈希与签名：基本原理与区别解析</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/30</span>
+            <a class="archive-post-title" href="/2024/10/30/js-signal/">JavaScript 信号：如何将响应式功能带到普通 Web 开发中</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/28</span>
+            <a class="archive-post-title" href="/2024/08/28/sticky-packet/">深入探讨 TCP 粘包现象：问题、原因与解决方案</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/16</span>
+            <a class="archive-post-title" href="/2024/08/16/quic/">QUIC:被寄予厚望的下一代互联网传输协议</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/08</span>
+            <a class="archive-post-title" href="/2024/08/08/docker-layer/">深入理解容器镜像层</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/01</span>
+            <a class="archive-post-title" href="/2024/08/01/daemonset/">Kubernetes DaemonSet – 它是什么以及如何使用</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/11</span>
+            <a class="archive-post-title" href="/2024/07/11/rabbitmq-quorum/">RabbitMQ之三种队列之间的区别及如何选型</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/09</span>
+            <a class="archive-post-title" href="/2024/07/09/rabbitmq-basic/">深入理解 RabbitMQ 中的基础概念</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/08</span>
+            <a class="archive-post-title" href="/2024/07/08/docker-2/">Docker镜像构建优化</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/05</span>
+            <a class="archive-post-title" href="/2024/07/05/docker-1/">Docker隐藏在细节中的技术基础</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">06/20</span>
+            <a class="archive-post-title" href="/2024/06/20/proxy/">代理服务解析：正向代理、反向代理和透明代理</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/30</span>
+            <a class="archive-post-title" href="/2024/05/30/similar-image-search/">从零开始搭建自己的相似图片搜索引擎</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/30</span>
+            <a class="archive-post-title" href="/2024/05/30/TaskCompletionSource/">C# 学习笔记： TaskCompletionSource</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/22</span>
+            <a class="archive-post-title" href="/2024/05/22/dead-message/">深入解析消息队列中的死信队列</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/28</span>
+            <a class="archive-post-title" href="/2024/04/28/dump/">Dump分析入门指南</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> Invalid date </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span>
+            <a class="archive-post-title" href="/2025/03/04/hello-world/">欢迎来到 ITProHub！</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> 2024 </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/18</span>
+            <a class="archive-post-title" href="/2024/04/18/redis-interview-1/">Redis成长记 - Redis的陷阱（一）</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/11</span>
+            <a class="archive-post-title" href="/2024/04/11/https/">HTTPS的工作原理以及安装</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/07</span>
+            <a class="archive-post-title" href="/2024/04/07/garnet/">Garnet，缓存的新选择！</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/28</span>
+            <a class="archive-post-title" href="/2024/03/28/organization-internal-loss/">组织发展致命杀手：内耗</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/19</span>
+            <a class="archive-post-title" href="/2024/03/19/http/">深入理解 HTTP Connection 头</a>
+        </li>
+    
+    </div>
+</div>
+
+        <div class="sidebar-panel-tags">
+    <div class="sidebar-tags-name">
+        
+            <span class="sidebar-tag-name" data-tags="dump 性能 异常">
+                <span class="iconfont-archer">&#xe606;</span>
+                dump 性能 异常
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="http http协议 Connection">
+                <span class="iconfont-archer">&#xe606;</span>
+                http http协议 Connection
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="Garnet 缓存 微软">
+                <span class="iconfont-archer">&#xe606;</span>
+                Garnet 缓存 微软
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="https http ssl tls">
+                <span class="iconfont-archer">&#xe606;</span>
+                https http ssl tls
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="组织 内耗">
+                <span class="iconfont-archer">&#xe606;</span>
+                组织 内耗
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="redis 面试 求职">
+                <span class="iconfont-archer">&#xe606;</span>
+                redis 面试 求职
+            </span>
+        
+    </div>
+    <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
+    <div class="tag-load-fail" style="display: none; color: #ccc; font-size: 0.6rem;">
+        缺失模块，请参考主题文档进行安装配置：https://github.com/fi3ework/hexo-theme-archer#%E5%AE%89%E8%A3%85%E4%B8%BB%E9%A2%98
+    </div> 
+    <div class="sidebar-tags-list"></div>
+</div>
+
+        <div class="sidebar-panel-categories">
+    <div class="sidebar-categories-name">
+    
+    </div>
+    <div class="iconfont-archer sidebar-categories-empty">&#xe678;</div>
+    <div class="sidebar-categories-list"></div>
+</div>
+
+    </div>
+</div>
+
+        <!-- site-meta -->
+        <script>
+    var siteMetaRoot = "/"
+    if (siteMetaRoot === "undefined") {
+        siteMetaRoot = '/'
+    }
+    var siteMeta = {
+        url: "https://www.itprohub.site",
+        root: siteMetaRoot,
+        author: "乐予吕"
+    }
+</script>
+
+        <!-- import experimental options here -->
+        <!-- Custom Font -->
+
+
+        <!-- main func -->
+        <script src="/scripts/main.js?v=20211217"></script>
+        <!-- dark mode -->
+        <script src="/scripts/dark.js?v=20211217"></script>
+        <!-- fancybox -->
+        <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" defer></script>
+        <!-- algolia -->
+        
+        <!-- busuanzi -->
+        
+            <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+        
+        <!-- CNZZ -->
+        
+        <!-- async load share.js -->
+        
+            <script src="/scripts/share.js?v=20211217" async></script>
+        
+        <!-- mermaid -->
+        
+    </body>
+</html>

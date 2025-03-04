@@ -1,0 +1,1575 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <!-- title -->
+
+
+    
+
+<!-- keywords -->
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="author" content="乐予吕">
+    <meta name="renderer" content="webkit">
+    <meta name="copyright" content="乐予吕">
+    
+        <meta name="keywords" content="hexo,ITProHub,hexo-theme,hexo-blog">
+    
+    <meta name="description" content="">
+    <meta name="description" content="前言前段时间发现自己的aliyun账号存在异常登录，吓的我赶紧改了密码开启了MFA多因素认证。同时，我把github等一干支持MFA的应用都开启了MFA。但是这也给我造成了困扰。每次登录都要拿出手机看看手机上的安全码，感觉有点麻烦。所以我尝试自己用TOTP来实现一个PC版的MFA，不再依赖手机。终于不用掏手机了。。。 提到各种概念，部分老铁可能有些陌生。但是下面github的界面想必大家都比较熟悉">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深入解读 MFA 和 TOTP 的实现原理与应用">
+<meta property="og:url" content="https://www.itprohub.site/2024/11/20/mfa/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="前言前段时间发现自己的aliyun账号存在异常登录，吓的我赶紧改了密码开启了MFA多因素认证。同时，我把github等一干支持MFA的应用都开启了MFA。但是这也给我造成了困扰。每次登录都要拿出手机看看手机上的安全码，感觉有点麻烦。所以我尝试自己用TOTP来实现一个PC版的MFA，不再依赖手机。终于不用掏手机了。。。 提到各种概念，部分老铁可能有些陌生。但是下面github的界面想必大家都比较熟悉">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.itprohub.site/images/mfa/web.png">
+<meta property="og:image" content="https://www.itprohub.site/images/mfa/github.png">
+<meta property="og:image" content="https://www.itprohub.site/images/mfa/run.png">
+<meta property="article:published_time" content="2024-11-20T14:56:26.000Z">
+<meta property="article:modified_time" content="2025-03-04T07:26:14.683Z">
+<meta property="article:author" content="乐予吕">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.itprohub.site/images/mfa/web.png">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="icon" href="/assets/favicon.ico">
+    
+    <title>深入解读 MFA 和 TOTP 的实现原理与应用 · 个人技术日常分享</title>
+    <!-- /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+/* This file is meant as a standalone workflow for
+- testing support for link[rel=preload]
+- enabling async CSS loading in browsers that do not support rel=preload
+- applying rel preload css once loaded, whether supported or not.
+*/ -->
+<script>
+    (function (w) {
+        'use strict'
+        // rel=preload support test
+        if (!w.loadCSS) {
+            w.loadCSS = function () {}
+        }
+        // define on the loadCSS obj
+        var rp = (loadCSS.relpreload = {})
+        // rel=preload feature support test
+        // runs once and returns a function for compat purposes
+        rp.support = (function () {
+            var ret
+            try {
+                ret = w.document.createElement('link').relList.supports('preload')
+            } catch (e) {
+                ret = false
+            }
+            return function () {
+                return ret
+            }
+        })()
+
+        // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+        // then change that media back to its intended value on load
+        rp.bindMediaToggle = function (link) {
+            // remember existing media attr for ultimate state, or default to 'all'
+            var finalMedia = link.media || 'all'
+
+            function enableStylesheet() {
+                link.media = finalMedia
+            }
+
+            // bind load handlers to enable media
+            if (link.addEventListener) {
+                link.addEventListener('load', enableStylesheet)
+            } else if (link.attachEvent) {
+                link.attachEvent('onload', enableStylesheet)
+            }
+
+            // Set rel and non-applicable media type to start an async request
+            // note: timeout allows this to happen async to let rendering continue in IE
+            setTimeout(function () {
+                link.rel = 'stylesheet'
+                link.media = 'only x'
+            })
+            // also enable media after 3 seconds,
+            // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+            setTimeout(enableStylesheet, 3000)
+        }
+
+        // loop through link elements in DOM
+        rp.poly = function () {
+            // double check this to prevent external calls from running
+            if (rp.support()) {
+                return
+            }
+            var links = w.document.getElementsByTagName('link')
+            for (var i = 0; i < links.length; i++) {
+                var link = links[i]
+                // qualify links to those with rel=preload and as=style attrs
+                if (
+                    link.rel === 'preload' &&
+                    link.getAttribute('as') === 'style' &&
+                    !link.getAttribute('data-loadcss')
+                ) {
+                    // prevent rerunning on link
+                    link.setAttribute('data-loadcss', true)
+                    // bind listeners to toggle media back
+                    rp.bindMediaToggle(link)
+                }
+            }
+        }
+
+        // if unsupported, run the polyfill
+        if (!rp.support()) {
+            // run once at least
+            rp.poly()
+
+            // rerun poly on an interval until onload
+            var run = w.setInterval(rp.poly, 500)
+            if (w.addEventListener) {
+                w.addEventListener('load', function () {
+                    rp.poly()
+                    w.clearInterval(run)
+                })
+            } else if (w.attachEvent) {
+                w.attachEvent('onload', function () {
+                    rp.poly()
+                    w.clearInterval(run)
+                })
+            }
+        }
+
+        // commonjs
+        if (typeof exports !== 'undefined') {
+            exports.loadCSS = loadCSS
+        } else {
+            w.loadCSS = loadCSS
+        }
+    })(typeof global !== 'undefined' ? global : this)
+</script>
+
+    <style type="text/css">
+    @font-face {
+        font-family: 'Oswald-Regular';
+        src: url("/font/Oswald-Regular.ttf");
+    }
+
+    body {
+        margin: 0;
+    }
+
+    header,
+    footer,
+    .back-top,
+    .sidebar,
+    .container,
+    .site-intro-meta,
+    .toc-wrapper {
+        display: none;
+    }
+
+    .site-intro {
+        position: relative;
+        z-index: 3;
+        width: 100%;
+        /* height: 50vh; */
+        overflow: hidden;
+    }
+
+    .site-intro-placeholder {
+        position: absolute;
+        z-index: -2;
+        top: 0;
+        left: 0;
+        width: calc(100% + 300px);
+        height: 100%;
+        background: repeating-linear-gradient(-45deg, #444 0, #444 80px, #333 80px, #333 160px);
+        background-position: center center;
+        transform: translate3d(-226px, 0, 0);
+        animation: gradient-move 2.5s ease-out 0s infinite;
+    }
+
+    @keyframes gradient-move {
+        0% {
+            transform: translate3d(-226px, 0, 0);
+        }
+        100% {
+            transform: translate3d(0, 0, 0);
+        }
+    }
+</style>
+
+    <link rel="preload" href="/css/style.css?v=20211217" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="/css/dark.css?v=20211217" as="style">
+    <link rel="stylesheet" href="/css/dark.css">
+    <link rel="stylesheet" href="/css/mobile.css?v=20211217" media="(max-width: 960px)">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" as="script">
+    <link rel="preload" href="/scripts/main.js?v=20211217" as="script">
+    <link rel="preload" href="/scripts/dark.js?v=20211217" as="script">
+    <link rel="preload" href="/font/Oswald-Regular.ttf" as="font" crossorigin>
+    <link rel="preload" href="https://at.alicdn.com/t/font_327081_1dta1rlogw17zaor.woff" as="font" crossorigin>
+    <!-- algolia -->
+    
+    <!-- 百度统计  -->
+    
+    <!-- Google tag (gtag.js) -->
+    
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6058253486086884"
+    crossorigin="anonymous"></script>
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>    
+    <script type="text/javascript">
+        if (typeof window.$ == undefined) {
+            console.warn('jquery load from jsdelivr failed, will load local script')
+            document.write('<script src="/lib/jquery.min.js" />')
+        }
+    </script>
+    
+        <body class="post-body">
+    
+        <!-- header -->
+        <header class="header header-mobile">
+    <!-- top read progress line -->
+    <div class="header-element">
+        <div class="read-progress"></div>
+    </div>
+    <!-- sidebar menu button -->
+    <div class="header-element">
+        
+            <div class="header-sidebar-menu">
+        
+            
+                <div style="padding-left: 1px;">&#xe775;</div>
+            
+        </div>
+    </div>
+    <!-- header actions -->
+    <div class="header-actions">
+        <!-- theme mode switch button -->
+        <span class="header-theme-btn header-element">
+            <i class="fas fa-adjust"></i>
+        </span>
+        <!-- back to home page text -->
+        <span class="home-link header-element">
+            <a href=/>个人技术日常分享</a>
+        </span>
+    </div>
+    <!-- toggle banner for post layout -->
+    
+        
+            <div class="banner">
+        
+            <div class="blog-title header-element">
+                <a href="/">个人技术日常分享</a>
+            </div>
+            <div class="post-title header-element">
+                <a href="#" class="post-name">深入解读 MFA 和 TOTP 的实现原理与应用</a>
+            </div>
+        </div>
+    
+</header>
+
+        <!-- fixed footer -->
+        <footer class="footer-fixed">
+    <!-- back to top button -->
+    <div class="footer-fixed-element">
+        
+            <div class="back-top back-top-hidden">
+        
+        
+            <div>&#xe639;</div>
+        
+        </div>
+    </div>
+</footer>
+
+        <!-- wrapper -->
+        <div class="wrapper">
+            <div class="site-intro" style="
+
+
+
+
+
+
+
+    height:50vh;
+
+">
+    
+    <!-- 主页  -->
+    
+        
+    <!-- 404页  -->
+    
+    <div class="site-intro-placeholder"></div>
+    <div class="site-intro-img" style="background-image: url(/intro/post-bg.jpg)"></div>
+    <div class="site-intro-meta">
+        <!-- 标题  -->
+        <h1 class="intro-title">
+            <!-- 主页  -->
+            
+                深入解读 MFA 和 TOTP 的实现原理与应用
+            <!-- 404 -->
+            
+        </h1>
+        <!-- 副标题 -->
+        <p class="intro-subtitle">
+            <!-- 主页副标题  -->
+            
+                
+            <!-- 404 -->
+            
+        </p>
+        <!-- 文章页 meta -->
+        
+            <div class="post-intros">
+                <!-- 文章页标签  -->
+                
+                    <div class= post-intro-tags >
+    
+    
+</div>
+
+                
+                <!-- 文章字数统计 -->
+                
+                <div class="post-intro-meta">
+                    <!-- 撰写日期 -->
+                    <span class="iconfont-archer post-intro-calander">&#xe676;</span>
+                    <span class="post-intro-time">2024/11/20</span>
+                    <!-- busuanzi -->
+                    
+                        <span id="busuanzi_container_page_pv" class="busuanzi-pv">
+                            <span class="iconfont-archer post-intro-busuanzi">&#xe602;</span>
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    
+                    <!-- 文章分享 -->
+                    <span class="share-wrapper">
+                        <span class="iconfont-archer share-icon">&#xe71d;</span>
+                        <span class="share-text">Share</span>
+                        <ul class="share-list">
+                            <li class="iconfont-archer share-qr" data-type="qr">&#xe75b;
+                                <div class="share-qrcode"></div>
+                            </li>
+                            <li class="iconfont-archer" data-type="weibo">&#xe619;</li>
+                            <li class="iconfont-archer" data-type="qzone">&#xe62e;</li>
+                            <li class="iconfont-archer" data-type="twitter">&#xe634;</li>
+                            <li class="iconfont-archer" data-type="facebook">&#xe67a;</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
+        
+    </div>
+</div>
+
+            <script>
+  // get user agent
+  function getBrowserVersions() {
+    var u = window.navigator.userAgent
+    return {
+      userAgent: u,
+      trident: u.indexOf('Trident') > -1, //IE内核
+      presto: u.indexOf('Presto') > -1, //opera内核
+      webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+      gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
+      mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
+      ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+      android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器
+      iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者安卓QQ浏览器
+      iPad: u.indexOf('iPad') > -1, //是否为iPad
+      webApp: u.indexOf('Safari') == -1, //是否为web应用程序，没有头部与底部
+      weixin: u.indexOf('MicroMessenger') == -1, //是否为微信浏览器
+      uc: u.indexOf('UCBrowser') > -1, //是否为android下的UC浏览器
+    }
+  }
+  var browser = {
+    versions: getBrowserVersions(),
+  }
+  console.log('userAgent: ' + browser.versions.userAgent)
+
+  // callback
+  function fontLoaded() {
+    console.log('font loaded')
+    if (document.getElementsByClassName('site-intro-meta')) {
+      document
+        .getElementsByClassName('intro-title')[0]
+        .classList.add('intro-fade-in')
+      document
+        .getElementsByClassName('intro-subtitle')[0]
+        .classList.add('intro-fade-in')
+      var postIntros = document.getElementsByClassName('post-intros')[0]
+      if (postIntros) {
+        postIntros.classList.add('post-fade-in')
+      }
+    }
+  }
+
+  // UC不支持跨域，所以直接显示
+  function asyncCb() {
+    if (browser.versions.uc) {
+      console.log('UCBrowser')
+      fontLoaded()
+    } else {
+      WebFont.load({
+        custom: {
+          families: ['Oswald-Regular'],
+        },
+        loading: function () {
+          // 所有字体开始加载
+          // console.log('font loading');
+        },
+        active: function () {
+          // 所有字体已渲染
+          fontLoaded()
+        },
+        inactive: function () {
+          // 字体预加载失败，无效字体或浏览器不支持加载
+          console.log('inactive: timeout')
+          fontLoaded()
+        },
+        timeout: 5000, // Set the timeout to two seconds
+      })
+    }
+  }
+
+  function asyncErr() {
+    console.warn('script load from CDN failed, will load local script')
+  }
+
+  // load webfont-loader async, and add callback function
+  function async(u, cb, err) {
+    var d = document,
+      t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0]
+    o.src = u
+    if (cb) {
+      o.addEventListener(
+        'load',
+        function (e) {
+          cb(null, e)
+        },
+        false
+      )
+    }
+    if (err) {
+      o.addEventListener(
+        'error',
+        function (e) {
+          err(null, e)
+        },
+        false
+      )
+    }
+    s.parentNode.insertBefore(o, s)
+  }
+
+  var asyncLoadWithFallBack = function (arr, success, reject) {
+    var currReject = function () {
+      reject()
+      arr.shift()
+      if (arr.length) async(arr[0], success, currReject)
+    }
+
+    async(arr[0], success, currReject)
+  }
+
+  asyncLoadWithFallBack(
+    [
+      'https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js',
+      'https://cdn.bootcss.com/webfont/1.6.28/webfontloader.js',
+      "/lib/webfontloader.min.js",
+    ],
+    asyncCb,
+    asyncErr
+  )
+</script>
+
+            <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
+            <div class="container container-unloaded">
+                <main class="main post-page">
+    <article class="article-entry">
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>前段时间发现自己的aliyun账号存在异常登录，吓的我赶紧改了密码开启了MFA多因素认证。同时，我把github等一干支持MFA的应用都开启了MFA。但是这也给我造成了困扰。每次登录都要拿出手机看看手机上的安全码，感觉有点麻烦。<br>所以我尝试自己用TOTP来实现一个PC版的MFA，不再依赖手机。<br><img src="/images/mfa/web.png" alt="web"><br>终于不用掏手机了。。。</p>
+<p>提到各种概念，部分老铁可能有些陌生。但是下面github的界面想必大家都比较熟悉，没错，这就是我们今天要聊的东西。<br><img src="/images/mfa/github.png" alt="github"></p>
+<p>现代数字化时代，密码泄露事件频发，传统的单一密码保护方式已无法满足安全需求。多因素认证（MFA, Multi-Factor Authentication）因其能够显著增强账户安全性，成为越来越多系统的必备安全功能。其中，基于时间的一次性密码（TOTP, Time-Based One-Time Password）是 MFA 的重要实现方式之一。本文将深入解读 TOTP 的原理，并展示其具体实现。</p>
+<hr>
+<h1 id="什么是-MFA-和-TOTP？"><a href="#什么是-MFA-和-TOTP？" class="headerlink" title="什么是 MFA 和 TOTP？"></a>什么是 MFA 和 TOTP？</h1><h2 id="MFA（多因素认证）"><a href="#MFA（多因素认证）" class="headerlink" title="MFA（多因素认证）"></a>MFA（多因素认证）</h2><p>多因素认证是一种验证用户身份的方法，它需要用户提供两个或更多独立的身份验证因素，常见的三种验证因素为：</p>
+<ol>
+<li>知识因素：用户知道的内容，如密码或 PIN。</li>
+<li>拥有因素：用户拥有的内容，如手机、硬件令牌。</li>
+<li>生物因素：用户本身的特性，如指纹、面部识别。<br>通过组合不同的验证因素，MFA 能够显著降低因密码泄露带来的风险。</li>
+</ol>
+<h2 id="TOTP（基于时间的一次性密码）"><a href="#TOTP（基于时间的一次性密码）" class="headerlink" title="TOTP（基于时间的一次性密码）"></a>TOTP（基于时间的一次性密码）</h2><p>TOTP 是一种动态生成的密码，基于：</p>
+<ul>
+<li>共享密钥：系统和用户共享的一个随机密钥。</li>
+<li>时间步长：通常为 30 秒，密码每 30 秒更新一次。<br>TOTP 密码不可预测且短时间内失效，非常适合作为 MFA 的第二验证因素。</li>
+</ul>
+<h1 id="TOTP-的工作原理"><a href="#TOTP-的工作原理" class="headerlink" title="TOTP 的工作原理"></a>TOTP 的工作原理</h1><p>标准流程</p>
+<ol>
+<li><p>共享密钥的生成与分发：</p>
+<ul>
+<li>系统生成一个随机的密钥（通常使用 Base32 编码），通过二维码等方式分发给用户。</li>
+<li>用户将密钥输入到支持 TOTP 的认证应用（如 Google Authenticator）。</li>
+</ul>
+</li>
+<li><p>时间步计算：</p>
+<ul>
+<li>当前时间戳（以秒为单位）除以步长（如 30 秒），得到当前的计数器值。</li>
+</ul>
+</li>
+<li><p>HMAC 运算：</p>
+<ul>
+<li>使用共享密钥和计数器值，通过 HMAC-SHA1 算法生成哈希值。</li>
+</ul>
+</li>
+<li><p>动态截取：</p>
+<ul>
+<li>从哈希值中动态截取 4 字节数据，确保结果随机性。</li>
+</ul>
+</li>
+<li><p>生成动态密码：</p>
+<ul>
+<li>将截取的数据取模（通常为 10^6），得到一个 6 位数字密码。</li>
+</ul>
+</li>
+<li><p>验证：</p>
+<ul>
+<li>系统与用户计算出的 TOTP 密码进行比较，若匹配，则验证通过。</li>
+</ul>
+</li>
+</ol>
+<h1 id="TOTP密钥的保护"><a href="#TOTP密钥的保护" class="headerlink" title="TOTP密钥的保护"></a>TOTP密钥的保护</h1><p>根据上面TOTP的工作原理我们知道，TOTP里面系统和用户共享一个密钥，一旦密钥泄露，就会导致用户账户的安全风险。针对这个问题，一般可以采取以下措施来降低风险：</p>
+<ol>
+<li><p>减少密钥泄露的风险</p>
+<ul>
+<li>单次展示原则：用户完成绑定后，密钥不再显示，这样即使有人在之后访问用户账户，也无法通过查看页面或接口窃取密钥。</li>
+<li>防止截屏泄露：用户可以在绑定时生成密钥的二维码，但绑定完成后，页面不再提供密钥或二维码，减少因截屏或日志记录造成的泄露风险。</li>
+</ul>
+</li>
+<li><p>补救措施<br>由于密钥只展示一次，丢失密钥的用户可能会面临绑定无法使用的问题。为此，网站通常会提供以下补救机制：</p>
+<ul>
+<li>备用验证方法：<ul>
+<li>提供备用的一次性恢复码（Recovery Codes），通常是几个固定的静态代码，用户可以在 TOTP 无法使用时输入。</li>
+<li>提供其他备选验证方式（如短信验证、电子邮件验证）。</li>
+</ul>
+</li>
+<li>重新绑定机制：<ul>
+<li>用户可以通过验证其他身份信息（如身份证、手机号等）重新绑定 TOTP 密钥。</li>
+<li>一些高安全性网站会要求用户提交更详细的验证信息（如人脸识别）来重置密钥。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h1 id="TOTP-的实现原理"><a href="#TOTP-的实现原理" class="headerlink" title="TOTP 的实现原理"></a>TOTP 的实现原理</h1><p>以下是用 C# 实现 TOTP 的核心代码，展示从 Base32 解码到动态密码生成的完整流程。</p>
+<ol>
+<li>Base32 解码<br>TOTP 密钥通常使用 Base32 编码，需先解码为原始字节。</li>
+</ol>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="built_in">byte</span>[] <span class="title">Base32Decode</span>(<span class="params"><span class="built_in">string</span> base32</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 示例解码实现</span></span><br><span class="line">    <span class="keyword">const</span> <span class="built_in">string</span> base32Chars = <span class="string">&quot;ABCDEFGHIJKLMNOPQRSTUVWXYZ234567&quot;</span>;</span><br><span class="line">    base32 = base32.TrimEnd(<span class="string">&#x27;=&#x27;</span>).ToUpper();</span><br><span class="line">    List&lt;<span class="built_in">byte</span>&gt; bytes = <span class="keyword">new</span> List&lt;<span class="built_in">byte</span>&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="built_in">int</span> buffer = <span class="number">0</span>, bitsLeft = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">foreach</span> (<span class="built_in">char</span> c <span class="keyword">in</span> base32)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (!base32Chars.Contains(c))</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> FormatException(<span class="string">&quot;Invalid Base32 character.&quot;</span>);</span><br><span class="line">        buffer = (buffer &lt;&lt; <span class="number">5</span>) | base32Chars.IndexOf(c);</span><br><span class="line">        bitsLeft += <span class="number">5</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (bitsLeft &gt;= <span class="number">8</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            bytes.Add((<span class="built_in">byte</span>)(buffer &gt;&gt; (bitsLeft - <span class="number">8</span>)));</span><br><span class="line">            bitsLeft -= <span class="number">8</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> bytes.ToArray();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>获取计数器值<br>计数器值通过当前时间计算得出，单位为 30 秒。</li>
+</ol>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="built_in">long</span> <span class="title">GetCounter</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> DateTimeOffset.UtcNow.ToUnixTimeSeconds() / <span class="number">30</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="built_in">byte</span>[] <span class="title">GetCounterBytes</span>(<span class="params"><span class="built_in">long</span> counter</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">byte</span>[] bytes = BitConverter.GetBytes(counter);</span><br><span class="line">    <span class="keyword">if</span> (BitConverter.IsLittleEndian)</span><br><span class="line">        Array.Reverse(bytes); <span class="comment">// 转换为大端序</span></span><br><span class="line">    <span class="keyword">return</span> bytes;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>HMAC 计算与动态截取<br>使用 HMAC-SHA1 算法生成哈希值，并截取动态密码。</li>
+</ol>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="built_in">string</span> <span class="title">GenerateTOTP</span>(<span class="params"><span class="built_in">string</span> secretKey, <span class="built_in">int</span> passwordLength = <span class="number">6</span></span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">byte</span>[] keyBytes = Base32Decode(secretKey);</span><br><span class="line">    <span class="built_in">long</span> counter = GetCounter();</span><br><span class="line">    <span class="built_in">byte</span>[] counterBytes = GetCounterBytes(counter);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">using</span> <span class="keyword">var</span> hmac = <span class="keyword">new</span> HMACSHA1(keyBytes);</span><br><span class="line">    <span class="built_in">byte</span>[] hash = hmac.ComputeHash(counterBytes);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 动态截取</span></span><br><span class="line">    <span class="built_in">int</span> offset = hash[^<span class="number">1</span>] &amp; <span class="number">0x0F</span>;</span><br><span class="line">    <span class="built_in">int</span> binaryCode = ((hash[offset] &amp; <span class="number">0x7F</span>) &lt;&lt; <span class="number">24</span>) |</span><br><span class="line">                     ((hash[offset + <span class="number">1</span>] &amp; <span class="number">0xFF</span>) &lt;&lt; <span class="number">16</span>) |</span><br><span class="line">                     ((hash[offset + <span class="number">2</span>] &amp; <span class="number">0xFF</span>) &lt;&lt; <span class="number">8</span>) |</span><br><span class="line">                     (hash[offset + <span class="number">3</span>] &amp; <span class="number">0xFF</span>);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">int</span> otp = binaryCode % (<span class="built_in">int</span>)Math.Pow(<span class="number">10</span>, passwordLength);</span><br><span class="line">    <span class="keyword">return</span> otp.ToString(<span class="keyword">new</span> <span class="built_in">string</span>(<span class="string">&#x27;0&#x27;</span>, passwordLength)); <span class="comment">// 补齐前导零</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="4">
+<li>示例完整调用<br>以下代码生成一个 6 位动态密码。</li>
+</ol>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">string</span> secretKey = <span class="string">&quot;xxxxxxxxxxx&quot;</span>; <span class="comment">// Base32 编码的密钥</span></span><br><span class="line"><span class="built_in">string</span> totp = GenerateTOTP(secretKey);</span><br><span class="line">Console.WriteLine(<span class="string">$&quot;当前 TOTP 动态密码为: <span class="subst">&#123;totp&#125;</span>&quot;</span>);</span><br></pre></td></tr></table></figure>
+<p><img src="/images/mfa/run.png" alt="示例完整调用"></p>
+<h1 id="TOTP-的实际应用"><a href="#TOTP-的实际应用" class="headerlink" title="TOTP 的实际应用"></a>TOTP 的实际应用</h1><p>常见场景</p>
+<ul>
+<li>账户登录保护：结合密码一起验证，提高安全性。</li>
+<li>交易确认：确保关键操作的合法性。</li>
+<li>设备绑定：保护设备认证过程。</li>
+</ul>
+<p>主流实现工具</p>
+<ul>
+<li>手机应用：Google Authenticator、Microsoft Authenticator。</li>
+<li>服务器支持：多语言库（如 Python 的 pyotp、Java 的 OtpAuth）。</li>
+</ul>
+<h1 id="TOTP-的优缺点"><a href="#TOTP-的优缺点" class="headerlink" title="TOTP 的优缺点"></a>TOTP 的优缺点</h1><p>优点</p>
+<ol>
+<li>安全性高：密码定期更新，短时间内有效。</li>
+<li>易用性好：无需额外硬件，使用手机即可。</li>
+<li>实现简单：基于开源算法和规范，易于集成。</li>
+</ol>
+<p>缺点</p>
+<ol>
+<li>时间同步要求：客户端与服务器需时间一致。</li>
+<li>丢失风险：若用户丢失密钥或设备，可能导致无法验证。</li>
+</ol>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>TOTP 是多因素认证中的关键技术，通过动态密码提高安全性，广泛应用于各类系统。理解其原理并掌握实现技术，可以帮助开发者更好地保障用户账户安全。希望本文的讲解与示例能为您搭建 TOTP 功能提供帮助！<br>在下一步的实践中，你是否准备好为你的应用添加 MFA 支持？或者尝试将 TOTP 整合到你的项目中？</p>
+<p>欢迎分享你的实现和经验，如果需要更具体的内容，欢迎随时讨论！ 😊</p>
+
+    </article>
+    <!-- license -->
+    
+        <div class="license-wrapper">
+            <p>原文作者：<a href="https://www.itprohub.site">乐予吕</a>
+            <p>原文链接：<a href="https://www.itprohub.site/2024/11/20/mfa/">https://www.itprohub.site/2024/11/20/mfa/</a>
+            <p>发表日期：<a href="https://www.itprohub.site/2024/11/20/mfa/">November 20th 2024, 2:56:26 pm</a>
+            <p>更新日期：<a href="https://www.itprohub.site/2024/11/20/mfa/">March 4th 2025, 7:26:14 am</a>
+            <p>版权声明：本文采用<a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
+        </div>
+    
+    <!-- paginator -->
+    <ul class="post-paginator">
+        <li class="next">
+            
+                <div class="nextSlogan">Next Post</div>
+                <a href="/2024/11/29/rspack/" title="Rspack：一个新一代的 JavaScript 打包工具">
+                    <div class="nextTitle">Rspack：一个新一代的 JavaScript 打包工具</div>
+                </a>
+            
+        </li>
+        <li class="previous">
+            
+                <div class="prevSlogan">Previous Post</div>
+                <a href="/2024/11/08/stream-output/" title="解读大型语言模型（LLM）API：了解流式输出的工作原理">
+                    <div class="prevTitle">解读大型语言模型（LLM）API：了解流式输出的工作原理</div>
+                </a>
+            
+        </li>
+    </ul>
+    <!-- comment -->
+    
+        <div class="post-comment">
+            <!-- 来必力 City 版安装代码 -->
+
+
+            
+
+            
+
+            
+
+            <!-- utteranc评论 -->
+
+
+            <!-- partial('_partial/comment/changyan') -->
+            <!--PC版-->
+
+
+            
+            
+
+            
+
+        </div>
+    
+    <!-- timeliness note -->
+    <!-- idea from: https://hexo.fluid-dev.com/posts/hexo-injector/#%E6%96%87%E7%AB%A0%E6%97%B6%E6%95%88%E6%80%A7%E6%8F%90%E7%A4%BA -->
+    
+    <!-- Mathjax -->
+    
+</main>
+
+                <!-- profile -->
+                
+            </div>
+            <footer class="footer footer-unloaded">
+    <!-- social  -->
+    
+        <div class="social">
+            
+    
+        
+            
+                <a href="mailto:287678478@qq.com" class="iconfont-archer email" title=email ></a>
+            
+        
+    
+        
+            
+                <a href="//github.com/ItProHub" class="iconfont-archer github" target="_blank" title=github></a>
+            
+        
+    
+        
+            
+                <span class="iconfont-archer wechat" title=wechat>
+                    
+                    <img class="profile-qr" src="/assets/wechat_qr.jpg" />
+                </span>
+            
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+            
+                <a href="//juejin.cn/user/1489196396594523" class="iconfont-archer juejin" target="_blank" title=juejin></a>
+            
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+
+        </div>
+    
+    <!-- powered by Hexo  -->
+    <div class="copyright">
+        <span id="hexo-power">Powered by <a href="https://www.itprohub.site/" target="_blank">ITProHub</a></span><span class="iconfont-archer power">&#xe635;</span><span id="theme-info">theme <a href="https://github.com/fi3ework/hexo-theme-archer" target="_blank">Archer</a></span>
+    </div>
+    <!-- website approve for Chinese user -->
+    
+        <div class="website-approve">
+            
+                <span id="icp-approve" class="icp-approve">
+                    <a href="https://beian.miit.gov.cn/" target="_blank">备案号：鄂ICP备2024045313号</a>
+                </span>
+            
+            
+        </div>
+    
+    <!-- 不蒜子  -->
+    
+        <div class="busuanzi-container">
+            
+            
+                <span id="busuanzi_container_site_pv">PV: <span id="busuanzi_value_site_pv"></span> :)</span>
+            
+        </div>
+    
+</footer>
+
+        </div>
+        <!-- toc -->
+        
+            <div class="toc-wrapper toc-wrapper-loding" style=
+
+
+
+
+
+
+
+    top:50vh;
+
+>
+                <div class="toc-catalog">
+                    <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
+                </div>
+                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF-MFA-%E5%92%8C-TOTP%EF%BC%9F"><span class="toc-number">2.</span> <span class="toc-text">什么是 MFA 和 TOTP？</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#MFA%EF%BC%88%E5%A4%9A%E5%9B%A0%E7%B4%A0%E8%AE%A4%E8%AF%81%EF%BC%89"><span class="toc-number">2.1.</span> <span class="toc-text">MFA（多因素认证）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TOTP%EF%BC%88%E5%9F%BA%E4%BA%8E%E6%97%B6%E9%97%B4%E7%9A%84%E4%B8%80%E6%AC%A1%E6%80%A7%E5%AF%86%E7%A0%81%EF%BC%89"><span class="toc-number">2.2.</span> <span class="toc-text">TOTP（基于时间的一次性密码）</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#TOTP-%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="toc-number">3.</span> <span class="toc-text">TOTP 的工作原理</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#TOTP%E5%AF%86%E9%92%A5%E7%9A%84%E4%BF%9D%E6%8A%A4"><span class="toc-number">4.</span> <span class="toc-text">TOTP密钥的保护</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#TOTP-%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="toc-number">5.</span> <span class="toc-text">TOTP 的实现原理</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#TOTP-%E7%9A%84%E5%AE%9E%E9%99%85%E5%BA%94%E7%94%A8"><span class="toc-number">6.</span> <span class="toc-text">TOTP 的实际应用</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#TOTP-%E7%9A%84%E4%BC%98%E7%BC%BA%E7%82%B9"><span class="toc-number">7.</span> <span class="toc-text">TOTP 的优缺点</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">8.</span> <span class="toc-text">总结</span></a></li></ol>
+            </div>
+        
+        <!-- sidebar -->
+        <div class="sidebar sidebar-hide">
+    <ul class="sidebar-tabs sidebar-tabs-active-0">
+        <li class="sidebar-tab-archives"><span class="iconfont-archer">&#xe67d;</span><span class="tab-name">Archive</span></li>
+        <li class="sidebar-tab-tags"><span class="iconfont-archer">&#xe61b;</span><span class="tab-name">Tag</span></li>
+        <li class="sidebar-tab-categories"><span class="iconfont-archer">&#xe666;</span><span class="tab-name">Cate</span></li>
+    </ul>
+    <div class="sidebar-content sidebar-content-show-archive">
+        <div class="sidebar-panel-archives">
+    <!-- 在 ejs 中将 archive 按照时间排序 -->
+    
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    
+    
+    
+    
+    <div class="total-and-search">
+        <div class="total-archive">
+        Total : 34
+        </div>
+        <!-- search  -->
+        
+    </div>
+    
+    <div class="post-archive">
+    
+        
+            
+            
+            <div class="archive-year"> 2025 </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/27</span>
+            <a class="archive-post-title" href="/2025/02/27/midscenejs/">AI驱动的自动化测试：探索MidScene.js的强大功能</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/21</span>
+            <a class="archive-post-title" href="/2025/02/21/function-calling/">让AI模型不再只是“说话”——探索AI模型的函数调用</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/12</span>
+            <a class="archive-post-title" href="/2025/02/12/openai-operator/">「AI」科普向 | OpenAI Operator：推动数字世界的新纪元</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/12</span>
+            <a class="archive-post-title" href="/2025/02/12/deepseek-vscode/">Cursor平替：把 DeepSeek 接入 VS Code</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/07</span>
+            <a class="archive-post-title" href="/2025/02/07/deepseek-1/">DeepSeek 本地部署+web端访问 指南</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/05</span>
+            <a class="archive-post-title" href="/2025/02/05/docker-log/">减少 Docker 日志大小：实用的日志管理指南</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">01/07</span>
+            <a class="archive-post-title" href="/2025/01/07/parallelism/">并发不是并行！</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> 2024 </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/18</span>
+            <a class="archive-post-title" href="/2024/12/18/log/">程序日志设计与存储：实践与注意事项(一)</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/16</span>
+            <a class="archive-post-title" href="/2024/12/16/web-rtc/">WebRTC入门：让浏览器之间的实时通信变得简单</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/11</span>
+            <a class="archive-post-title" href="/2024/12/11/k8s-helm/">Kubernetes 分享：如何使用 Helm 优化 Kubernetes 应用部署</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/29</span>
+            <a class="archive-post-title" href="/2024/11/29/rspack/">Rspack：一个新一代的 JavaScript 打包工具</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/20</span>
+            <a class="archive-post-title" href="/2024/11/20/mfa/">深入解读 MFA 和 TOTP 的实现原理与应用</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/08</span>
+            <a class="archive-post-title" href="/2024/11/08/stream-output/">解读大型语言模型（LLM）API：了解流式输出的工作原理</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/06</span>
+            <a class="archive-post-title" href="/2024/11/06/encrypt-hash-signature/">加密、哈希与签名：基本原理与区别解析</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/30</span>
+            <a class="archive-post-title" href="/2024/10/30/js-signal/">JavaScript 信号：如何将响应式功能带到普通 Web 开发中</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/28</span>
+            <a class="archive-post-title" href="/2024/08/28/sticky-packet/">深入探讨 TCP 粘包现象：问题、原因与解决方案</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/16</span>
+            <a class="archive-post-title" href="/2024/08/16/quic/">QUIC:被寄予厚望的下一代互联网传输协议</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/08</span>
+            <a class="archive-post-title" href="/2024/08/08/docker-layer/">深入理解容器镜像层</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/01</span>
+            <a class="archive-post-title" href="/2024/08/01/daemonset/">Kubernetes DaemonSet – 它是什么以及如何使用</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/11</span>
+            <a class="archive-post-title" href="/2024/07/11/rabbitmq-quorum/">RabbitMQ之三种队列之间的区别及如何选型</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/09</span>
+            <a class="archive-post-title" href="/2024/07/09/rabbitmq-basic/">深入理解 RabbitMQ 中的基础概念</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/08</span>
+            <a class="archive-post-title" href="/2024/07/08/docker-2/">Docker镜像构建优化</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/05</span>
+            <a class="archive-post-title" href="/2024/07/05/docker-1/">Docker隐藏在细节中的技术基础</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">06/20</span>
+            <a class="archive-post-title" href="/2024/06/20/proxy/">代理服务解析：正向代理、反向代理和透明代理</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/30</span>
+            <a class="archive-post-title" href="/2024/05/30/similar-image-search/">从零开始搭建自己的相似图片搜索引擎</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/30</span>
+            <a class="archive-post-title" href="/2024/05/30/TaskCompletionSource/">C# 学习笔记： TaskCompletionSource</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/22</span>
+            <a class="archive-post-title" href="/2024/05/22/dead-message/">深入解析消息队列中的死信队列</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/28</span>
+            <a class="archive-post-title" href="/2024/04/28/dump/">Dump分析入门指南</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> Invalid date </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span>
+            <a class="archive-post-title" href="/2025/03/04/hello-world/">欢迎来到 ITProHub！</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> 2024 </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/18</span>
+            <a class="archive-post-title" href="/2024/04/18/redis-interview-1/">Redis成长记 - Redis的陷阱（一）</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/11</span>
+            <a class="archive-post-title" href="/2024/04/11/https/">HTTPS的工作原理以及安装</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/07</span>
+            <a class="archive-post-title" href="/2024/04/07/garnet/">Garnet，缓存的新选择！</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/28</span>
+            <a class="archive-post-title" href="/2024/03/28/organization-internal-loss/">组织发展致命杀手：内耗</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/19</span>
+            <a class="archive-post-title" href="/2024/03/19/http/">深入理解 HTTP Connection 头</a>
+        </li>
+    
+    </div>
+</div>
+
+        <div class="sidebar-panel-tags">
+    <div class="sidebar-tags-name">
+        
+            <span class="sidebar-tag-name" data-tags="dump 性能 异常">
+                <span class="iconfont-archer">&#xe606;</span>
+                dump 性能 异常
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="http http协议 Connection">
+                <span class="iconfont-archer">&#xe606;</span>
+                http http协议 Connection
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="Garnet 缓存 微软">
+                <span class="iconfont-archer">&#xe606;</span>
+                Garnet 缓存 微软
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="https http ssl tls">
+                <span class="iconfont-archer">&#xe606;</span>
+                https http ssl tls
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="组织 内耗">
+                <span class="iconfont-archer">&#xe606;</span>
+                组织 内耗
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="redis 面试 求职">
+                <span class="iconfont-archer">&#xe606;</span>
+                redis 面试 求职
+            </span>
+        
+    </div>
+    <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
+    <div class="tag-load-fail" style="display: none; color: #ccc; font-size: 0.6rem;">
+        缺失模块，请参考主题文档进行安装配置：https://github.com/fi3ework/hexo-theme-archer#%E5%AE%89%E8%A3%85%E4%B8%BB%E9%A2%98
+    </div> 
+    <div class="sidebar-tags-list"></div>
+</div>
+
+        <div class="sidebar-panel-categories">
+    <div class="sidebar-categories-name">
+    
+    </div>
+    <div class="iconfont-archer sidebar-categories-empty">&#xe678;</div>
+    <div class="sidebar-categories-list"></div>
+</div>
+
+    </div>
+</div>
+
+        <!-- site-meta -->
+        <script>
+    var siteMetaRoot = "/"
+    if (siteMetaRoot === "undefined") {
+        siteMetaRoot = '/'
+    }
+    var siteMeta = {
+        url: "https://www.itprohub.site",
+        root: siteMetaRoot,
+        author: "乐予吕"
+    }
+</script>
+
+        <!-- import experimental options here -->
+        <!-- Custom Font -->
+
+
+        <!-- main func -->
+        <script src="/scripts/main.js?v=20211217"></script>
+        <!-- dark mode -->
+        <script src="/scripts/dark.js?v=20211217"></script>
+        <!-- fancybox -->
+        <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" defer></script>
+        <!-- algolia -->
+        
+        <!-- busuanzi -->
+        
+            <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+        
+        <!-- CNZZ -->
+        
+        <!-- async load share.js -->
+        
+            <script src="/scripts/share.js?v=20211217" async></script>
+        
+        <!-- mermaid -->
+        
+    </body>
+</html>

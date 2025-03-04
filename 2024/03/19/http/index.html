@@ -1,0 +1,1531 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <!-- title -->
+
+
+    
+
+<!-- keywords -->
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="author" content="乐予吕">
+    <meta name="renderer" content="webkit">
+    <meta name="copyright" content="乐予吕">
+    
+        <meta name="keywords" content="hexo,ITProHub,hexo-theme,hexo-blog">
+    
+    <meta name="description" content="">
+    <meta name="description" content="HTTP Connection 头是 HTTP 协议中的一个重要头部字段，它用于控制客户端和服务器之间的连接行为。在本文中，我们将深入探讨 HTTP Connection 头部的作用、用法，并结合实际开发案例展示其在应用程序开发中的应用。 在开始本文的阅读之前，默认屏幕前的老铁已经对HTTP有了基础的认识。如果不是，请移步学习超文本传输协议 作用与语法HTTP Connection头是通用类型标头">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深入理解 HTTP Connection 头">
+<meta property="og:url" content="https://www.itprohub.site/2024/03/19/http/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="HTTP Connection 头是 HTTP 协议中的一个重要头部字段，它用于控制客户端和服务器之间的连接行为。在本文中，我们将深入探讨 HTTP Connection 头部的作用、用法，并结合实际开发案例展示其在应用程序开发中的应用。 在开始本文的阅读之前，默认屏幕前的老铁已经对HTTP有了基础的认识。如果不是，请移步学习超文本传输协议 作用与语法HTTP Connection头是通用类型标头">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.itprohub.site/images/http/perisitent-connection.png">
+<meta property="og:image" content="https://www.itprohub.site/images/http/handshake-2.png">
+<meta property="og:image" content="https://www.itprohub.site/images/http/timeout-auto-disconnect.png">
+<meta property="og:image" content="https://www.itprohub.site/images/http/auto-disconnect.png">
+<meta property="og:image" content="https://myom-dev.oss-cn-hangzhou.aliyuncs.com/WechatPublicPlatformQrCode.jpg">
+<meta property="article:published_time" content="2024-03-19T16:11:52.000Z">
+<meta property="article:modified_time" content="2025-03-04T07:26:14.683Z">
+<meta property="article:author" content="乐予吕">
+<meta property="article:tag" content="http http协议 Connection">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.itprohub.site/images/http/perisitent-connection.png">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="icon" href="/assets/favicon.ico">
+    
+    <title>深入理解 HTTP Connection 头 · 个人技术日常分享</title>
+    <!-- /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+/* This file is meant as a standalone workflow for
+- testing support for link[rel=preload]
+- enabling async CSS loading in browsers that do not support rel=preload
+- applying rel preload css once loaded, whether supported or not.
+*/ -->
+<script>
+    (function (w) {
+        'use strict'
+        // rel=preload support test
+        if (!w.loadCSS) {
+            w.loadCSS = function () {}
+        }
+        // define on the loadCSS obj
+        var rp = (loadCSS.relpreload = {})
+        // rel=preload feature support test
+        // runs once and returns a function for compat purposes
+        rp.support = (function () {
+            var ret
+            try {
+                ret = w.document.createElement('link').relList.supports('preload')
+            } catch (e) {
+                ret = false
+            }
+            return function () {
+                return ret
+            }
+        })()
+
+        // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+        // then change that media back to its intended value on load
+        rp.bindMediaToggle = function (link) {
+            // remember existing media attr for ultimate state, or default to 'all'
+            var finalMedia = link.media || 'all'
+
+            function enableStylesheet() {
+                link.media = finalMedia
+            }
+
+            // bind load handlers to enable media
+            if (link.addEventListener) {
+                link.addEventListener('load', enableStylesheet)
+            } else if (link.attachEvent) {
+                link.attachEvent('onload', enableStylesheet)
+            }
+
+            // Set rel and non-applicable media type to start an async request
+            // note: timeout allows this to happen async to let rendering continue in IE
+            setTimeout(function () {
+                link.rel = 'stylesheet'
+                link.media = 'only x'
+            })
+            // also enable media after 3 seconds,
+            // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+            setTimeout(enableStylesheet, 3000)
+        }
+
+        // loop through link elements in DOM
+        rp.poly = function () {
+            // double check this to prevent external calls from running
+            if (rp.support()) {
+                return
+            }
+            var links = w.document.getElementsByTagName('link')
+            for (var i = 0; i < links.length; i++) {
+                var link = links[i]
+                // qualify links to those with rel=preload and as=style attrs
+                if (
+                    link.rel === 'preload' &&
+                    link.getAttribute('as') === 'style' &&
+                    !link.getAttribute('data-loadcss')
+                ) {
+                    // prevent rerunning on link
+                    link.setAttribute('data-loadcss', true)
+                    // bind listeners to toggle media back
+                    rp.bindMediaToggle(link)
+                }
+            }
+        }
+
+        // if unsupported, run the polyfill
+        if (!rp.support()) {
+            // run once at least
+            rp.poly()
+
+            // rerun poly on an interval until onload
+            var run = w.setInterval(rp.poly, 500)
+            if (w.addEventListener) {
+                w.addEventListener('load', function () {
+                    rp.poly()
+                    w.clearInterval(run)
+                })
+            } else if (w.attachEvent) {
+                w.attachEvent('onload', function () {
+                    rp.poly()
+                    w.clearInterval(run)
+                })
+            }
+        }
+
+        // commonjs
+        if (typeof exports !== 'undefined') {
+            exports.loadCSS = loadCSS
+        } else {
+            w.loadCSS = loadCSS
+        }
+    })(typeof global !== 'undefined' ? global : this)
+</script>
+
+    <style type="text/css">
+    @font-face {
+        font-family: 'Oswald-Regular';
+        src: url("/font/Oswald-Regular.ttf");
+    }
+
+    body {
+        margin: 0;
+    }
+
+    header,
+    footer,
+    .back-top,
+    .sidebar,
+    .container,
+    .site-intro-meta,
+    .toc-wrapper {
+        display: none;
+    }
+
+    .site-intro {
+        position: relative;
+        z-index: 3;
+        width: 100%;
+        /* height: 50vh; */
+        overflow: hidden;
+    }
+
+    .site-intro-placeholder {
+        position: absolute;
+        z-index: -2;
+        top: 0;
+        left: 0;
+        width: calc(100% + 300px);
+        height: 100%;
+        background: repeating-linear-gradient(-45deg, #444 0, #444 80px, #333 80px, #333 160px);
+        background-position: center center;
+        transform: translate3d(-226px, 0, 0);
+        animation: gradient-move 2.5s ease-out 0s infinite;
+    }
+
+    @keyframes gradient-move {
+        0% {
+            transform: translate3d(-226px, 0, 0);
+        }
+        100% {
+            transform: translate3d(0, 0, 0);
+        }
+    }
+</style>
+
+    <link rel="preload" href="/css/style.css?v=20211217" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="/css/dark.css?v=20211217" as="style">
+    <link rel="stylesheet" href="/css/dark.css">
+    <link rel="stylesheet" href="/css/mobile.css?v=20211217" media="(max-width: 960px)">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" as="script">
+    <link rel="preload" href="/scripts/main.js?v=20211217" as="script">
+    <link rel="preload" href="/scripts/dark.js?v=20211217" as="script">
+    <link rel="preload" href="/font/Oswald-Regular.ttf" as="font" crossorigin>
+    <link rel="preload" href="https://at.alicdn.com/t/font_327081_1dta1rlogw17zaor.woff" as="font" crossorigin>
+    <!-- algolia -->
+    
+    <!-- 百度统计  -->
+    
+    <!-- Google tag (gtag.js) -->
+    
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6058253486086884"
+    crossorigin="anonymous"></script>
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>    
+    <script type="text/javascript">
+        if (typeof window.$ == undefined) {
+            console.warn('jquery load from jsdelivr failed, will load local script')
+            document.write('<script src="/lib/jquery.min.js" />')
+        }
+    </script>
+    
+        <body class="post-body">
+    
+        <!-- header -->
+        <header class="header header-mobile">
+    <!-- top read progress line -->
+    <div class="header-element">
+        <div class="read-progress"></div>
+    </div>
+    <!-- sidebar menu button -->
+    <div class="header-element">
+        
+            <div class="header-sidebar-menu">
+        
+            
+                <div style="padding-left: 1px;">&#xe775;</div>
+            
+        </div>
+    </div>
+    <!-- header actions -->
+    <div class="header-actions">
+        <!-- theme mode switch button -->
+        <span class="header-theme-btn header-element">
+            <i class="fas fa-adjust"></i>
+        </span>
+        <!-- back to home page text -->
+        <span class="home-link header-element">
+            <a href=/>个人技术日常分享</a>
+        </span>
+    </div>
+    <!-- toggle banner for post layout -->
+    
+        
+            <div class="banner">
+        
+            <div class="blog-title header-element">
+                <a href="/">个人技术日常分享</a>
+            </div>
+            <div class="post-title header-element">
+                <a href="#" class="post-name">深入理解 HTTP Connection 头</a>
+            </div>
+        </div>
+    
+</header>
+
+        <!-- fixed footer -->
+        <footer class="footer-fixed">
+    <!-- back to top button -->
+    <div class="footer-fixed-element">
+        
+            <div class="back-top back-top-hidden">
+        
+        
+            <div>&#xe639;</div>
+        
+        </div>
+    </div>
+</footer>
+
+        <!-- wrapper -->
+        <div class="wrapper">
+            <div class="site-intro" style="
+
+
+
+
+
+
+
+    height:50vh;
+
+">
+    
+    <!-- 主页  -->
+    
+        
+    <!-- 404页  -->
+    
+    <div class="site-intro-placeholder"></div>
+    <div class="site-intro-img" style="background-image: url(/intro/post-bg.jpg)"></div>
+    <div class="site-intro-meta">
+        <!-- 标题  -->
+        <h1 class="intro-title">
+            <!-- 主页  -->
+            
+                深入理解 HTTP Connection 头
+            <!-- 404 -->
+            
+        </h1>
+        <!-- 副标题 -->
+        <p class="intro-subtitle">
+            <!-- 主页副标题  -->
+            
+                
+            <!-- 404 -->
+            
+        </p>
+        <!-- 文章页 meta -->
+        
+            <div class="post-intros">
+                <!-- 文章页标签  -->
+                
+                    <div class= post-intro-tags >
+    
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags="http http协议 Connection">http http协议 Connection</a>
+    
+</div>
+
+                
+                <!-- 文章字数统计 -->
+                
+                <div class="post-intro-meta">
+                    <!-- 撰写日期 -->
+                    <span class="iconfont-archer post-intro-calander">&#xe676;</span>
+                    <span class="post-intro-time">2024/03/19</span>
+                    <!-- busuanzi -->
+                    
+                        <span id="busuanzi_container_page_pv" class="busuanzi-pv">
+                            <span class="iconfont-archer post-intro-busuanzi">&#xe602;</span>
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    
+                    <!-- 文章分享 -->
+                    <span class="share-wrapper">
+                        <span class="iconfont-archer share-icon">&#xe71d;</span>
+                        <span class="share-text">Share</span>
+                        <ul class="share-list">
+                            <li class="iconfont-archer share-qr" data-type="qr">&#xe75b;
+                                <div class="share-qrcode"></div>
+                            </li>
+                            <li class="iconfont-archer" data-type="weibo">&#xe619;</li>
+                            <li class="iconfont-archer" data-type="qzone">&#xe62e;</li>
+                            <li class="iconfont-archer" data-type="twitter">&#xe634;</li>
+                            <li class="iconfont-archer" data-type="facebook">&#xe67a;</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
+        
+    </div>
+</div>
+
+            <script>
+  // get user agent
+  function getBrowserVersions() {
+    var u = window.navigator.userAgent
+    return {
+      userAgent: u,
+      trident: u.indexOf('Trident') > -1, //IE内核
+      presto: u.indexOf('Presto') > -1, //opera内核
+      webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+      gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
+      mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
+      ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+      android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器
+      iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者安卓QQ浏览器
+      iPad: u.indexOf('iPad') > -1, //是否为iPad
+      webApp: u.indexOf('Safari') == -1, //是否为web应用程序，没有头部与底部
+      weixin: u.indexOf('MicroMessenger') == -1, //是否为微信浏览器
+      uc: u.indexOf('UCBrowser') > -1, //是否为android下的UC浏览器
+    }
+  }
+  var browser = {
+    versions: getBrowserVersions(),
+  }
+  console.log('userAgent: ' + browser.versions.userAgent)
+
+  // callback
+  function fontLoaded() {
+    console.log('font loaded')
+    if (document.getElementsByClassName('site-intro-meta')) {
+      document
+        .getElementsByClassName('intro-title')[0]
+        .classList.add('intro-fade-in')
+      document
+        .getElementsByClassName('intro-subtitle')[0]
+        .classList.add('intro-fade-in')
+      var postIntros = document.getElementsByClassName('post-intros')[0]
+      if (postIntros) {
+        postIntros.classList.add('post-fade-in')
+      }
+    }
+  }
+
+  // UC不支持跨域，所以直接显示
+  function asyncCb() {
+    if (browser.versions.uc) {
+      console.log('UCBrowser')
+      fontLoaded()
+    } else {
+      WebFont.load({
+        custom: {
+          families: ['Oswald-Regular'],
+        },
+        loading: function () {
+          // 所有字体开始加载
+          // console.log('font loading');
+        },
+        active: function () {
+          // 所有字体已渲染
+          fontLoaded()
+        },
+        inactive: function () {
+          // 字体预加载失败，无效字体或浏览器不支持加载
+          console.log('inactive: timeout')
+          fontLoaded()
+        },
+        timeout: 5000, // Set the timeout to two seconds
+      })
+    }
+  }
+
+  function asyncErr() {
+    console.warn('script load from CDN failed, will load local script')
+  }
+
+  // load webfont-loader async, and add callback function
+  function async(u, cb, err) {
+    var d = document,
+      t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0]
+    o.src = u
+    if (cb) {
+      o.addEventListener(
+        'load',
+        function (e) {
+          cb(null, e)
+        },
+        false
+      )
+    }
+    if (err) {
+      o.addEventListener(
+        'error',
+        function (e) {
+          err(null, e)
+        },
+        false
+      )
+    }
+    s.parentNode.insertBefore(o, s)
+  }
+
+  var asyncLoadWithFallBack = function (arr, success, reject) {
+    var currReject = function () {
+      reject()
+      arr.shift()
+      if (arr.length) async(arr[0], success, currReject)
+    }
+
+    async(arr[0], success, currReject)
+  }
+
+  asyncLoadWithFallBack(
+    [
+      'https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js',
+      'https://cdn.bootcss.com/webfont/1.6.28/webfontloader.js',
+      "/lib/webfontloader.min.js",
+    ],
+    asyncCb,
+    asyncErr
+  )
+</script>
+
+            <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
+            <div class="container container-unloaded">
+                <main class="main post-page">
+    <article class="article-entry">
+        <p>HTTP Connection 头是 HTTP 协议中的一个重要头部字段，它用于控制客户端和服务器之间的连接行为。在本文中，我们将深入探讨 HTTP Connection 头部的作用、用法，并结合实际开发案例展示其在应用程序开发中的应用。</p>
+<p>在开始本文的阅读之前，默认屏幕前的老铁已经对HTTP有了基础的认识。如果不是，请移步学习<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%B6%85%E6%96%87%E6%9C%AC%E4%BC%A0%E8%BE%93%E5%8D%8F%E8%AE%AE#">超文本传输协议</a></p>
+<h2 id="作用与语法"><a href="#作用与语法" class="headerlink" title="作用与语法"></a>作用与语法</h2><p>HTTP Connection头是通用类型标头，允许发送方或客户端指定该特定连接所需的选项。Connection 帮助使用单个 TCP 连接发送或接收多个 HTTP 请求&#x2F;响应，而不是为每个请求&#x2F;响应打开一个新连接。它还控制当前事务完成后网络是否保持打开或关闭状态。</p>
+<h3 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h3><figure class="highlight http"><figcaption><span>request</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">Connection</span><span class="punctuation">: </span>keep-alive</span><br><span class="line"><span class="attribute">Connection</span><span class="punctuation">: </span>close</span><br></pre></td></tr></table></figure>
+
+<p>HTTP Connection头接受上面提到的两个指令，并如下所述：</p>
+<ul>
+<li>keep-alive该指令表明客户端在发送响应消息后希望保持连接打开或活动。在 HTTP 1.1 版本中，默认情况下使用持久连接，该连接在事务后不会自动关闭。但HTTP 1.0不会将连接视为持久连接，因此如果要保持连接处于活动状态，则需要包含一个保持活动连接标头。</li>
+<li>close这个关闭连接指令表明客户端在发送响应消息后想要关闭连接。在 HTTP 1.0 中，默认情况下连接会关闭。但在 HTTP 1.1 中，如果您希望关闭连接，则需要将其包含在标头中。</li>
+</ul>
+<p>Http1.1 以后，Keep-Alive已经默认支持并开启。客户端（包括但不限于浏览器）发送请求时会在 Header 中增加一个请求头Connection: Keep-Alive，当服务器收到附带有Connection: Keep-Alive的请求时，也会在响应头中添加 Keep-Alive。这样一来，客户端和服务器之间的 HTTP 连接就会被保持，不会断开（断开方式下面介绍），当客户端发送另外一个请求时，就可以复用已建立的连接。</p>
+<p><em>保持连接和不保持连接区别可以参考下面的图</em><br><img src="/images/http/perisitent-connection.png" alt="handshake"></p>
+<h2 id="Keep-Alive的优缺点"><a href="#Keep-Alive的优缺点" class="headerlink" title="Keep-Alive的优缺点"></a>Keep-Alive的优缺点</h2><p>keep-alive 这么完美么？</p>
+<h3 id="优点："><a href="#优点：" class="headerlink" title="优点："></a>优点：</h3><ol>
+<li>减少连接建立和断开的开销： 使用长连接可以避免在每次请求时都重新建立连接，从而减少了连接建立和断开的时间和开销。</li>
+<li>减少网络延迟： 由于连接已经建立，可以直接进行数据传输，不需要等待连接的建立过程，从而减少了网络延迟，提高了数据传输效率。</li>
+<li>提高性能： 长连接可以实现连接的复用，多个请求可以共享同一个连接，从而减少了服务器的负担，提高了系统的整体性能。</li>
+</ol>
+<h3 id="缺点："><a href="#缺点：" class="headerlink" title="缺点："></a>缺点：</h3><ol>
+<li>资源占用： 长连接会占用服务器和客户端的资源，尤其是在连接空闲时，会持续占用资源，可能导致资源浪费。</li>
+<li>可能造成资源不足： 如果长时间保持大量的长连接，可能会耗尽服务器和客户端的资源，导致性能下降甚至崩溃。</li>
+</ol>
+<h2 id="怎么断开连接"><a href="#怎么断开连接" class="headerlink" title="怎么断开连接"></a>怎么断开连接</h2><h3 id="通过-Keep-Alive-Timeout-标识"><a href="#通过-Keep-Alive-Timeout-标识" class="headerlink" title="通过 Keep-Alive Timeout 标识"></a>通过 Keep-Alive Timeout 标识</h3><p>keep-alive不会永久保持连接，它有一个保持时间，可以在不同的服务器软件（如Apache）中设定这个时间。实现长连接需要客户端和服务端都支持长连接。<br>Keep-Alive：如果浏览器请求保持连接，则该头部表明希望 WEB 服务器保持连接多长时间（秒）。例如：</p>
+<figure class="highlight http"><figcaption><span>request</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Keep-Alive:timeout=5</span><br></pre></td></tr></table></figure>
+<p><font color="#dd0000">注意：Mozilla 和 Konquor 浏览器能识别 “Keep-Alive：Timeout&#x3D;Time” 报头字段，而 MSIE 在大约 60 秒内自行关闭保活连接。</font></p>
+<h3 id="通过-Connection-close-标识"><a href="#通过-Connection-close-标识" class="headerlink" title="通过 Connection close 标识"></a>通过 Connection close 标识</h3><p>通在 Response Header 中增加Connection close标识，来主动告诉发送端，连接已经断开了，不能再复用了；客户端接收到此标示后，会销毁连接，再次请求时会重新建立连接。</p>
+<p>注意：配置 close 配置后，并不是说每次都新建连接，而是约定此连接可以用几次，达到这个最大次数时，接收端就会返回 close 标识</p>
+<h2 id="动手试一试"><a href="#动手试一试" class="headerlink" title="动手试一试"></a>动手试一试</h2><p>为了更好的理解keep-alive是怎么玩的，我写了一个简单的例子</p>
+<ul>
+<li>主动断开连接<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[HttpGet]</span><br><span class="line">[ActionTitle(Name = &quot;关闭连接&quot;)]</span><br><span class="line">[Route(&quot;close.svc&quot;)]</span><br><span class="line">public void Close()</span><br><span class="line">&#123;</span><br><span class="line">    Response.Headers.Connection = &quot;close&quot;;</span><br><span class="line">    return;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<img src="/images/http/handshake-2.png" alt="主动断开连接"><br>首先，我们第一次调用start接口打开连接，可以看到开始的三次握手。后续我们再次发送请求的时候，由于连接还没有断开，所以就不再有三次握手的过程。</li>
+</ul>
+<p>然后，我们又主动调用了close这个接口，这个接口返回的头部信息中携带了“connection: close”，告诉浏览器要关闭连接。因此在此之后我们立马就看到了4次挥手。</p>
+<ul>
+<li><p>超时断开连接(Mozilla)</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">HttpGet</span>]</span><br><span class="line">[<span class="meta">ActionTitle(Name = <span class="string">&quot;开启连接&quot;</span>)</span>]</span><br><span class="line">[<span class="meta">Route(<span class="string">&quot;start.svc&quot;</span>)</span>]</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Start</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    Response.Headers.KeepAlive = <span class="string">&quot;timeout=10, max=3&quot;</span>;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="/images/http/timeout-auto-disconnect.png" alt="主动断开连接"><br>在服务端设置10s超时。第一次主动打开连接，之后我们不再进行请求，10s之后连接自动断开。</p>
+</li>
+<li><p>被动断开连接<br><img src="/images/http/auto-disconnect.png" alt="主动断开连接"><br>上图可以看到，我们第一次主动打开连接。之后我们不再进行请求，一段时间之后连接自动断开。</p>
+</li>
+</ul>
+<p><strong>分析上图流程</strong></p>
+<ul>
+<li>首先：10.21.21.6（本机ip）率先向服务端 发起了 Keep-Alive 报文</li>
+<li>服务端会进行 Keep-Alive ACK</li>
+<li>规律是 客户端一直在发送 Keep-Alive ，服务端呢，一直在 Keep-Alive ACK，且 Seq 和 Ack 一直没有变</li>
+<li>大概过了 5min 服务端率先发起 FIN ACK 进入 进入挥手 断开连接阶段</li>
+</ul>
+<p><strong>猜想</strong></p>
+<ul>
+<li>客户端 TCP 在没有数据流通时有自己的探活机制，由客户端上报 Keep-Alive 报文，服务端 ACK ，双方确认彼此活着。</li>
+<li>探活有时间限制，超过限定时间，如果一直没有数据交换，即使探活心跳正常，也会进行挥手断连，释放资源。</li>
+</ul>
+<h2 id="TCP-Keep-Alive-机制"><a href="#TCP-Keep-Alive-机制" class="headerlink" title="TCP  Keep-Alive 机制"></a>TCP  Keep-Alive 机制</h2><blockquote>
+<ul>
+<li>TCP Keep-Alive 并不是 TCP 标准的一部分，而是由协议栈实现者进行拓展实现，主流操作系统 Linux、Windows、MacOS 都进行了对应的实现。 </li>
+<li>TCP Keep-Alive 报文是由操作系统或网络库实现的，而不是由特定的应用程序（如浏览器或HTTP客户端库）直接发送的。它是一种网络层的功能，用于维持两个网络设备之间的连接状态。这个机制在TCP协议中定义，允许一方在一定时间内没有收到数据时发送探测包，以确认连接的另一端是否仍然可达。 </li>
+<li>在Windows操作系统中，这通常通过发送TCP Keep-Alive探测包来实现，这些探测包是由操作系统的网络堆栈自动发送的。</li>
+</ul>
+</blockquote>
+<p>以下是一些可能发送TCP Keep-Alive报文的实体：</p>
+<ol>
+<li>操作系统网络堆栈：大多数现代操作系统都会实现TCP Keep-Alive功能。例如，在Windows中，可以通过注册表设置或使用netsh命令来配置TCP Keep-Alive参数。</li>
+<li>网络库：某些编程语言的网络库可能实现了自己的Keep-Alive逻辑。例如，Java的HttpURLConnection或C#的HttpClient可能会在底层TCP连接上启用Keep-Alive。</li>
+<li>浏览器：虽然浏览器可能不会在没有HTTP请求的情况下发送Keep-Alive报文，但它们可能会定期发送HTTP&#x2F;1.1协议中的Keep-Alive头部，这是一种应用层的机制，用于维持HTTP连接的活跃状态。</li>
+<li>其他网络应用程序：任何使用TCP连接的应用程序都可能实现自己的Keep-Alive逻辑，以确保连接的持续性。</li>
+</ol>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>HTTP Connection 头是 HTTP 协议中非常重要的头部字段之一，它控制着客户端和服务器之间的连接行为，直接影响着通信的效率和性能。在实际开发中，合理使用 HTTP Connection 头可以有效地管理网络资源，提高通信的效率。希望本文能够帮助读者更深入地理解 HTTP Connection 头的作用和用法，并在实际开发中加以应用。</p>
+<p>更多一手讯息，可关注公众号：<a target="_blank" rel="noopener" href="https://myom-dev.oss-cn-hangzhou.aliyuncs.com/WechatPublicPlatformQrCode.jpg">ITProHub</a></p>
+<p><img src="https://myom-dev.oss-cn-hangzhou.aliyuncs.com/WechatPublicPlatformQrCode.jpg" alt="ITProHub"></p>
+
+    </article>
+    <!-- license -->
+    
+        <div class="license-wrapper">
+            <p>原文作者：<a href="https://www.itprohub.site">乐予吕</a>
+            <p>原文链接：<a href="https://www.itprohub.site/2024/03/19/http/">https://www.itprohub.site/2024/03/19/http/</a>
+            <p>发表日期：<a href="https://www.itprohub.site/2024/03/19/http/">March 19th 2024, 4:11:52 pm</a>
+            <p>更新日期：<a href="https://www.itprohub.site/2024/03/19/http/">March 4th 2025, 7:26:14 am</a>
+            <p>版权声明：本文采用<a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
+        </div>
+    
+    <!-- paginator -->
+    <ul class="post-paginator">
+        <li class="next">
+            
+                <div class="nextSlogan">Next Post</div>
+                <a href="/2024/03/28/organization-internal-loss/" title="组织发展致命杀手：内耗">
+                    <div class="nextTitle">组织发展致命杀手：内耗</div>
+                </a>
+            
+        </li>
+        <li class="previous">
+            
+        </li>
+    </ul>
+    <!-- comment -->
+    
+        <div class="post-comment">
+            <!-- 来必力 City 版安装代码 -->
+
+
+            
+
+            
+
+            
+
+            <!-- utteranc评论 -->
+
+
+            <!-- partial('_partial/comment/changyan') -->
+            <!--PC版-->
+
+
+            
+            
+
+            
+
+        </div>
+    
+    <!-- timeliness note -->
+    <!-- idea from: https://hexo.fluid-dev.com/posts/hexo-injector/#%E6%96%87%E7%AB%A0%E6%97%B6%E6%95%88%E6%80%A7%E6%8F%90%E7%A4%BA -->
+    
+    <!-- Mathjax -->
+    
+</main>
+
+                <!-- profile -->
+                
+            </div>
+            <footer class="footer footer-unloaded">
+    <!-- social  -->
+    
+        <div class="social">
+            
+    
+        
+            
+                <a href="mailto:287678478@qq.com" class="iconfont-archer email" title=email ></a>
+            
+        
+    
+        
+            
+                <a href="//github.com/ItProHub" class="iconfont-archer github" target="_blank" title=github></a>
+            
+        
+    
+        
+            
+                <span class="iconfont-archer wechat" title=wechat>
+                    
+                    <img class="profile-qr" src="/assets/wechat_qr.jpg" />
+                </span>
+            
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+            
+                <a href="//juejin.cn/user/1489196396594523" class="iconfont-archer juejin" target="_blank" title=juejin></a>
+            
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+
+        </div>
+    
+    <!-- powered by Hexo  -->
+    <div class="copyright">
+        <span id="hexo-power">Powered by <a href="https://www.itprohub.site/" target="_blank">ITProHub</a></span><span class="iconfont-archer power">&#xe635;</span><span id="theme-info">theme <a href="https://github.com/fi3ework/hexo-theme-archer" target="_blank">Archer</a></span>
+    </div>
+    <!-- website approve for Chinese user -->
+    
+        <div class="website-approve">
+            
+                <span id="icp-approve" class="icp-approve">
+                    <a href="https://beian.miit.gov.cn/" target="_blank">备案号：鄂ICP备2024045313号</a>
+                </span>
+            
+            
+        </div>
+    
+    <!-- 不蒜子  -->
+    
+        <div class="busuanzi-container">
+            
+            
+                <span id="busuanzi_container_site_pv">PV: <span id="busuanzi_value_site_pv"></span> :)</span>
+            
+        </div>
+    
+</footer>
+
+        </div>
+        <!-- toc -->
+        
+            <div class="toc-wrapper toc-wrapper-loding" style=
+
+
+
+
+
+
+
+    top:50vh;
+
+>
+                <div class="toc-catalog">
+                    <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
+                </div>
+                <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%9C%E7%94%A8%E4%B8%8E%E8%AF%AD%E6%B3%95"><span class="toc-number">1.</span> <span class="toc-text">作用与语法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%AD%E6%B3%95"><span class="toc-number">1.1.</span> <span class="toc-text">语法</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Keep-Alive%E7%9A%84%E4%BC%98%E7%BC%BA%E7%82%B9"><span class="toc-number">2.</span> <span class="toc-text">Keep-Alive的优缺点</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%98%E7%82%B9%EF%BC%9A"><span class="toc-number">2.1.</span> <span class="toc-text">优点：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%BA%E7%82%B9%EF%BC%9A"><span class="toc-number">2.2.</span> <span class="toc-text">缺点：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%8E%E4%B9%88%E6%96%AD%E5%BC%80%E8%BF%9E%E6%8E%A5"><span class="toc-number">3.</span> <span class="toc-text">怎么断开连接</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%9A%E8%BF%87-Keep-Alive-Timeout-%E6%A0%87%E8%AF%86"><span class="toc-number">3.1.</span> <span class="toc-text">通过 Keep-Alive Timeout 标识</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%9A%E8%BF%87-Connection-close-%E6%A0%87%E8%AF%86"><span class="toc-number">3.2.</span> <span class="toc-text">通过 Connection close 标识</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8A%A8%E6%89%8B%E8%AF%95%E4%B8%80%E8%AF%95"><span class="toc-number">4.</span> <span class="toc-text">动手试一试</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TCP-Keep-Alive-%E6%9C%BA%E5%88%B6"><span class="toc-number">5.</span> <span class="toc-text">TCP  Keep-Alive 机制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%93%E8%AF%AD"><span class="toc-number">6.</span> <span class="toc-text">结语</span></a></li></ol>
+            </div>
+        
+        <!-- sidebar -->
+        <div class="sidebar sidebar-hide">
+    <ul class="sidebar-tabs sidebar-tabs-active-0">
+        <li class="sidebar-tab-archives"><span class="iconfont-archer">&#xe67d;</span><span class="tab-name">Archive</span></li>
+        <li class="sidebar-tab-tags"><span class="iconfont-archer">&#xe61b;</span><span class="tab-name">Tag</span></li>
+        <li class="sidebar-tab-categories"><span class="iconfont-archer">&#xe666;</span><span class="tab-name">Cate</span></li>
+    </ul>
+    <div class="sidebar-content sidebar-content-show-archive">
+        <div class="sidebar-panel-archives">
+    <!-- 在 ejs 中将 archive 按照时间排序 -->
+    
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    
+    
+    
+    
+    <div class="total-and-search">
+        <div class="total-archive">
+        Total : 34
+        </div>
+        <!-- search  -->
+        
+    </div>
+    
+    <div class="post-archive">
+    
+        
+            
+            
+            <div class="archive-year"> 2025 </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/27</span>
+            <a class="archive-post-title" href="/2025/02/27/midscenejs/">AI驱动的自动化测试：探索MidScene.js的强大功能</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/21</span>
+            <a class="archive-post-title" href="/2025/02/21/function-calling/">让AI模型不再只是“说话”——探索AI模型的函数调用</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/12</span>
+            <a class="archive-post-title" href="/2025/02/12/openai-operator/">「AI」科普向 | OpenAI Operator：推动数字世界的新纪元</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/12</span>
+            <a class="archive-post-title" href="/2025/02/12/deepseek-vscode/">Cursor平替：把 DeepSeek 接入 VS Code</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/07</span>
+            <a class="archive-post-title" href="/2025/02/07/deepseek-1/">DeepSeek 本地部署+web端访问 指南</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/05</span>
+            <a class="archive-post-title" href="/2025/02/05/docker-log/">减少 Docker 日志大小：实用的日志管理指南</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">01/07</span>
+            <a class="archive-post-title" href="/2025/01/07/parallelism/">并发不是并行！</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> 2024 </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/18</span>
+            <a class="archive-post-title" href="/2024/12/18/log/">程序日志设计与存储：实践与注意事项(一)</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/16</span>
+            <a class="archive-post-title" href="/2024/12/16/web-rtc/">WebRTC入门：让浏览器之间的实时通信变得简单</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/11</span>
+            <a class="archive-post-title" href="/2024/12/11/k8s-helm/">Kubernetes 分享：如何使用 Helm 优化 Kubernetes 应用部署</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/29</span>
+            <a class="archive-post-title" href="/2024/11/29/rspack/">Rspack：一个新一代的 JavaScript 打包工具</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/20</span>
+            <a class="archive-post-title" href="/2024/11/20/mfa/">深入解读 MFA 和 TOTP 的实现原理与应用</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/08</span>
+            <a class="archive-post-title" href="/2024/11/08/stream-output/">解读大型语言模型（LLM）API：了解流式输出的工作原理</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/06</span>
+            <a class="archive-post-title" href="/2024/11/06/encrypt-hash-signature/">加密、哈希与签名：基本原理与区别解析</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/30</span>
+            <a class="archive-post-title" href="/2024/10/30/js-signal/">JavaScript 信号：如何将响应式功能带到普通 Web 开发中</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/28</span>
+            <a class="archive-post-title" href="/2024/08/28/sticky-packet/">深入探讨 TCP 粘包现象：问题、原因与解决方案</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/16</span>
+            <a class="archive-post-title" href="/2024/08/16/quic/">QUIC:被寄予厚望的下一代互联网传输协议</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/08</span>
+            <a class="archive-post-title" href="/2024/08/08/docker-layer/">深入理解容器镜像层</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/01</span>
+            <a class="archive-post-title" href="/2024/08/01/daemonset/">Kubernetes DaemonSet – 它是什么以及如何使用</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/11</span>
+            <a class="archive-post-title" href="/2024/07/11/rabbitmq-quorum/">RabbitMQ之三种队列之间的区别及如何选型</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/09</span>
+            <a class="archive-post-title" href="/2024/07/09/rabbitmq-basic/">深入理解 RabbitMQ 中的基础概念</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/08</span>
+            <a class="archive-post-title" href="/2024/07/08/docker-2/">Docker镜像构建优化</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/05</span>
+            <a class="archive-post-title" href="/2024/07/05/docker-1/">Docker隐藏在细节中的技术基础</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">06/20</span>
+            <a class="archive-post-title" href="/2024/06/20/proxy/">代理服务解析：正向代理、反向代理和透明代理</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/30</span>
+            <a class="archive-post-title" href="/2024/05/30/similar-image-search/">从零开始搭建自己的相似图片搜索引擎</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/30</span>
+            <a class="archive-post-title" href="/2024/05/30/TaskCompletionSource/">C# 学习笔记： TaskCompletionSource</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/22</span>
+            <a class="archive-post-title" href="/2024/05/22/dead-message/">深入解析消息队列中的死信队列</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/28</span>
+            <a class="archive-post-title" href="/2024/04/28/dump/">Dump分析入门指南</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> Invalid date </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span>
+            <a class="archive-post-title" href="/2025/03/04/hello-world/">欢迎来到 ITProHub！</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> 2024 </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/18</span>
+            <a class="archive-post-title" href="/2024/04/18/redis-interview-1/">Redis成长记 - Redis的陷阱（一）</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/11</span>
+            <a class="archive-post-title" href="/2024/04/11/https/">HTTPS的工作原理以及安装</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/07</span>
+            <a class="archive-post-title" href="/2024/04/07/garnet/">Garnet，缓存的新选择！</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/28</span>
+            <a class="archive-post-title" href="/2024/03/28/organization-internal-loss/">组织发展致命杀手：内耗</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/19</span>
+            <a class="archive-post-title" href="/2024/03/19/http/">深入理解 HTTP Connection 头</a>
+        </li>
+    
+    </div>
+</div>
+
+        <div class="sidebar-panel-tags">
+    <div class="sidebar-tags-name">
+        
+            <span class="sidebar-tag-name" data-tags="dump 性能 异常">
+                <span class="iconfont-archer">&#xe606;</span>
+                dump 性能 异常
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="http http协议 Connection">
+                <span class="iconfont-archer">&#xe606;</span>
+                http http协议 Connection
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="Garnet 缓存 微软">
+                <span class="iconfont-archer">&#xe606;</span>
+                Garnet 缓存 微软
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="https http ssl tls">
+                <span class="iconfont-archer">&#xe606;</span>
+                https http ssl tls
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="组织 内耗">
+                <span class="iconfont-archer">&#xe606;</span>
+                组织 内耗
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="redis 面试 求职">
+                <span class="iconfont-archer">&#xe606;</span>
+                redis 面试 求职
+            </span>
+        
+    </div>
+    <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
+    <div class="tag-load-fail" style="display: none; color: #ccc; font-size: 0.6rem;">
+        缺失模块，请参考主题文档进行安装配置：https://github.com/fi3ework/hexo-theme-archer#%E5%AE%89%E8%A3%85%E4%B8%BB%E9%A2%98
+    </div> 
+    <div class="sidebar-tags-list"></div>
+</div>
+
+        <div class="sidebar-panel-categories">
+    <div class="sidebar-categories-name">
+    
+    </div>
+    <div class="iconfont-archer sidebar-categories-empty">&#xe678;</div>
+    <div class="sidebar-categories-list"></div>
+</div>
+
+    </div>
+</div>
+
+        <!-- site-meta -->
+        <script>
+    var siteMetaRoot = "/"
+    if (siteMetaRoot === "undefined") {
+        siteMetaRoot = '/'
+    }
+    var siteMeta = {
+        url: "https://www.itprohub.site",
+        root: siteMetaRoot,
+        author: "乐予吕"
+    }
+</script>
+
+        <!-- import experimental options here -->
+        <!-- Custom Font -->
+
+
+        <!-- main func -->
+        <script src="/scripts/main.js?v=20211217"></script>
+        <!-- dark mode -->
+        <script src="/scripts/dark.js?v=20211217"></script>
+        <!-- fancybox -->
+        <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" defer></script>
+        <!-- algolia -->
+        
+        <!-- busuanzi -->
+        
+            <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+        
+        <!-- CNZZ -->
+        
+        <!-- async load share.js -->
+        
+            <script src="/scripts/share.js?v=20211217" async></script>
+        
+        <!-- mermaid -->
+        
+    </body>
+</html>

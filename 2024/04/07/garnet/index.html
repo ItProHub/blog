@@ -1,0 +1,1537 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <!-- title -->
+
+
+    
+
+<!-- keywords -->
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="author" content="乐予吕">
+    <meta name="renderer" content="webkit">
+    <meta name="copyright" content="乐予吕">
+    
+        <meta name="keywords" content="hexo,ITProHub,hexo-theme,hexo-blog">
+    
+    <meta name="description" content="">
+    <meta name="description" content="号外号外！  redis不再“开源”； 微软开源了Garnet  什么是Garnet？Garnet是微软推出的一款远程缓存存储系统，旨在为开发者提供高性能、可靠性和可伸缩性的缓存解决方案。它采用了现代化的架构和技术，具有高度可定制性和灵活性，适用于各种规模和类型的应用场景。 特性和优势 高性能 &amp;nbsp; Garnet采用了高效的缓存算法和数据结构，以实现快速的数据访问和响应。它支持并发访问和高">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Garnet，缓存的新选择！">
+<meta property="og:url" content="https://www.itprohub.site/2024/04/07/garnet/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="号外号外！  redis不再“开源”； 微软开源了Garnet  什么是Garnet？Garnet是微软推出的一款远程缓存存储系统，旨在为开发者提供高性能、可靠性和可伸缩性的缓存解决方案。它采用了现代化的架构和技术，具有高度可定制性和灵活性，适用于各种规模和类型的应用场景。 特性和优势 高性能 &amp;nbsp; Garnet采用了高效的缓存算法和数据结构，以实现快速的数据访问和响应。它支持并发访问和高">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.itprohub.site/images/garnet/compare1.png">
+<meta property="og:image" content="https://www.itprohub.site/images/garnet/connect.png">
+<meta property="og:image" content="https://www.itprohub.site/images/garnet/client.png">
+<meta property="og:image" content="https://www.itprohub.site/images/garnet/log.png">
+<meta property="og:image" content="https://www.itprohub.site/images/garnet/custom-command.png">
+<meta property="og:image" content="https://myom-dev.oss-cn-hangzhou.aliyuncs.com/WechatPublicPlatformQrCode.jpg">
+<meta property="article:published_time" content="2024-04-07T15:24:24.000Z">
+<meta property="article:modified_time" content="2025-03-04T07:26:14.683Z">
+<meta property="article:author" content="乐予吕">
+<meta property="article:tag" content="Garnet 缓存 微软">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.itprohub.site/images/garnet/compare1.png">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="icon" href="/assets/favicon.ico">
+    
+    <title>Garnet，缓存的新选择！ · 个人技术日常分享</title>
+    <!-- /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+/* This file is meant as a standalone workflow for
+- testing support for link[rel=preload]
+- enabling async CSS loading in browsers that do not support rel=preload
+- applying rel preload css once loaded, whether supported or not.
+*/ -->
+<script>
+    (function (w) {
+        'use strict'
+        // rel=preload support test
+        if (!w.loadCSS) {
+            w.loadCSS = function () {}
+        }
+        // define on the loadCSS obj
+        var rp = (loadCSS.relpreload = {})
+        // rel=preload feature support test
+        // runs once and returns a function for compat purposes
+        rp.support = (function () {
+            var ret
+            try {
+                ret = w.document.createElement('link').relList.supports('preload')
+            } catch (e) {
+                ret = false
+            }
+            return function () {
+                return ret
+            }
+        })()
+
+        // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+        // then change that media back to its intended value on load
+        rp.bindMediaToggle = function (link) {
+            // remember existing media attr for ultimate state, or default to 'all'
+            var finalMedia = link.media || 'all'
+
+            function enableStylesheet() {
+                link.media = finalMedia
+            }
+
+            // bind load handlers to enable media
+            if (link.addEventListener) {
+                link.addEventListener('load', enableStylesheet)
+            } else if (link.attachEvent) {
+                link.attachEvent('onload', enableStylesheet)
+            }
+
+            // Set rel and non-applicable media type to start an async request
+            // note: timeout allows this to happen async to let rendering continue in IE
+            setTimeout(function () {
+                link.rel = 'stylesheet'
+                link.media = 'only x'
+            })
+            // also enable media after 3 seconds,
+            // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+            setTimeout(enableStylesheet, 3000)
+        }
+
+        // loop through link elements in DOM
+        rp.poly = function () {
+            // double check this to prevent external calls from running
+            if (rp.support()) {
+                return
+            }
+            var links = w.document.getElementsByTagName('link')
+            for (var i = 0; i < links.length; i++) {
+                var link = links[i]
+                // qualify links to those with rel=preload and as=style attrs
+                if (
+                    link.rel === 'preload' &&
+                    link.getAttribute('as') === 'style' &&
+                    !link.getAttribute('data-loadcss')
+                ) {
+                    // prevent rerunning on link
+                    link.setAttribute('data-loadcss', true)
+                    // bind listeners to toggle media back
+                    rp.bindMediaToggle(link)
+                }
+            }
+        }
+
+        // if unsupported, run the polyfill
+        if (!rp.support()) {
+            // run once at least
+            rp.poly()
+
+            // rerun poly on an interval until onload
+            var run = w.setInterval(rp.poly, 500)
+            if (w.addEventListener) {
+                w.addEventListener('load', function () {
+                    rp.poly()
+                    w.clearInterval(run)
+                })
+            } else if (w.attachEvent) {
+                w.attachEvent('onload', function () {
+                    rp.poly()
+                    w.clearInterval(run)
+                })
+            }
+        }
+
+        // commonjs
+        if (typeof exports !== 'undefined') {
+            exports.loadCSS = loadCSS
+        } else {
+            w.loadCSS = loadCSS
+        }
+    })(typeof global !== 'undefined' ? global : this)
+</script>
+
+    <style type="text/css">
+    @font-face {
+        font-family: 'Oswald-Regular';
+        src: url("/font/Oswald-Regular.ttf");
+    }
+
+    body {
+        margin: 0;
+    }
+
+    header,
+    footer,
+    .back-top,
+    .sidebar,
+    .container,
+    .site-intro-meta,
+    .toc-wrapper {
+        display: none;
+    }
+
+    .site-intro {
+        position: relative;
+        z-index: 3;
+        width: 100%;
+        /* height: 50vh; */
+        overflow: hidden;
+    }
+
+    .site-intro-placeholder {
+        position: absolute;
+        z-index: -2;
+        top: 0;
+        left: 0;
+        width: calc(100% + 300px);
+        height: 100%;
+        background: repeating-linear-gradient(-45deg, #444 0, #444 80px, #333 80px, #333 160px);
+        background-position: center center;
+        transform: translate3d(-226px, 0, 0);
+        animation: gradient-move 2.5s ease-out 0s infinite;
+    }
+
+    @keyframes gradient-move {
+        0% {
+            transform: translate3d(-226px, 0, 0);
+        }
+        100% {
+            transform: translate3d(0, 0, 0);
+        }
+    }
+</style>
+
+    <link rel="preload" href="/css/style.css?v=20211217" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="/css/dark.css?v=20211217" as="style">
+    <link rel="stylesheet" href="/css/dark.css">
+    <link rel="stylesheet" href="/css/mobile.css?v=20211217" media="(max-width: 960px)">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" as="script">
+    <link rel="preload" href="/scripts/main.js?v=20211217" as="script">
+    <link rel="preload" href="/scripts/dark.js?v=20211217" as="script">
+    <link rel="preload" href="/font/Oswald-Regular.ttf" as="font" crossorigin>
+    <link rel="preload" href="https://at.alicdn.com/t/font_327081_1dta1rlogw17zaor.woff" as="font" crossorigin>
+    <!-- algolia -->
+    
+    <!-- 百度统计  -->
+    
+    <!-- Google tag (gtag.js) -->
+    
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6058253486086884"
+    crossorigin="anonymous"></script>
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>    
+    <script type="text/javascript">
+        if (typeof window.$ == undefined) {
+            console.warn('jquery load from jsdelivr failed, will load local script')
+            document.write('<script src="/lib/jquery.min.js" />')
+        }
+    </script>
+    
+        <body class="post-body">
+    
+        <!-- header -->
+        <header class="header header-mobile">
+    <!-- top read progress line -->
+    <div class="header-element">
+        <div class="read-progress"></div>
+    </div>
+    <!-- sidebar menu button -->
+    <div class="header-element">
+        
+            <div class="header-sidebar-menu">
+        
+            
+                <div style="padding-left: 1px;">&#xe775;</div>
+            
+        </div>
+    </div>
+    <!-- header actions -->
+    <div class="header-actions">
+        <!-- theme mode switch button -->
+        <span class="header-theme-btn header-element">
+            <i class="fas fa-adjust"></i>
+        </span>
+        <!-- back to home page text -->
+        <span class="home-link header-element">
+            <a href=/>个人技术日常分享</a>
+        </span>
+    </div>
+    <!-- toggle banner for post layout -->
+    
+        
+            <div class="banner">
+        
+            <div class="blog-title header-element">
+                <a href="/">个人技术日常分享</a>
+            </div>
+            <div class="post-title header-element">
+                <a href="#" class="post-name">Garnet，缓存的新选择！</a>
+            </div>
+        </div>
+    
+</header>
+
+        <!-- fixed footer -->
+        <footer class="footer-fixed">
+    <!-- back to top button -->
+    <div class="footer-fixed-element">
+        
+            <div class="back-top back-top-hidden">
+        
+        
+            <div>&#xe639;</div>
+        
+        </div>
+    </div>
+</footer>
+
+        <!-- wrapper -->
+        <div class="wrapper">
+            <div class="site-intro" style="
+
+
+
+
+
+
+
+    height:50vh;
+
+">
+    
+    <!-- 主页  -->
+    
+        
+    <!-- 404页  -->
+    
+    <div class="site-intro-placeholder"></div>
+    <div class="site-intro-img" style="background-image: url(/intro/post-bg.jpg)"></div>
+    <div class="site-intro-meta">
+        <!-- 标题  -->
+        <h1 class="intro-title">
+            <!-- 主页  -->
+            
+                Garnet，缓存的新选择！
+            <!-- 404 -->
+            
+        </h1>
+        <!-- 副标题 -->
+        <p class="intro-subtitle">
+            <!-- 主页副标题  -->
+            
+                
+            <!-- 404 -->
+            
+        </p>
+        <!-- 文章页 meta -->
+        
+            <div class="post-intros">
+                <!-- 文章页标签  -->
+                
+                    <div class= post-intro-tags >
+    
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags="Garnet 缓存 微软">Garnet 缓存 微软</a>
+    
+</div>
+
+                
+                <!-- 文章字数统计 -->
+                
+                <div class="post-intro-meta">
+                    <!-- 撰写日期 -->
+                    <span class="iconfont-archer post-intro-calander">&#xe676;</span>
+                    <span class="post-intro-time">2024/04/07</span>
+                    <!-- busuanzi -->
+                    
+                        <span id="busuanzi_container_page_pv" class="busuanzi-pv">
+                            <span class="iconfont-archer post-intro-busuanzi">&#xe602;</span>
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    
+                    <!-- 文章分享 -->
+                    <span class="share-wrapper">
+                        <span class="iconfont-archer share-icon">&#xe71d;</span>
+                        <span class="share-text">Share</span>
+                        <ul class="share-list">
+                            <li class="iconfont-archer share-qr" data-type="qr">&#xe75b;
+                                <div class="share-qrcode"></div>
+                            </li>
+                            <li class="iconfont-archer" data-type="weibo">&#xe619;</li>
+                            <li class="iconfont-archer" data-type="qzone">&#xe62e;</li>
+                            <li class="iconfont-archer" data-type="twitter">&#xe634;</li>
+                            <li class="iconfont-archer" data-type="facebook">&#xe67a;</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
+        
+    </div>
+</div>
+
+            <script>
+  // get user agent
+  function getBrowserVersions() {
+    var u = window.navigator.userAgent
+    return {
+      userAgent: u,
+      trident: u.indexOf('Trident') > -1, //IE内核
+      presto: u.indexOf('Presto') > -1, //opera内核
+      webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+      gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
+      mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
+      ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+      android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器
+      iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者安卓QQ浏览器
+      iPad: u.indexOf('iPad') > -1, //是否为iPad
+      webApp: u.indexOf('Safari') == -1, //是否为web应用程序，没有头部与底部
+      weixin: u.indexOf('MicroMessenger') == -1, //是否为微信浏览器
+      uc: u.indexOf('UCBrowser') > -1, //是否为android下的UC浏览器
+    }
+  }
+  var browser = {
+    versions: getBrowserVersions(),
+  }
+  console.log('userAgent: ' + browser.versions.userAgent)
+
+  // callback
+  function fontLoaded() {
+    console.log('font loaded')
+    if (document.getElementsByClassName('site-intro-meta')) {
+      document
+        .getElementsByClassName('intro-title')[0]
+        .classList.add('intro-fade-in')
+      document
+        .getElementsByClassName('intro-subtitle')[0]
+        .classList.add('intro-fade-in')
+      var postIntros = document.getElementsByClassName('post-intros')[0]
+      if (postIntros) {
+        postIntros.classList.add('post-fade-in')
+      }
+    }
+  }
+
+  // UC不支持跨域，所以直接显示
+  function asyncCb() {
+    if (browser.versions.uc) {
+      console.log('UCBrowser')
+      fontLoaded()
+    } else {
+      WebFont.load({
+        custom: {
+          families: ['Oswald-Regular'],
+        },
+        loading: function () {
+          // 所有字体开始加载
+          // console.log('font loading');
+        },
+        active: function () {
+          // 所有字体已渲染
+          fontLoaded()
+        },
+        inactive: function () {
+          // 字体预加载失败，无效字体或浏览器不支持加载
+          console.log('inactive: timeout')
+          fontLoaded()
+        },
+        timeout: 5000, // Set the timeout to two seconds
+      })
+    }
+  }
+
+  function asyncErr() {
+    console.warn('script load from CDN failed, will load local script')
+  }
+
+  // load webfont-loader async, and add callback function
+  function async(u, cb, err) {
+    var d = document,
+      t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0]
+    o.src = u
+    if (cb) {
+      o.addEventListener(
+        'load',
+        function (e) {
+          cb(null, e)
+        },
+        false
+      )
+    }
+    if (err) {
+      o.addEventListener(
+        'error',
+        function (e) {
+          err(null, e)
+        },
+        false
+      )
+    }
+    s.parentNode.insertBefore(o, s)
+  }
+
+  var asyncLoadWithFallBack = function (arr, success, reject) {
+    var currReject = function () {
+      reject()
+      arr.shift()
+      if (arr.length) async(arr[0], success, currReject)
+    }
+
+    async(arr[0], success, currReject)
+  }
+
+  asyncLoadWithFallBack(
+    [
+      'https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js',
+      'https://cdn.bootcss.com/webfont/1.6.28/webfontloader.js',
+      "/lib/webfontloader.min.js",
+    ],
+    asyncCb,
+    asyncErr
+  )
+</script>
+
+            <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
+            <div class="container container-unloaded">
+                <main class="main post-page">
+    <article class="article-entry">
+        <p>号外号外！</p>
+<ol>
+<li>redis不再“开源”；</li>
+<li>微软开源了Garnet</li>
+</ol>
+<h1 id="什么是Garnet？"><a href="#什么是Garnet？" class="headerlink" title="什么是Garnet？"></a>什么是Garnet？</h1><p>Garnet是微软推出的一款远程缓存存储系统，旨在为开发者提供高性能、可靠性和可伸缩性的缓存解决方案。它采用了现代化的架构和技术，具有高度可定制性和灵活性，适用于各种规模和类型的应用场景。</p>
+<h1 id="特性和优势"><a href="#特性和优势" class="headerlink" title="特性和优势"></a>特性和优势</h1><ol>
+<li><p>高性能</p>
+<p>&nbsp; Garnet采用了高效的缓存算法和数据结构，以实现快速的数据访问和响应。它支持并发访问和高吞吐量，能够处理大规模的请求流量。</p>
+</li>
+</ol>
+<p>  Garnet通过智能缓存策略，将热点数据（经常访问的数据）存储在用户附近的节点上，从而减少了数据传输的时间和距离，实现了低延迟访问。</p>
+<ol start="2">
+<li><p>可靠性</p>
+<p>&nbsp; Garnet具有强大的数据保护和容错机制，能够确保数据的持久性和一致性。它支持数据备份、复制和故障转移，有效地降低了数据丢失和系统故障的风险。</p>
+</li>
+<li><p>可扩展性</p>
+<p>&nbsp; Garnet的架构设计具有良好的水平扩展性，可以轻松地扩展到数百甚至数千台服务器。它支持动态添加和移除节点，能够根据需求灵活调整集群规模。</p>
+</li>
+<li><p>多种数据类型支持：</p>
+<p>&nbsp; 除了常规的键值对存储之外，Garnet还支持多种数据类型，包括列表、集合、哈希表等，满足了不同应用场景的需求。</p>
+</li>
+<li><p>丰富的功能</p>
+<p>&nbsp; Garnet提供了丰富的功能和工具，包括监控、调优、故障排除等，帮助开发者更好地管理和运维缓存系统。</p>
+</li>
+</ol>
+<h1 id="高性能"><a href="#高性能" class="headerlink" title="高性能"></a>高性能</h1><p>对于一个中间件来说，大家最关心的应该就是性能到底怎么样？基准测试的结果，总体还是表现不错的。</p>
+<p>具体性能测试详情可以查看链接： <a target="_blank" rel="noopener" href="https://microsoft.github.io/garnet/docs/benchmarking/results-resp-bench">Evaluating Garnet’s Performance Benefits</a></p>
+<p>实际应用的过程中效果到底咋样当然还需要我们在通过代码来验证一下。</p>
+<p>下面我写了一个简单的例子，直接循环往garnet和redis里面写入和读取数据。通过计算时间来对比一下两者的差距到底有多大</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">HttpGet</span>]</span><br><span class="line">[<span class="meta">ActionTitle(Name = <span class="string">&quot;测试Garnet&quot;</span>)</span>]</span><br><span class="line">[<span class="meta">Route(<span class="string">&quot;test.svc&quot;</span>)</span>]</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Start</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// Redis connection</span></span><br><span class="line">    <span class="keyword">var</span> redis = ConnectionMultiplexer.Connect(<span class="string">&quot;localhost&quot;</span>);</span><br><span class="line">    <span class="keyword">var</span> redisDb = redis.GetDatabase();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Garnet connection</span></span><br><span class="line">    <span class="keyword">var</span> garnet = <span class="keyword">new</span> GarnetClient(<span class="string">&quot;localhost&quot;</span>, <span class="number">3278</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Test data</span></span><br><span class="line">    <span class="built_in">string</span> key = <span class="string">&quot;test_key&quot;</span>;</span><br><span class="line">    <span class="built_in">string</span> <span class="keyword">value</span> = <span class="string">&quot;test_value&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Test with Redis</span></span><br><span class="line">   <span class="keyword">var</span> redisStartTime = DateTime.Now;</span><br><span class="line">   <span class="keyword">for</span>( <span class="built_in">int</span> i = <span class="number">0</span>; i &lt; <span class="number">1000</span>; i++ ) &#123;</span><br><span class="line">       redisDb.StringSet(key + i, <span class="keyword">value</span> + i);</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">var</span> redisEndTime = DateTime.Now;</span><br><span class="line">   Console.WriteLine(<span class="string">$&quot;StringSet Time taken by Redis: <span class="subst">&#123;(redisEndTime - redisStartTime).TotalMilliseconds&#125;</span> ms&quot;</span>);</span><br><span class="line">   </span><br><span class="line">   <span class="comment">// Test with Garnet</span></span><br><span class="line">   <span class="keyword">var</span> garnetStartTime = DateTime.Now;</span><br><span class="line">   <span class="keyword">for</span>( <span class="built_in">int</span> i = <span class="number">0</span>; i &lt; <span class="number">1000</span>; i++ ) &#123;</span><br><span class="line">       garnet.StringSet(key + i, <span class="keyword">value</span> + i, <span class="literal">null</span>);</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">var</span> garnetEndTime = DateTime.Now;</span><br><span class="line">   Console.WriteLine(<span class="string">$&quot;StringSet Time taken by Garnet: <span class="subst">&#123;(garnetEndTime - garnetStartTime).TotalMilliseconds&#125;</span> ms&quot;</span>);</span><br><span class="line">   </span><br><span class="line">   <span class="comment">// Test with Redis</span></span><br><span class="line">   redisStartTime = DateTime.Now;</span><br><span class="line">   <span class="keyword">for</span>( <span class="built_in">int</span> i = <span class="number">0</span>; i &lt; <span class="number">1000</span>; i++ ) &#123;</span><br><span class="line">       <span class="built_in">string</span> a = redisDb.StringGet(key + i).ToString();</span><br><span class="line">   &#125;</span><br><span class="line">   redisEndTime = DateTime.Now;</span><br><span class="line">   Console.WriteLine(<span class="string">$&quot;StringGet Time taken by Redis: <span class="subst">&#123;(redisEndTime - redisStartTime).TotalMilliseconds&#125;</span> ms&quot;</span>);</span><br><span class="line">   </span><br><span class="line">   <span class="comment">// Test with Garnet</span></span><br><span class="line">   garnetStartTime = DateTime.Now;</span><br><span class="line">   <span class="keyword">for</span>( <span class="built_in">int</span> i = <span class="number">0</span>; i &lt; <span class="number">1000</span>; i++ ) &#123;</span><br><span class="line">       garnet.StringGet(key + i, <span class="literal">null</span>);</span><br><span class="line">   &#125;</span><br><span class="line">   garnetEndTime = DateTime.Now;</span><br><span class="line">   Console.WriteLine(<span class="string">$&quot;StringGet Time taken by Garnet: <span class="subst">&#123;(garnetEndTime - garnetStartTime).TotalMilliseconds&#125;</span> ms&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>最后运行的结果还是挺振奋人心的!</p>
+<p><img src="/images/garnet/compare1.png" alt="运行结果1"></p>
+<h1 id="兼容性"><a href="#兼容性" class="headerlink" title="兼容性"></a>兼容性</h1><p>当然在进行中间件选择的时候，切换的成本也是重点要纳入考虑的。“白嫖一时爽，重构火葬场！”这种事情显然是我们不愿意看到的。</p>
+<p>这个时候我们在官网看到这样一句话</p>
+<blockquote>
+<p>Garnet 并不是要成为 Redis 100% 完美的替代品，而是应该将其视为一个足够接近的起点，以确保对您重要的功能的兼容性。 Garnet 确实可以在未经修改的情况下与许多 Redis 客户端一起使用（我们特别对 Garnet 进行了StackExchange.Redis很好的测试），因此入门非常容易。</p>
+</blockquote>
+<p>于是，我们再整个demo</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">HttpGet</span>]</span><br><span class="line">[<span class="meta">ActionTitle(Name = <span class="string">&quot;测试Garnet连接&quot;</span>)</span>]</span><br><span class="line">[<span class="meta">Route(<span class="string">&quot;connect.svc&quot;</span>)</span>]</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Connect</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// Redis connection</span></span><br><span class="line">    <span class="keyword">var</span> redis = ConnectionMultiplexer.Connect(<span class="string">&quot;localhost&quot;</span>);</span><br><span class="line">    <span class="keyword">var</span> redisDb = redis.GetDatabase();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Garnet connection</span></span><br><span class="line">    <span class="keyword">var</span> garnet = ConnectionMultiplexer.Connect(<span class="string">&quot;localhost:3278&quot;</span>);</span><br><span class="line">    <span class="keyword">var</span> garnetDb = garnet.GetDatabase();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Test data</span></span><br><span class="line">    <span class="built_in">string</span> key = <span class="string">&quot;test_key&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Test with Redis</span></span><br><span class="line">    <span class="built_in">string</span> a = redisDb.StringGet(key + <span class="number">1</span>).ToString();</span><br><span class="line">    Console.WriteLine(<span class="string">$&quot;StringGet by Redis : <span class="subst">&#123;a&#125;</span>&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Test with Garnet</span></span><br><span class="line">    <span class="built_in">string</span> b = garnetDb.StringGet(key + <span class="number">1</span>).ToString();</span><br><span class="line">    Console.WriteLine(<span class="string">$&quot;StringGet by Garnet : <span class="subst">&#123;b&#125;</span>&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>微软 诚不我欺！</p>
+<p>在不动客户端代码的情况下，我们能够非常平滑的切换到Garnet<br><img src="/images/garnet/connect.png" alt="connect"></p>
+<p>redis桌面客户端也能直接连接Garnet<br><img src="/images/garnet/client.png" alt="client"></p>
+<h1 id="日志和诊断"><a href="#日志和诊断" class="headerlink" title="日志和诊断"></a>日志和诊断</h1><p>Garnet 提供了丰富的日志和诊断特性，以帮助开发人员监视和调试其应用程序的性能和行为。以下是 Garnet 日志和诊断特性的主要内容：</p>
+<ol>
+<li><p>详细日志记录：Garnet 具有灵活的日志记录功能，可以记录各种级别的日志消息，包括信息、警告和错误。这些日志消息可以帮助开发人员了解系统的运行情况，识别潜在的问题并进行故障排除。</p>
+</li>
+<li><p>性能指标：Garnet 还提供了丰富的性能指标，可以帮助开发人员监视系统的性能状况。这些指标可以包括各种关键性能指标，如请求响应时间、吞吐量、延迟等。</p>
+</li>
+<li><p>异常跟踪：Garnet 具有异常跟踪功能，可以捕获和记录应用程序中的异常情况。这些异常跟踪信息可以帮助开发人员快速定位和修复问题。</p>
+</li>
+<li><p>诊断工具：Garnet 还提供了一系列诊断工具，用于分析和调试系统的行为。这些工具可以帮助开发人员深入了解系统的内部工作原理，并识别潜在的性能瓶颈和问题。</p>
+</li>
+</ol>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] <span class="keyword">args</span></span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">try</span></span><br><span class="line">    &#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">var</span> loggerFactory = LoggerFactory.Create(x =&gt;</span><br><span class="line">        &#123;</span><br><span class="line">            x.ClearProviders();</span><br><span class="line">            x.SetMinimumLevel(LogLevel.Trace);</span><br><span class="line">            x.AddZLoggerConsole(options =&gt;</span><br><span class="line">            &#123;</span><br><span class="line">                options.UsePlainTextFormatter(formatter =&gt;</span><br><span class="line">                &#123;</span><br><span class="line">                    formatter.SetPrefixFormatter(<span class="string">$&quot;[<span class="subst">&#123;<span class="number">0</span>&#125;</span>]&quot;</span>, (<span class="keyword">in</span> MessageTemplate template, <span class="keyword">in</span> LogInfo info) =&gt; template.Format(info.Category));</span><br><span class="line">                &#125;);</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="keyword">using</span> <span class="keyword">var</span> server = <span class="keyword">new</span> GarnetServer(<span class="keyword">args</span>, loggerFactory);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Optional: register custom extensions</span></span><br><span class="line">        RegisterExtensions(server);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Start the server</span></span><br><span class="line">        server.Start();</span><br><span class="line"></span><br><span class="line">        Thread.Sleep(Timeout.Infinite);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">catch</span> (Exception ex)</span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine(<span class="string">$&quot;Unable to initialize server due to exception: <span class="subst">&#123;ex.Message&#125;</span>&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="/images/garnet/log.png" alt="日志"></p>
+<h1 id="自定义命令"><a href="#自定义命令" class="headerlink" title="自定义命令"></a>自定义命令</h1><p>想要在 Redis 上执行一些复杂的执行是很常见的，在 Redis 的情况下，我们过去常常使用 Lua 脚本来处理它，但使用 Garnet，我们可以在 C# 中实现和合并自定义命令。 如果你不知道 LUA 是否在性能方面，或者如果你想做一些 LUA 做不到的相当复杂的事情，你可以使用它而不会有任何性能劣势。 更好的是，服务器端提供的扩展命令遵循 RESP，因此客户端可以从 PHP 或 Go 调用它们，而不仅仅是针对 C#。</p>
+<p>因此，让我们立即创建一个名为“TEST”的自定义命令。命令很简单，直接返回一个“Hello Garnet!”</p>
+<p>注册自定义命令本身非常简单，只需添加一个实现的类，或者与命令名称一起添加即可。</p>
+<figure class="highlight plaintext"><figcaption><span>Server</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">// 测试自定义命令</span><br><span class="line">server.Register.NewTransactionProc(&quot;TEST&quot;, 0, () =&gt; new TestCustomCommand());</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">sealed class TestCustomCommand : CustomTransactionProcedure</span><br><span class="line">&#123;</span><br><span class="line">    /// &lt;summary&gt;</span><br><span class="line">    /// No transactional phase, skip Prepare</span><br><span class="line">    /// &lt;/summary&gt;</span><br><span class="line">    public override bool Prepare&lt;TGarnetReadApi&gt;(TGarnetReadApi api, ArgSlice input)</span><br><span class="line">        =&gt; false;</span><br><span class="line"></span><br><span class="line">    /// &lt;summary&gt;</span><br><span class="line">    /// Main will not be called because Prepare returns false</span><br><span class="line">    /// &lt;/summary&gt;</span><br><span class="line">    public override void Main&lt;TGarnetApi&gt;(TGarnetApi api, ArgSlice input, ref MemoryResult&lt;byte&gt; output)</span><br><span class="line">        =&gt; throw new InvalidOperationException();</span><br><span class="line"></span><br><span class="line">    /// &lt;summary&gt;</span><br><span class="line">    /// Finalize reads two keys (non-transactionally) and return their values as an array of bulk strings</span><br><span class="line">    /// &lt;/summary&gt;</span><br><span class="line">    public override void Finalize&lt;TGarnetApi&gt;(TGarnetApi api, ArgSlice input, ref MemoryResult&lt;byte&gt; output)</span><br><span class="line">    &#123;</span><br><span class="line">        // Return the two keys as an array of bulk strings</span><br><span class="line">        WriteSimpleString(ref output, &quot;Hello Garnet!&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>同时还是因为Garnet遵循 RESP，因此客户端不是专用于 C#，也不是 Garnet 客户端独有的。 所以我们可以直接在redis客户端调用Garnet的自定义命令</p>
+<figure class="highlight plaintext"><figcaption><span>client</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">[HttpGet]</span><br><span class="line">[ActionTitle(Name = &quot;测试Garnet 自定义命令&quot;)]</span><br><span class="line">[Route(&quot;custom-command.svc&quot;)]</span><br><span class="line">public async void Test()</span><br><span class="line">&#123;       </span><br><span class="line">    // Garnet connection</span><br><span class="line">    var garnet = new GarnetClient(&quot;localhost&quot;, 3278);</span><br><span class="line">    garnet.Connect();</span><br><span class="line">    // Test data</span><br><span class="line">    string result = await garnet.ExecuteForStringResultAsync(&quot;TEST&quot;);</span><br><span class="line"></span><br><span class="line">    Console.WriteLine($&quot;Garnet Custom Command Result: &#123;result&#125;&quot;);</span><br><span class="line"></span><br><span class="line">    // 采用redis客户端连接</span><br><span class="line">    var client = ConnectionMultiplexer.Connect(&quot;localhost:3278&quot;);</span><br><span class="line">    var db = client.GetDatabase();</span><br><span class="line"></span><br><span class="line">    RedisResult redisResult = db.Execute(&quot;TEST&quot;);</span><br><span class="line"></span><br><span class="line">    Console.WriteLine($&quot;Redis Client Custom Command Result: &#123;((string?)redisResult)&#125;&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>最后我们可以看到用两种客户端执行自定义命令都输出了同样的结果<br><img src="/images/garnet/custom-command.png" alt="custom command result"></p>
+<h1 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h1><p>Garnet作为微软最新推出的远程缓存存储系统，为开发者提供了一种全新的选择。它具有高性能、可靠性和可伸缩性的特性，适用于各种规模和类型的应用场景。通过使用Garnet，开发者可以更好地提升应用的性能和用户体验，实现业务的快速发展和持续创新。</p>
+<h1 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://microsoft.github.io/garnet/docs">Garnet 开发入门</a></li>
+</ul>
+<p>更多一手讯息，可关注公众号：<a target="_blank" rel="noopener" href="https://myom-dev.oss-cn-hangzhou.aliyuncs.com/WechatPublicPlatformQrCode.jpg">ITProHub</a></p>
+<p><img src="https://myom-dev.oss-cn-hangzhou.aliyuncs.com/WechatPublicPlatformQrCode.jpg" alt="ITProHub"></p>
+
+    </article>
+    <!-- license -->
+    
+        <div class="license-wrapper">
+            <p>原文作者：<a href="https://www.itprohub.site">乐予吕</a>
+            <p>原文链接：<a href="https://www.itprohub.site/2024/04/07/garnet/">https://www.itprohub.site/2024/04/07/garnet/</a>
+            <p>发表日期：<a href="https://www.itprohub.site/2024/04/07/garnet/">April 7th 2024, 3:24:24 pm</a>
+            <p>更新日期：<a href="https://www.itprohub.site/2024/04/07/garnet/">March 4th 2025, 7:26:14 am</a>
+            <p>版权声明：本文采用<a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
+        </div>
+    
+    <!-- paginator -->
+    <ul class="post-paginator">
+        <li class="next">
+            
+                <div class="nextSlogan">Next Post</div>
+                <a href="/2024/04/11/https/" title="HTTPS的工作原理以及安装">
+                    <div class="nextTitle">HTTPS的工作原理以及安装</div>
+                </a>
+            
+        </li>
+        <li class="previous">
+            
+                <div class="prevSlogan">Previous Post</div>
+                <a href="/2024/03/28/organization-internal-loss/" title="组织发展致命杀手：内耗">
+                    <div class="prevTitle">组织发展致命杀手：内耗</div>
+                </a>
+            
+        </li>
+    </ul>
+    <!-- comment -->
+    
+        <div class="post-comment">
+            <!-- 来必力 City 版安装代码 -->
+
+
+            
+
+            
+
+            
+
+            <!-- utteranc评论 -->
+
+
+            <!-- partial('_partial/comment/changyan') -->
+            <!--PC版-->
+
+
+            
+            
+
+            
+
+        </div>
+    
+    <!-- timeliness note -->
+    <!-- idea from: https://hexo.fluid-dev.com/posts/hexo-injector/#%E6%96%87%E7%AB%A0%E6%97%B6%E6%95%88%E6%80%A7%E6%8F%90%E7%A4%BA -->
+    
+    <!-- Mathjax -->
+    
+</main>
+
+                <!-- profile -->
+                
+            </div>
+            <footer class="footer footer-unloaded">
+    <!-- social  -->
+    
+        <div class="social">
+            
+    
+        
+            
+                <a href="mailto:287678478@qq.com" class="iconfont-archer email" title=email ></a>
+            
+        
+    
+        
+            
+                <a href="//github.com/ItProHub" class="iconfont-archer github" target="_blank" title=github></a>
+            
+        
+    
+        
+            
+                <span class="iconfont-archer wechat" title=wechat>
+                    
+                    <img class="profile-qr" src="/assets/wechat_qr.jpg" />
+                </span>
+            
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+            
+                <a href="//juejin.cn/user/1489196396594523" class="iconfont-archer juejin" target="_blank" title=juejin></a>
+            
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+
+        </div>
+    
+    <!-- powered by Hexo  -->
+    <div class="copyright">
+        <span id="hexo-power">Powered by <a href="https://www.itprohub.site/" target="_blank">ITProHub</a></span><span class="iconfont-archer power">&#xe635;</span><span id="theme-info">theme <a href="https://github.com/fi3ework/hexo-theme-archer" target="_blank">Archer</a></span>
+    </div>
+    <!-- website approve for Chinese user -->
+    
+        <div class="website-approve">
+            
+                <span id="icp-approve" class="icp-approve">
+                    <a href="https://beian.miit.gov.cn/" target="_blank">备案号：鄂ICP备2024045313号</a>
+                </span>
+            
+            
+        </div>
+    
+    <!-- 不蒜子  -->
+    
+        <div class="busuanzi-container">
+            
+            
+                <span id="busuanzi_container_site_pv">PV: <span id="busuanzi_value_site_pv"></span> :)</span>
+            
+        </div>
+    
+</footer>
+
+        </div>
+        <!-- toc -->
+        
+            <div class="toc-wrapper toc-wrapper-loding" style=
+
+
+
+
+
+
+
+    top:50vh;
+
+>
+                <div class="toc-catalog">
+                    <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
+                </div>
+                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFGarnet%EF%BC%9F"><span class="toc-number">1.</span> <span class="toc-text">什么是Garnet？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%89%B9%E6%80%A7%E5%92%8C%E4%BC%98%E5%8A%BF"><span class="toc-number">2.</span> <span class="toc-text">特性和优势</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%AB%98%E6%80%A7%E8%83%BD"><span class="toc-number">3.</span> <span class="toc-text">高性能</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%85%BC%E5%AE%B9%E6%80%A7"><span class="toc-number">4.</span> <span class="toc-text">兼容性</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%97%A5%E5%BF%97%E5%92%8C%E8%AF%8A%E6%96%AD"><span class="toc-number">5.</span> <span class="toc-text">日志和诊断</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E5%91%BD%E4%BB%A4"><span class="toc-number">6.</span> <span class="toc-text">自定义命令</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BB%93%E8%AF%AD"><span class="toc-number">7.</span> <span class="toc-text">结语</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="toc-number">8.</span> <span class="toc-text">参考文档</span></a></li></ol>
+            </div>
+        
+        <!-- sidebar -->
+        <div class="sidebar sidebar-hide">
+    <ul class="sidebar-tabs sidebar-tabs-active-0">
+        <li class="sidebar-tab-archives"><span class="iconfont-archer">&#xe67d;</span><span class="tab-name">Archive</span></li>
+        <li class="sidebar-tab-tags"><span class="iconfont-archer">&#xe61b;</span><span class="tab-name">Tag</span></li>
+        <li class="sidebar-tab-categories"><span class="iconfont-archer">&#xe666;</span><span class="tab-name">Cate</span></li>
+    </ul>
+    <div class="sidebar-content sidebar-content-show-archive">
+        <div class="sidebar-panel-archives">
+    <!-- 在 ejs 中将 archive 按照时间排序 -->
+    
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    
+    
+    
+    
+    <div class="total-and-search">
+        <div class="total-archive">
+        Total : 34
+        </div>
+        <!-- search  -->
+        
+    </div>
+    
+    <div class="post-archive">
+    
+        
+            
+            
+            <div class="archive-year"> 2025 </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/27</span>
+            <a class="archive-post-title" href="/2025/02/27/midscenejs/">AI驱动的自动化测试：探索MidScene.js的强大功能</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/21</span>
+            <a class="archive-post-title" href="/2025/02/21/function-calling/">让AI模型不再只是“说话”——探索AI模型的函数调用</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/12</span>
+            <a class="archive-post-title" href="/2025/02/12/openai-operator/">「AI」科普向 | OpenAI Operator：推动数字世界的新纪元</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/12</span>
+            <a class="archive-post-title" href="/2025/02/12/deepseek-vscode/">Cursor平替：把 DeepSeek 接入 VS Code</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/07</span>
+            <a class="archive-post-title" href="/2025/02/07/deepseek-1/">DeepSeek 本地部署+web端访问 指南</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/05</span>
+            <a class="archive-post-title" href="/2025/02/05/docker-log/">减少 Docker 日志大小：实用的日志管理指南</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">01/07</span>
+            <a class="archive-post-title" href="/2025/01/07/parallelism/">并发不是并行！</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> 2024 </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/18</span>
+            <a class="archive-post-title" href="/2024/12/18/log/">程序日志设计与存储：实践与注意事项(一)</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/16</span>
+            <a class="archive-post-title" href="/2024/12/16/web-rtc/">WebRTC入门：让浏览器之间的实时通信变得简单</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/11</span>
+            <a class="archive-post-title" href="/2024/12/11/k8s-helm/">Kubernetes 分享：如何使用 Helm 优化 Kubernetes 应用部署</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/29</span>
+            <a class="archive-post-title" href="/2024/11/29/rspack/">Rspack：一个新一代的 JavaScript 打包工具</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/20</span>
+            <a class="archive-post-title" href="/2024/11/20/mfa/">深入解读 MFA 和 TOTP 的实现原理与应用</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/08</span>
+            <a class="archive-post-title" href="/2024/11/08/stream-output/">解读大型语言模型（LLM）API：了解流式输出的工作原理</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/06</span>
+            <a class="archive-post-title" href="/2024/11/06/encrypt-hash-signature/">加密、哈希与签名：基本原理与区别解析</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/30</span>
+            <a class="archive-post-title" href="/2024/10/30/js-signal/">JavaScript 信号：如何将响应式功能带到普通 Web 开发中</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/28</span>
+            <a class="archive-post-title" href="/2024/08/28/sticky-packet/">深入探讨 TCP 粘包现象：问题、原因与解决方案</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/16</span>
+            <a class="archive-post-title" href="/2024/08/16/quic/">QUIC:被寄予厚望的下一代互联网传输协议</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/08</span>
+            <a class="archive-post-title" href="/2024/08/08/docker-layer/">深入理解容器镜像层</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/01</span>
+            <a class="archive-post-title" href="/2024/08/01/daemonset/">Kubernetes DaemonSet – 它是什么以及如何使用</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/11</span>
+            <a class="archive-post-title" href="/2024/07/11/rabbitmq-quorum/">RabbitMQ之三种队列之间的区别及如何选型</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/09</span>
+            <a class="archive-post-title" href="/2024/07/09/rabbitmq-basic/">深入理解 RabbitMQ 中的基础概念</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/08</span>
+            <a class="archive-post-title" href="/2024/07/08/docker-2/">Docker镜像构建优化</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/05</span>
+            <a class="archive-post-title" href="/2024/07/05/docker-1/">Docker隐藏在细节中的技术基础</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">06/20</span>
+            <a class="archive-post-title" href="/2024/06/20/proxy/">代理服务解析：正向代理、反向代理和透明代理</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/30</span>
+            <a class="archive-post-title" href="/2024/05/30/similar-image-search/">从零开始搭建自己的相似图片搜索引擎</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/30</span>
+            <a class="archive-post-title" href="/2024/05/30/TaskCompletionSource/">C# 学习笔记： TaskCompletionSource</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/22</span>
+            <a class="archive-post-title" href="/2024/05/22/dead-message/">深入解析消息队列中的死信队列</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/28</span>
+            <a class="archive-post-title" href="/2024/04/28/dump/">Dump分析入门指南</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> Invalid date </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span>
+            <a class="archive-post-title" href="/2025/03/04/hello-world/">欢迎来到 ITProHub！</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> 2024 </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/18</span>
+            <a class="archive-post-title" href="/2024/04/18/redis-interview-1/">Redis成长记 - Redis的陷阱（一）</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/11</span>
+            <a class="archive-post-title" href="/2024/04/11/https/">HTTPS的工作原理以及安装</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/07</span>
+            <a class="archive-post-title" href="/2024/04/07/garnet/">Garnet，缓存的新选择！</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/28</span>
+            <a class="archive-post-title" href="/2024/03/28/organization-internal-loss/">组织发展致命杀手：内耗</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/19</span>
+            <a class="archive-post-title" href="/2024/03/19/http/">深入理解 HTTP Connection 头</a>
+        </li>
+    
+    </div>
+</div>
+
+        <div class="sidebar-panel-tags">
+    <div class="sidebar-tags-name">
+        
+            <span class="sidebar-tag-name" data-tags="dump 性能 异常">
+                <span class="iconfont-archer">&#xe606;</span>
+                dump 性能 异常
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="http http协议 Connection">
+                <span class="iconfont-archer">&#xe606;</span>
+                http http协议 Connection
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="Garnet 缓存 微软">
+                <span class="iconfont-archer">&#xe606;</span>
+                Garnet 缓存 微软
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="https http ssl tls">
+                <span class="iconfont-archer">&#xe606;</span>
+                https http ssl tls
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="组织 内耗">
+                <span class="iconfont-archer">&#xe606;</span>
+                组织 内耗
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="redis 面试 求职">
+                <span class="iconfont-archer">&#xe606;</span>
+                redis 面试 求职
+            </span>
+        
+    </div>
+    <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
+    <div class="tag-load-fail" style="display: none; color: #ccc; font-size: 0.6rem;">
+        缺失模块，请参考主题文档进行安装配置：https://github.com/fi3ework/hexo-theme-archer#%E5%AE%89%E8%A3%85%E4%B8%BB%E9%A2%98
+    </div> 
+    <div class="sidebar-tags-list"></div>
+</div>
+
+        <div class="sidebar-panel-categories">
+    <div class="sidebar-categories-name">
+    
+    </div>
+    <div class="iconfont-archer sidebar-categories-empty">&#xe678;</div>
+    <div class="sidebar-categories-list"></div>
+</div>
+
+    </div>
+</div>
+
+        <!-- site-meta -->
+        <script>
+    var siteMetaRoot = "/"
+    if (siteMetaRoot === "undefined") {
+        siteMetaRoot = '/'
+    }
+    var siteMeta = {
+        url: "https://www.itprohub.site",
+        root: siteMetaRoot,
+        author: "乐予吕"
+    }
+</script>
+
+        <!-- import experimental options here -->
+        <!-- Custom Font -->
+
+
+        <!-- main func -->
+        <script src="/scripts/main.js?v=20211217"></script>
+        <!-- dark mode -->
+        <script src="/scripts/dark.js?v=20211217"></script>
+        <!-- fancybox -->
+        <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" defer></script>
+        <!-- algolia -->
+        
+        <!-- busuanzi -->
+        
+            <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+        
+        <!-- CNZZ -->
+        
+        <!-- async load share.js -->
+        
+            <script src="/scripts/share.js?v=20211217" async></script>
+        
+        <!-- mermaid -->
+        
+    </body>
+</html>

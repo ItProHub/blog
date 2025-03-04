@@ -1,0 +1,1535 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <!-- title -->
+
+
+    
+
+<!-- keywords -->
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="author" content="乐予吕">
+    <meta name="renderer" content="webkit">
+    <meta name="copyright" content="乐予吕">
+    
+        <meta name="keywords" content="hexo,ITProHub,hexo-theme,hexo-blog">
+    
+    <meta name="description" content="">
+    <meta name="description" content="引言程序日志是开发和运维过程中最常用的工具之一。日志不仅是调试和排查故障的关键依据，也是监控系统健康、分析系统性能和提升安全性的有效手段。一个好的日志系统能显著提高问题定位的效率，帮助开发人员快速识别和解决问题。然而，日志系统如果设计不当，不仅会让开发者陷入信息的海洋，还可能对系统性能产生负面影响。 本文将深入探讨如何设计一个优秀的程序日志系统，讨论优秀日志的特征，并指出在设计日志时应该避免的一些">
+<meta property="og:type" content="article">
+<meta property="og:title" content="程序日志设计与存储：实践与注意事项(一)">
+<meta property="og:url" content="https://www.itprohub.site/2024/12/18/log/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="引言程序日志是开发和运维过程中最常用的工具之一。日志不仅是调试和排查故障的关键依据，也是监控系统健康、分析系统性能和提升安全性的有效手段。一个好的日志系统能显著提高问题定位的效率，帮助开发人员快速识别和解决问题。然而，日志系统如果设计不当，不仅会让开发者陷入信息的海洋，还可能对系统性能产生负面影响。 本文将深入探讨如何设计一个优秀的程序日志系统，讨论优秀日志的特征，并指出在设计日志时应该避免的一些">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.itprohub.site/images/log/confident.png">
+<meta property="og:image" content="https://www.itprohub.site/images/log/bad.png">
+<meta property="og:image" content="https://www.itprohub.site/images/log/whoami.jpg">
+<meta property="article:published_time" content="2024-12-18T16:34:05.000Z">
+<meta property="article:modified_time" content="2025-03-04T07:26:14.683Z">
+<meta property="article:author" content="乐予吕">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.itprohub.site/images/log/confident.png">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="icon" href="/assets/favicon.ico">
+    
+    <title>程序日志设计与存储：实践与注意事项(一) · 个人技术日常分享</title>
+    <!-- /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+/* This file is meant as a standalone workflow for
+- testing support for link[rel=preload]
+- enabling async CSS loading in browsers that do not support rel=preload
+- applying rel preload css once loaded, whether supported or not.
+*/ -->
+<script>
+    (function (w) {
+        'use strict'
+        // rel=preload support test
+        if (!w.loadCSS) {
+            w.loadCSS = function () {}
+        }
+        // define on the loadCSS obj
+        var rp = (loadCSS.relpreload = {})
+        // rel=preload feature support test
+        // runs once and returns a function for compat purposes
+        rp.support = (function () {
+            var ret
+            try {
+                ret = w.document.createElement('link').relList.supports('preload')
+            } catch (e) {
+                ret = false
+            }
+            return function () {
+                return ret
+            }
+        })()
+
+        // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+        // then change that media back to its intended value on load
+        rp.bindMediaToggle = function (link) {
+            // remember existing media attr for ultimate state, or default to 'all'
+            var finalMedia = link.media || 'all'
+
+            function enableStylesheet() {
+                link.media = finalMedia
+            }
+
+            // bind load handlers to enable media
+            if (link.addEventListener) {
+                link.addEventListener('load', enableStylesheet)
+            } else if (link.attachEvent) {
+                link.attachEvent('onload', enableStylesheet)
+            }
+
+            // Set rel and non-applicable media type to start an async request
+            // note: timeout allows this to happen async to let rendering continue in IE
+            setTimeout(function () {
+                link.rel = 'stylesheet'
+                link.media = 'only x'
+            })
+            // also enable media after 3 seconds,
+            // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+            setTimeout(enableStylesheet, 3000)
+        }
+
+        // loop through link elements in DOM
+        rp.poly = function () {
+            // double check this to prevent external calls from running
+            if (rp.support()) {
+                return
+            }
+            var links = w.document.getElementsByTagName('link')
+            for (var i = 0; i < links.length; i++) {
+                var link = links[i]
+                // qualify links to those with rel=preload and as=style attrs
+                if (
+                    link.rel === 'preload' &&
+                    link.getAttribute('as') === 'style' &&
+                    !link.getAttribute('data-loadcss')
+                ) {
+                    // prevent rerunning on link
+                    link.setAttribute('data-loadcss', true)
+                    // bind listeners to toggle media back
+                    rp.bindMediaToggle(link)
+                }
+            }
+        }
+
+        // if unsupported, run the polyfill
+        if (!rp.support()) {
+            // run once at least
+            rp.poly()
+
+            // rerun poly on an interval until onload
+            var run = w.setInterval(rp.poly, 500)
+            if (w.addEventListener) {
+                w.addEventListener('load', function () {
+                    rp.poly()
+                    w.clearInterval(run)
+                })
+            } else if (w.attachEvent) {
+                w.attachEvent('onload', function () {
+                    rp.poly()
+                    w.clearInterval(run)
+                })
+            }
+        }
+
+        // commonjs
+        if (typeof exports !== 'undefined') {
+            exports.loadCSS = loadCSS
+        } else {
+            w.loadCSS = loadCSS
+        }
+    })(typeof global !== 'undefined' ? global : this)
+</script>
+
+    <style type="text/css">
+    @font-face {
+        font-family: 'Oswald-Regular';
+        src: url("/font/Oswald-Regular.ttf");
+    }
+
+    body {
+        margin: 0;
+    }
+
+    header,
+    footer,
+    .back-top,
+    .sidebar,
+    .container,
+    .site-intro-meta,
+    .toc-wrapper {
+        display: none;
+    }
+
+    .site-intro {
+        position: relative;
+        z-index: 3;
+        width: 100%;
+        /* height: 50vh; */
+        overflow: hidden;
+    }
+
+    .site-intro-placeholder {
+        position: absolute;
+        z-index: -2;
+        top: 0;
+        left: 0;
+        width: calc(100% + 300px);
+        height: 100%;
+        background: repeating-linear-gradient(-45deg, #444 0, #444 80px, #333 80px, #333 160px);
+        background-position: center center;
+        transform: translate3d(-226px, 0, 0);
+        animation: gradient-move 2.5s ease-out 0s infinite;
+    }
+
+    @keyframes gradient-move {
+        0% {
+            transform: translate3d(-226px, 0, 0);
+        }
+        100% {
+            transform: translate3d(0, 0, 0);
+        }
+    }
+</style>
+
+    <link rel="preload" href="/css/style.css?v=20211217" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="/css/dark.css?v=20211217" as="style">
+    <link rel="stylesheet" href="/css/dark.css">
+    <link rel="stylesheet" href="/css/mobile.css?v=20211217" media="(max-width: 960px)">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" as="script">
+    <link rel="preload" href="/scripts/main.js?v=20211217" as="script">
+    <link rel="preload" href="/scripts/dark.js?v=20211217" as="script">
+    <link rel="preload" href="/font/Oswald-Regular.ttf" as="font" crossorigin>
+    <link rel="preload" href="https://at.alicdn.com/t/font_327081_1dta1rlogw17zaor.woff" as="font" crossorigin>
+    <!-- algolia -->
+    
+    <!-- 百度统计  -->
+    
+    <!-- Google tag (gtag.js) -->
+    
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6058253486086884"
+    crossorigin="anonymous"></script>
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>    
+    <script type="text/javascript">
+        if (typeof window.$ == undefined) {
+            console.warn('jquery load from jsdelivr failed, will load local script')
+            document.write('<script src="/lib/jquery.min.js" />')
+        }
+    </script>
+    
+        <body class="post-body">
+    
+        <!-- header -->
+        <header class="header header-mobile">
+    <!-- top read progress line -->
+    <div class="header-element">
+        <div class="read-progress"></div>
+    </div>
+    <!-- sidebar menu button -->
+    <div class="header-element">
+        
+            <div class="header-sidebar-menu">
+        
+            
+                <div style="padding-left: 1px;">&#xe775;</div>
+            
+        </div>
+    </div>
+    <!-- header actions -->
+    <div class="header-actions">
+        <!-- theme mode switch button -->
+        <span class="header-theme-btn header-element">
+            <i class="fas fa-adjust"></i>
+        </span>
+        <!-- back to home page text -->
+        <span class="home-link header-element">
+            <a href=/>个人技术日常分享</a>
+        </span>
+    </div>
+    <!-- toggle banner for post layout -->
+    
+        
+            <div class="banner">
+        
+            <div class="blog-title header-element">
+                <a href="/">个人技术日常分享</a>
+            </div>
+            <div class="post-title header-element">
+                <a href="#" class="post-name">程序日志设计与存储：实践与注意事项(一)</a>
+            </div>
+        </div>
+    
+</header>
+
+        <!-- fixed footer -->
+        <footer class="footer-fixed">
+    <!-- back to top button -->
+    <div class="footer-fixed-element">
+        
+            <div class="back-top back-top-hidden">
+        
+        
+            <div>&#xe639;</div>
+        
+        </div>
+    </div>
+</footer>
+
+        <!-- wrapper -->
+        <div class="wrapper">
+            <div class="site-intro" style="
+
+
+
+
+
+
+
+    height:50vh;
+
+">
+    
+    <!-- 主页  -->
+    
+        
+    <!-- 404页  -->
+    
+    <div class="site-intro-placeholder"></div>
+    <div class="site-intro-img" style="background-image: url(/intro/post-bg.jpg)"></div>
+    <div class="site-intro-meta">
+        <!-- 标题  -->
+        <h1 class="intro-title">
+            <!-- 主页  -->
+            
+                程序日志设计与存储：实践与注意事项(一)
+            <!-- 404 -->
+            
+        </h1>
+        <!-- 副标题 -->
+        <p class="intro-subtitle">
+            <!-- 主页副标题  -->
+            
+                
+            <!-- 404 -->
+            
+        </p>
+        <!-- 文章页 meta -->
+        
+            <div class="post-intros">
+                <!-- 文章页标签  -->
+                
+                    <div class= post-intro-tags >
+    
+    
+</div>
+
+                
+                <!-- 文章字数统计 -->
+                
+                <div class="post-intro-meta">
+                    <!-- 撰写日期 -->
+                    <span class="iconfont-archer post-intro-calander">&#xe676;</span>
+                    <span class="post-intro-time">2024/12/18</span>
+                    <!-- busuanzi -->
+                    
+                        <span id="busuanzi_container_page_pv" class="busuanzi-pv">
+                            <span class="iconfont-archer post-intro-busuanzi">&#xe602;</span>
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    
+                    <!-- 文章分享 -->
+                    <span class="share-wrapper">
+                        <span class="iconfont-archer share-icon">&#xe71d;</span>
+                        <span class="share-text">Share</span>
+                        <ul class="share-list">
+                            <li class="iconfont-archer share-qr" data-type="qr">&#xe75b;
+                                <div class="share-qrcode"></div>
+                            </li>
+                            <li class="iconfont-archer" data-type="weibo">&#xe619;</li>
+                            <li class="iconfont-archer" data-type="qzone">&#xe62e;</li>
+                            <li class="iconfont-archer" data-type="twitter">&#xe634;</li>
+                            <li class="iconfont-archer" data-type="facebook">&#xe67a;</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
+        
+    </div>
+</div>
+
+            <script>
+  // get user agent
+  function getBrowserVersions() {
+    var u = window.navigator.userAgent
+    return {
+      userAgent: u,
+      trident: u.indexOf('Trident') > -1, //IE内核
+      presto: u.indexOf('Presto') > -1, //opera内核
+      webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+      gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
+      mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
+      ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+      android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器
+      iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者安卓QQ浏览器
+      iPad: u.indexOf('iPad') > -1, //是否为iPad
+      webApp: u.indexOf('Safari') == -1, //是否为web应用程序，没有头部与底部
+      weixin: u.indexOf('MicroMessenger') == -1, //是否为微信浏览器
+      uc: u.indexOf('UCBrowser') > -1, //是否为android下的UC浏览器
+    }
+  }
+  var browser = {
+    versions: getBrowserVersions(),
+  }
+  console.log('userAgent: ' + browser.versions.userAgent)
+
+  // callback
+  function fontLoaded() {
+    console.log('font loaded')
+    if (document.getElementsByClassName('site-intro-meta')) {
+      document
+        .getElementsByClassName('intro-title')[0]
+        .classList.add('intro-fade-in')
+      document
+        .getElementsByClassName('intro-subtitle')[0]
+        .classList.add('intro-fade-in')
+      var postIntros = document.getElementsByClassName('post-intros')[0]
+      if (postIntros) {
+        postIntros.classList.add('post-fade-in')
+      }
+    }
+  }
+
+  // UC不支持跨域，所以直接显示
+  function asyncCb() {
+    if (browser.versions.uc) {
+      console.log('UCBrowser')
+      fontLoaded()
+    } else {
+      WebFont.load({
+        custom: {
+          families: ['Oswald-Regular'],
+        },
+        loading: function () {
+          // 所有字体开始加载
+          // console.log('font loading');
+        },
+        active: function () {
+          // 所有字体已渲染
+          fontLoaded()
+        },
+        inactive: function () {
+          // 字体预加载失败，无效字体或浏览器不支持加载
+          console.log('inactive: timeout')
+          fontLoaded()
+        },
+        timeout: 5000, // Set the timeout to two seconds
+      })
+    }
+  }
+
+  function asyncErr() {
+    console.warn('script load from CDN failed, will load local script')
+  }
+
+  // load webfont-loader async, and add callback function
+  function async(u, cb, err) {
+    var d = document,
+      t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0]
+    o.src = u
+    if (cb) {
+      o.addEventListener(
+        'load',
+        function (e) {
+          cb(null, e)
+        },
+        false
+      )
+    }
+    if (err) {
+      o.addEventListener(
+        'error',
+        function (e) {
+          err(null, e)
+        },
+        false
+      )
+    }
+    s.parentNode.insertBefore(o, s)
+  }
+
+  var asyncLoadWithFallBack = function (arr, success, reject) {
+    var currReject = function () {
+      reject()
+      arr.shift()
+      if (arr.length) async(arr[0], success, currReject)
+    }
+
+    async(arr[0], success, currReject)
+  }
+
+  asyncLoadWithFallBack(
+    [
+      'https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js',
+      'https://cdn.bootcss.com/webfont/1.6.28/webfontloader.js',
+      "/lib/webfontloader.min.js",
+    ],
+    asyncCb,
+    asyncErr
+  )
+</script>
+
+            <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
+            <div class="container container-unloaded">
+                <main class="main post-page">
+    <article class="article-entry">
+        <h1 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h1><p>程序日志是开发和运维过程中最常用的工具之一。日志不仅是调试和排查故障的关键依据，也是监控系统健康、分析系统性能和提升安全性的有效手段。一个好的日志系统能显著提高问题定位的效率，帮助开发人员快速识别和解决问题。然而，日志系统如果设计不当，不仅会让开发者陷入信息的海洋，还可能对系统性能产生负面影响。</p>
+<p>本文将深入探讨如何设计一个优秀的程序日志系统，讨论优秀日志的特征，并指出在设计日志时应该避免的一些常见问题。</p>
+<hr>
+<h1 id="什么样的程序日志是优秀的？"><a href="#什么样的程序日志是优秀的？" class="headerlink" title="什么样的程序日志是优秀的？"></a>什么样的程序日志是优秀的？</h1><p>之所以想写这篇文章，源于前几天被其他部门的同事拉去看个问题。我问：有日志么？ 他回复：链路日志应有尽有。</p>
+<p><img src="/./images/log/confident.png" alt="自信"><br>结果我实际看到的是这样的场景是下面这样的</p>
+<p><img src="/./images/log/bad.png" alt="日志"></p>
+<p>怎么说呢？你说他没有日志吧，他有。你说他有日志，但是日志内容很糟糕，跟没有没啥区别。</p>
+<p>这让我很疑惑，为什么会出现这种情况呢？ 我开始思考，这是因为没有设计好日志系统么？ 于是我开始思考日志系统。</p>
+<p>在谈什么样的日志是优秀的日志之前，首先我们来分析一下上面的日志存在什么问题？或者说什么样的日志是糟糕的日志。</p>
+<p><strong>不好的程序日志往往存在以下几个问题：</strong></p>
+<p>2.1. 缺乏结构，信息混乱<br>在没有规范的日志设计中，日志通常是以纯文本的形式输出，甚至不同的开发者使用不同的格式记录信息，导致日志内容混乱且难以解析。例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Error at line 34</span><br><span class="line">Server is down</span><br><span class="line">User failed to login</span><br></pre></td></tr></table></figure>
+<p>这种日志不仅无法清晰表达出问题发生的时间、上下文和严重性，而且在海量日志中也不容易进行搜索和过滤。</p>
+<p>2.2. 信息过于简单，缺少上下文<br>日志如果只记录了简单的信息，往往无法帮助开发者快速定位问题。例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ERROR: Login failed</span><br></pre></td></tr></table></figure>
+<p>没有包含关键信息，如失败的用户名、请求的IP地址、错误的具体原因等，导致开发者在查看日志时无法准确还原发生的具体场景，增加了调试的难度。</p>
+<p><img src="/./images/log/whoami.jpg" alt="我是谁"></p>
+<p>2.3. 日志内容冗余，冗长无效<br>有些日志记录过于冗长，包含大量不必要的信息。例如，记录每个 HTTP 请求的请求头、请求体等详细信息，可能会导致日志文件膨胀，查找有用信息的难度增加。举例如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">INFO: Request started</span><br><span class="line">INFO: Request body: &#123; &quot;username&quot;: &quot;johndoe&quot;, &quot;password&quot;: &quot;123456&quot; &#125;</span><br><span class="line">INFO: Headers: &#123; &quot;Authorization&quot;: &quot;Bearer token123&quot; &#125;</span><br><span class="line">INFO: Response status: 200</span><br><span class="line">INFO: Response body: &#123; &quot;message&quot;: &quot;success&quot; &#125;</span><br></pre></td></tr></table></figure>
+<p>虽然这些信息看似完整，但在某些情况下，过度记录请求和响应的细节反而会使日志分析变得更加困难。开发者更关心的是请求的结果（如成功或失败）和关键的错误信息，而不是每个请求的具体细节。</p>
+<p>2.4. 没有日志级别，信息无法筛选<br>如果程序中没有使用日志级别（如 INFO、DEBUG、ERROR），日志信息就很容易变得杂乱无章。开发者在调试时很难快速找到关键信息。例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">A critical error occurred while processing the request.</span><br></pre></td></tr></table></figure>
+<p>如果日志中没有明确的级别，那么开发者就无法快速区分出哪些日志是正常的信息，哪些日志是需要关注的错误或警告信息。</p>
+<p>优秀的程序日志应该具备以下几个特征：</p>
+<h2 id="1-结构化日志"><a href="#1-结构化日志" class="headerlink" title="1. 结构化日志"></a>1. 结构化日志</h2><p>结构化日志是指日志内容被组织成易于解析的格式，如 JSON 或其他键值对格式。这种格式便于机器处理和分析，且能够与其他系统（如 Elasticsearch、Kibana）无缝对接。</p>
+<p><strong>优秀的日志示例（JSON 格式）：</strong></p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">复制代码</span><br><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;timestamp&quot;</span><span class="punctuation">:</span> <span class="string">&quot;2024-12-18T14:05:23.123Z&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;level&quot;</span><span class="punctuation">:</span> <span class="string">&quot;INFO&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;message&quot;</span><span class="punctuation">:</span> <span class="string">&quot;User login successful&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;user_id&quot;</span><span class="punctuation">:</span> <span class="number">12345</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;ip_address&quot;</span><span class="punctuation">:</span> <span class="string">&quot;192.168.1.1&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;request_id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;xyz123&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;duration_ms&quot;</span><span class="punctuation">:</span> <span class="number">150</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<p><strong>为什么结构化日志优秀？</strong></p>
+<ul>
+<li>可搜索和分析：结构化的格式使得日志内容更易于被查询、过滤和分析。例如，我们可以根据 level 来筛选错误日志，根据 user_id 查看某个用户的所有操作日志。</li>
+<li>与日志系统兼容：结构化日志特别适用于与日志聚合和分析工具（如 Elasticsearch、Splunk、Kibana）集成。这些工具可以高效地解析和展示日志数据，提供更强大的查询和可视化功能。</li>
+</ul>
+<h2 id="2-日志级别"><a href="#2-日志级别" class="headerlink" title="2. 日志级别"></a>2. 日志级别</h2><p>日志级别是日志信息的重要分类，有助于按重要性和紧急程度区分日志。常见的日志级别有：</p>
+<ul>
+<li>DEBUG：调试信息，帮助开发者了解程序运行的细节。</li>
+<li>INFO：常规信息，表示程序的正常运行过程。</li>
+<li>WARN：警告信息，表示系统出现了潜在问题，但不影响程序的正常运行。</li>
+<li>ERROR：错误信息，表示程序出现了异常，需要处理。</li>
+<li>FATAL：致命错误，表示程序无法继续运行，通常需要立即修复。</li>
+</ul>
+<p><strong>为什么使用日志级别？</strong></p>
+<ul>
+<li>便于筛选和定位问题：不同的日志级别让我们能够快速定位问题所在。例如，在生产环境中，通常只会关注 ERROR 和 WARN 级别的日志，而在开发环境中则可以查看 DEBUG 级别的日志进行详细调试。</li>
+<li>优化性能：合理的日志级别能够避免不必要的日志输出，减少日志的生成和存储开销，尤其是在高并发的生产环境中。</li>
+</ul>
+<h2 id="3-上下文信息"><a href="#3-上下文信息" class="headerlink" title="3. 上下文信息"></a>3. 上下文信息</h2><p>日志应该包含足够的上下文信息，以便在出现问题时能够迅速定位和分析。例如，可以包含请求 ID、用户 ID、IP 地址、会话信息等。这样，即使日志是分散的，也能将它们联系起来，追溯问题的根源。</p>
+<p>就像</p>
+<p><strong>优秀的日志应包含的上下文信息：</strong></p>
+<ul>
+<li>请求 ID：帮助将一个请求的所有相关日志关联起来，特别是在微服务架构中，跟踪一个请求跨多个服务的执行。</li>
+<li>用户信息：如用户 ID 或用户名，能够帮助分析用户行为。</li>
+<li>机器或服务信息：如服务器的主机名或容器 ID，可以帮助确定问题是否与某个具体的节点或服务相关。</li>
+<li>异常堆栈跟踪：对于错误日志，堆栈信息能帮助开发者快速定位错误发生的地方。</li>
+</ul>
+<h2 id="4-日志可读性"><a href="#4-日志可读性" class="headerlink" title="4. 日志可读性"></a>4. 日志可读性</h2><p>虽然日志是为机器设计的，但它们也应该具有良好的可读性，尤其是在调试和分析时。尽管结构化日志能够被自动解析，但如果能够增加一些清晰的说明性文字，或者确保日志中的信息清晰易懂，开发者将能够更高效地进行排查。</p>
+<h1 id="设计日志的过程中应避免的问题"><a href="#设计日志的过程中应避免的问题" class="headerlink" title="设计日志的过程中应避免的问题"></a>设计日志的过程中应避免的问题</h1><p>在设计日志时，很多常见的问题如果没有处理好，可能导致日志系统的不完善甚至是负担。以下是设计日志时需要避免的一些常见问题：</p>
+<h2 id="1-日志信息过于冗长"><a href="#1-日志信息过于冗长" class="headerlink" title="1. 日志信息过于冗长"></a>1. 日志信息过于冗长</h2><p>许多开发者在记录日志时，往往倾向于记录过多的信息，导致日志过于冗长且不易处理。过多的日志信息不仅会占用磁盘空间，还可能导致日志查询的效率大幅降低。</p>
+<p><strong>避免措施：</strong></p>
+<p>确保每条日志都包含足够的信息，但不要重复记录无关信息。<br>对于 DEBUG 级别的日志，可以选择性记录详细信息，避免在生产环境中输出过多的无关数据。<br>使用合适的日志级别来控制信息的详细程度，避免将低级别日志用于重要的生产环境。</p>
+<h2 id="2-日志格式不统一"><a href="#2-日志格式不统一" class="headerlink" title="2. 日志格式不统一"></a>2. 日志格式不统一</h2><p>日志格式不统一会导致后期日志分析困难，尤其是在多个团队协作或者使用不同的语言和框架时。不同格式的日志可能使得聚合工具（如 Elasticsearch）无法正确解析和展示数据。</p>
+<p><strong>避免措施：</strong></p>
+<p>采用统一的日志格式，尽量使用结构化日志（如 JSON）。<br>定义标准的日志模板和规范，确保所有团队成员都遵循相同的日志输出格式。<br>对于日志内容中的时间戳、级别、消息等字段，制定一致的命名和格式规则。</p>
+<h2 id="3-忽略日志的性能影响"><a href="#3-忽略日志的性能影响" class="headerlink" title="3. 忽略日志的性能影响"></a>3. 忽略日志的性能影响</h2><p>日志记录虽然有助于调试和监控，但不合理的日志策略可能会影响程序的性能，特别是在高并发的环境下。如果日志记录过于频繁或数据量过大，可能会导致 I&#x2F;O 阻塞、磁盘空间耗尽或系统性能下降。</p>
+<p><strong>避免措施：</strong></p>
+<p>对于高频调用的部分，避免过于详细的日志记录。可以使用延迟记录、批量日志等方式减少日志对性能的影响。<br>使用异步日志记录机制，确保日志的输出不会阻塞主业务流程。<br>设定日志的生命周期，定期清理过时的日志，避免日志文件过大。</p>
+<h2 id="4-缺乏追踪和关联能力"><a href="#4-缺乏追踪和关联能力" class="headerlink" title="4. 缺乏追踪和关联能力"></a>4. 缺乏追踪和关联能力</h2><p>在分布式系统中，单独的日志往往无法提供足够的信息来追踪请求的全生命周期。因此，如果没有适当的追踪机制（如 trace_id），很难在多个服务之间建立关联，尤其是在出现故障时。</p>
+<p><strong>避免措施：</strong></p>
+<p>在每条日志中添加请求 ID、用户 ID 或 trace_id 等关键信息。<br>在微服务架构中，确保日志能够跨服务传播，并与分布式追踪系统（如 Jaeger）结合使用。</p>
+<h2 id="5-没有有效的日志存储与管理方案"><a href="#5-没有有效的日志存储与管理方案" class="headerlink" title="5. 没有有效的日志存储与管理方案"></a>5. 没有有效的日志存储与管理方案</h2><p>当日志量变得非常庞大时，存储和管理日志的方式也显得尤为重要。没有合适的存储方案，可能会导致日志丢失或查询困难。</p>
+<p><strong>避免措施：</strong></p>
+<p>使用集中式日志系统（如 Elasticsearch + Kibana）存储和分析日志，确保日志数据的可靠性和可查询性。<br>配置日志的生命周期管理（如定期归档和删除旧日志）以节省存储空间。<br>考虑使用日志聚合工具（如 Logstash、Filebeat）来收集和转发日志。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>一个优秀的程序日志系统不仅仅是记录信息，它是一个强大的工具，可以帮助开发者快速定位问题、提升系统的可维护性和可扩展性。设计日志时，我们应该注重日志的结构化、可读性、上下文信息以及日志级别的合理使用。同时，要避免日志冗长、格式不统一、性能问题、缺乏追踪能力等常见陷阱。</p>
+<p>通过合理设计日志系统，结合现代的日志存储和分析工具（如 Elasticsearch 和 Kibana），我们能够大大提升日志的可用性，从而提升系统的可靠性和开发效率。</p>
+<p>由于篇幅原因，我们将ES+Kibana+Jaeger的日志设计和存储放在下一篇文章中。</p>
+
+    </article>
+    <!-- license -->
+    
+        <div class="license-wrapper">
+            <p>原文作者：<a href="https://www.itprohub.site">乐予吕</a>
+            <p>原文链接：<a href="https://www.itprohub.site/2024/12/18/log/">https://www.itprohub.site/2024/12/18/log/</a>
+            <p>发表日期：<a href="https://www.itprohub.site/2024/12/18/log/">December 18th 2024, 4:34:05 pm</a>
+            <p>更新日期：<a href="https://www.itprohub.site/2024/12/18/log/">March 4th 2025, 7:26:14 am</a>
+            <p>版权声明：本文采用<a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
+        </div>
+    
+    <!-- paginator -->
+    <ul class="post-paginator">
+        <li class="next">
+            
+                <div class="nextSlogan">Next Post</div>
+                <a href="/2025/01/07/parallelism/" title="并发不是并行！">
+                    <div class="nextTitle">并发不是并行！</div>
+                </a>
+            
+        </li>
+        <li class="previous">
+            
+                <div class="prevSlogan">Previous Post</div>
+                <a href="/2024/12/16/web-rtc/" title="WebRTC入门：让浏览器之间的实时通信变得简单">
+                    <div class="prevTitle">WebRTC入门：让浏览器之间的实时通信变得简单</div>
+                </a>
+            
+        </li>
+    </ul>
+    <!-- comment -->
+    
+        <div class="post-comment">
+            <!-- 来必力 City 版安装代码 -->
+
+
+            
+
+            
+
+            
+
+            <!-- utteranc评论 -->
+
+
+            <!-- partial('_partial/comment/changyan') -->
+            <!--PC版-->
+
+
+            
+            
+
+            
+
+        </div>
+    
+    <!-- timeliness note -->
+    <!-- idea from: https://hexo.fluid-dev.com/posts/hexo-injector/#%E6%96%87%E7%AB%A0%E6%97%B6%E6%95%88%E6%80%A7%E6%8F%90%E7%A4%BA -->
+    
+    <!-- Mathjax -->
+    
+</main>
+
+                <!-- profile -->
+                
+            </div>
+            <footer class="footer footer-unloaded">
+    <!-- social  -->
+    
+        <div class="social">
+            
+    
+        
+            
+                <a href="mailto:287678478@qq.com" class="iconfont-archer email" title=email ></a>
+            
+        
+    
+        
+            
+                <a href="//github.com/ItProHub" class="iconfont-archer github" target="_blank" title=github></a>
+            
+        
+    
+        
+            
+                <span class="iconfont-archer wechat" title=wechat>
+                    
+                    <img class="profile-qr" src="/assets/wechat_qr.jpg" />
+                </span>
+            
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+            
+                <a href="//juejin.cn/user/1489196396594523" class="iconfont-archer juejin" target="_blank" title=juejin></a>
+            
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+
+        </div>
+    
+    <!-- powered by Hexo  -->
+    <div class="copyright">
+        <span id="hexo-power">Powered by <a href="https://www.itprohub.site/" target="_blank">ITProHub</a></span><span class="iconfont-archer power">&#xe635;</span><span id="theme-info">theme <a href="https://github.com/fi3ework/hexo-theme-archer" target="_blank">Archer</a></span>
+    </div>
+    <!-- website approve for Chinese user -->
+    
+        <div class="website-approve">
+            
+                <span id="icp-approve" class="icp-approve">
+                    <a href="https://beian.miit.gov.cn/" target="_blank">备案号：鄂ICP备2024045313号</a>
+                </span>
+            
+            
+        </div>
+    
+    <!-- 不蒜子  -->
+    
+        <div class="busuanzi-container">
+            
+            
+                <span id="busuanzi_container_site_pv">PV: <span id="busuanzi_value_site_pv"></span> :)</span>
+            
+        </div>
+    
+</footer>
+
+        </div>
+        <!-- toc -->
+        
+            <div class="toc-wrapper toc-wrapper-loding" style=
+
+
+
+
+
+
+
+    top:50vh;
+
+>
+                <div class="toc-catalog">
+                    <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
+                </div>
+                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%BC%95%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">引言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%A0%B7%E7%9A%84%E7%A8%8B%E5%BA%8F%E6%97%A5%E5%BF%97%E6%98%AF%E4%BC%98%E7%A7%80%E7%9A%84%EF%BC%9F"><span class="toc-number">2.</span> <span class="toc-text">什么样的程序日志是优秀的？</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E7%BB%93%E6%9E%84%E5%8C%96%E6%97%A5%E5%BF%97"><span class="toc-number">2.1.</span> <span class="toc-text">1. 结构化日志</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E6%97%A5%E5%BF%97%E7%BA%A7%E5%88%AB"><span class="toc-number">2.2.</span> <span class="toc-text">2. 日志级别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E4%B8%8A%E4%B8%8B%E6%96%87%E4%BF%A1%E6%81%AF"><span class="toc-number">2.3.</span> <span class="toc-text">3. 上下文信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E6%97%A5%E5%BF%97%E5%8F%AF%E8%AF%BB%E6%80%A7"><span class="toc-number">2.4.</span> <span class="toc-text">4. 日志可读性</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%AE%BE%E8%AE%A1%E6%97%A5%E5%BF%97%E7%9A%84%E8%BF%87%E7%A8%8B%E4%B8%AD%E5%BA%94%E9%81%BF%E5%85%8D%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-number">3.</span> <span class="toc-text">设计日志的过程中应避免的问题</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E6%97%A5%E5%BF%97%E4%BF%A1%E6%81%AF%E8%BF%87%E4%BA%8E%E5%86%97%E9%95%BF"><span class="toc-number">3.1.</span> <span class="toc-text">1. 日志信息过于冗长</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E6%97%A5%E5%BF%97%E6%A0%BC%E5%BC%8F%E4%B8%8D%E7%BB%9F%E4%B8%80"><span class="toc-number">3.2.</span> <span class="toc-text">2. 日志格式不统一</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E5%BF%BD%E7%95%A5%E6%97%A5%E5%BF%97%E7%9A%84%E6%80%A7%E8%83%BD%E5%BD%B1%E5%93%8D"><span class="toc-number">3.3.</span> <span class="toc-text">3. 忽略日志的性能影响</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E7%BC%BA%E4%B9%8F%E8%BF%BD%E8%B8%AA%E5%92%8C%E5%85%B3%E8%81%94%E8%83%BD%E5%8A%9B"><span class="toc-number">3.4.</span> <span class="toc-text">4. 缺乏追踪和关联能力</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E6%B2%A1%E6%9C%89%E6%9C%89%E6%95%88%E7%9A%84%E6%97%A5%E5%BF%97%E5%AD%98%E5%82%A8%E4%B8%8E%E7%AE%A1%E7%90%86%E6%96%B9%E6%A1%88"><span class="toc-number">3.5.</span> <span class="toc-text">5. 没有有效的日志存储与管理方案</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">4.</span> <span class="toc-text">总结</span></a></li></ol>
+            </div>
+        
+        <!-- sidebar -->
+        <div class="sidebar sidebar-hide">
+    <ul class="sidebar-tabs sidebar-tabs-active-0">
+        <li class="sidebar-tab-archives"><span class="iconfont-archer">&#xe67d;</span><span class="tab-name">Archive</span></li>
+        <li class="sidebar-tab-tags"><span class="iconfont-archer">&#xe61b;</span><span class="tab-name">Tag</span></li>
+        <li class="sidebar-tab-categories"><span class="iconfont-archer">&#xe666;</span><span class="tab-name">Cate</span></li>
+    </ul>
+    <div class="sidebar-content sidebar-content-show-archive">
+        <div class="sidebar-panel-archives">
+    <!-- 在 ejs 中将 archive 按照时间排序 -->
+    
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    
+    
+    
+    
+    <div class="total-and-search">
+        <div class="total-archive">
+        Total : 34
+        </div>
+        <!-- search  -->
+        
+    </div>
+    
+    <div class="post-archive">
+    
+        
+            
+            
+            <div class="archive-year"> 2025 </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/27</span>
+            <a class="archive-post-title" href="/2025/02/27/midscenejs/">AI驱动的自动化测试：探索MidScene.js的强大功能</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/21</span>
+            <a class="archive-post-title" href="/2025/02/21/function-calling/">让AI模型不再只是“说话”——探索AI模型的函数调用</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/12</span>
+            <a class="archive-post-title" href="/2025/02/12/openai-operator/">「AI」科普向 | OpenAI Operator：推动数字世界的新纪元</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/12</span>
+            <a class="archive-post-title" href="/2025/02/12/deepseek-vscode/">Cursor平替：把 DeepSeek 接入 VS Code</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/07</span>
+            <a class="archive-post-title" href="/2025/02/07/deepseek-1/">DeepSeek 本地部署+web端访问 指南</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/05</span>
+            <a class="archive-post-title" href="/2025/02/05/docker-log/">减少 Docker 日志大小：实用的日志管理指南</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">01/07</span>
+            <a class="archive-post-title" href="/2025/01/07/parallelism/">并发不是并行！</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> 2024 </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/18</span>
+            <a class="archive-post-title" href="/2024/12/18/log/">程序日志设计与存储：实践与注意事项(一)</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/16</span>
+            <a class="archive-post-title" href="/2024/12/16/web-rtc/">WebRTC入门：让浏览器之间的实时通信变得简单</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/11</span>
+            <a class="archive-post-title" href="/2024/12/11/k8s-helm/">Kubernetes 分享：如何使用 Helm 优化 Kubernetes 应用部署</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/29</span>
+            <a class="archive-post-title" href="/2024/11/29/rspack/">Rspack：一个新一代的 JavaScript 打包工具</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/20</span>
+            <a class="archive-post-title" href="/2024/11/20/mfa/">深入解读 MFA 和 TOTP 的实现原理与应用</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/08</span>
+            <a class="archive-post-title" href="/2024/11/08/stream-output/">解读大型语言模型（LLM）API：了解流式输出的工作原理</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/06</span>
+            <a class="archive-post-title" href="/2024/11/06/encrypt-hash-signature/">加密、哈希与签名：基本原理与区别解析</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/30</span>
+            <a class="archive-post-title" href="/2024/10/30/js-signal/">JavaScript 信号：如何将响应式功能带到普通 Web 开发中</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/28</span>
+            <a class="archive-post-title" href="/2024/08/28/sticky-packet/">深入探讨 TCP 粘包现象：问题、原因与解决方案</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/16</span>
+            <a class="archive-post-title" href="/2024/08/16/quic/">QUIC:被寄予厚望的下一代互联网传输协议</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/08</span>
+            <a class="archive-post-title" href="/2024/08/08/docker-layer/">深入理解容器镜像层</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/01</span>
+            <a class="archive-post-title" href="/2024/08/01/daemonset/">Kubernetes DaemonSet – 它是什么以及如何使用</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/11</span>
+            <a class="archive-post-title" href="/2024/07/11/rabbitmq-quorum/">RabbitMQ之三种队列之间的区别及如何选型</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/09</span>
+            <a class="archive-post-title" href="/2024/07/09/rabbitmq-basic/">深入理解 RabbitMQ 中的基础概念</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/08</span>
+            <a class="archive-post-title" href="/2024/07/08/docker-2/">Docker镜像构建优化</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/05</span>
+            <a class="archive-post-title" href="/2024/07/05/docker-1/">Docker隐藏在细节中的技术基础</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">06/20</span>
+            <a class="archive-post-title" href="/2024/06/20/proxy/">代理服务解析：正向代理、反向代理和透明代理</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/30</span>
+            <a class="archive-post-title" href="/2024/05/30/similar-image-search/">从零开始搭建自己的相似图片搜索引擎</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/30</span>
+            <a class="archive-post-title" href="/2024/05/30/TaskCompletionSource/">C# 学习笔记： TaskCompletionSource</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/22</span>
+            <a class="archive-post-title" href="/2024/05/22/dead-message/">深入解析消息队列中的死信队列</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/28</span>
+            <a class="archive-post-title" href="/2024/04/28/dump/">Dump分析入门指南</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> Invalid date </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span>
+            <a class="archive-post-title" href="/2025/03/04/hello-world/">欢迎来到 ITProHub！</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> 2024 </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/18</span>
+            <a class="archive-post-title" href="/2024/04/18/redis-interview-1/">Redis成长记 - Redis的陷阱（一）</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/11</span>
+            <a class="archive-post-title" href="/2024/04/11/https/">HTTPS的工作原理以及安装</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/07</span>
+            <a class="archive-post-title" href="/2024/04/07/garnet/">Garnet，缓存的新选择！</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/28</span>
+            <a class="archive-post-title" href="/2024/03/28/organization-internal-loss/">组织发展致命杀手：内耗</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/19</span>
+            <a class="archive-post-title" href="/2024/03/19/http/">深入理解 HTTP Connection 头</a>
+        </li>
+    
+    </div>
+</div>
+
+        <div class="sidebar-panel-tags">
+    <div class="sidebar-tags-name">
+        
+            <span class="sidebar-tag-name" data-tags="dump 性能 异常">
+                <span class="iconfont-archer">&#xe606;</span>
+                dump 性能 异常
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="http http协议 Connection">
+                <span class="iconfont-archer">&#xe606;</span>
+                http http协议 Connection
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="Garnet 缓存 微软">
+                <span class="iconfont-archer">&#xe606;</span>
+                Garnet 缓存 微软
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="https http ssl tls">
+                <span class="iconfont-archer">&#xe606;</span>
+                https http ssl tls
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="组织 内耗">
+                <span class="iconfont-archer">&#xe606;</span>
+                组织 内耗
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="redis 面试 求职">
+                <span class="iconfont-archer">&#xe606;</span>
+                redis 面试 求职
+            </span>
+        
+    </div>
+    <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
+    <div class="tag-load-fail" style="display: none; color: #ccc; font-size: 0.6rem;">
+        缺失模块，请参考主题文档进行安装配置：https://github.com/fi3ework/hexo-theme-archer#%E5%AE%89%E8%A3%85%E4%B8%BB%E9%A2%98
+    </div> 
+    <div class="sidebar-tags-list"></div>
+</div>
+
+        <div class="sidebar-panel-categories">
+    <div class="sidebar-categories-name">
+    
+    </div>
+    <div class="iconfont-archer sidebar-categories-empty">&#xe678;</div>
+    <div class="sidebar-categories-list"></div>
+</div>
+
+    </div>
+</div>
+
+        <!-- site-meta -->
+        <script>
+    var siteMetaRoot = "/"
+    if (siteMetaRoot === "undefined") {
+        siteMetaRoot = '/'
+    }
+    var siteMeta = {
+        url: "https://www.itprohub.site",
+        root: siteMetaRoot,
+        author: "乐予吕"
+    }
+</script>
+
+        <!-- import experimental options here -->
+        <!-- Custom Font -->
+
+
+        <!-- main func -->
+        <script src="/scripts/main.js?v=20211217"></script>
+        <!-- dark mode -->
+        <script src="/scripts/dark.js?v=20211217"></script>
+        <!-- fancybox -->
+        <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" defer></script>
+        <!-- algolia -->
+        
+        <!-- busuanzi -->
+        
+            <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+        
+        <!-- CNZZ -->
+        
+        <!-- async load share.js -->
+        
+            <script src="/scripts/share.js?v=20211217" async></script>
+        
+        <!-- mermaid -->
+        
+    </body>
+</html>

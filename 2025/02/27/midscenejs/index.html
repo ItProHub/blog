@@ -1,0 +1,1556 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <!-- title -->
+
+
+    
+
+<!-- keywords -->
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="author" content="乐予吕">
+    <meta name="renderer" content="webkit">
+    <meta name="copyright" content="乐予吕">
+    
+        <meta name="keywords" content="hexo,ITProHub,hexo-theme,hexo-blog">
+    
+    <meta name="description" content="">
+    <meta name="description" content="随着AI快速发展，AI技术可以说已经渗透到了我们的生活和工作中。在开发领域，代码生成工具可以说是百花齐放，无处不在。而测试工具就寥寥无几了。 在现代Web开发中，自动化测试已经成为提高开发效率和保证代码质量的重要手段。随着前端应用变得越来越复杂，传统的UI自动化测试方法面临着一些挑战，例如页面结构变化、动态内容加载等问题。为了解决这些问题，字节跳动推出了 MidScene.js ——一款AI驱动的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AI驱动的自动化测试：探索MidScene.js的强大功能">
+<meta property="og:url" content="https://www.itprohub.site/2025/02/27/midscenejs/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="随着AI快速发展，AI技术可以说已经渗透到了我们的生活和工作中。在开发领域，代码生成工具可以说是百花齐放，无处不在。而测试工具就寥寥无几了。 在现代Web开发中，自动化测试已经成为提高开发效率和保证代码质量的重要手段。随着前端应用变得越来越复杂，传统的UI自动化测试方法面临着一些挑战，例如页面结构变化、动态内容加载等问题。为了解决这些问题，字节跳动推出了 MidScene.js ——一款AI驱动的">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.itprohub.site/images/midscenejs/bg.png">
+<meta property="og:image" content="https://www.itprohub.site/images/midscenejs/principle.png">
+<meta property="og:image" content="https://www.itprohub.site/images/midscenejs/login.png">
+<meta property="og:image" content="https://www.itprohub.site/images/midscenejs/playwright-report.png">
+<meta property="og:image" content="https://www.itprohub.site/images/midscenejs/midscene-login.gif">
+<meta property="og:image" content="https://www.itprohub.site/images/midscenejs/login-result.png">
+<meta property="og:image" content="https://www.itprohub.site/images/midscenejs/login-report.png">
+<meta property="og:image" content="https://www.itprohub.site/images/midscenejs/midscene-locate.png">
+<meta property="og:image" content="https://www.itprohub.site/images/midscenejs/fail.png">
+<meta property="article:published_time" content="2025-02-27T14:10:28.000Z">
+<meta property="article:modified_time" content="2025-03-04T07:26:14.684Z">
+<meta property="article:author" content="乐予吕">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.itprohub.site/images/midscenejs/bg.png">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="icon" href="/assets/favicon.ico">
+    
+    <title>AI驱动的自动化测试：探索MidScene.js的强大功能 · 个人技术日常分享</title>
+    <!-- /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+/* This file is meant as a standalone workflow for
+- testing support for link[rel=preload]
+- enabling async CSS loading in browsers that do not support rel=preload
+- applying rel preload css once loaded, whether supported or not.
+*/ -->
+<script>
+    (function (w) {
+        'use strict'
+        // rel=preload support test
+        if (!w.loadCSS) {
+            w.loadCSS = function () {}
+        }
+        // define on the loadCSS obj
+        var rp = (loadCSS.relpreload = {})
+        // rel=preload feature support test
+        // runs once and returns a function for compat purposes
+        rp.support = (function () {
+            var ret
+            try {
+                ret = w.document.createElement('link').relList.supports('preload')
+            } catch (e) {
+                ret = false
+            }
+            return function () {
+                return ret
+            }
+        })()
+
+        // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+        // then change that media back to its intended value on load
+        rp.bindMediaToggle = function (link) {
+            // remember existing media attr for ultimate state, or default to 'all'
+            var finalMedia = link.media || 'all'
+
+            function enableStylesheet() {
+                link.media = finalMedia
+            }
+
+            // bind load handlers to enable media
+            if (link.addEventListener) {
+                link.addEventListener('load', enableStylesheet)
+            } else if (link.attachEvent) {
+                link.attachEvent('onload', enableStylesheet)
+            }
+
+            // Set rel and non-applicable media type to start an async request
+            // note: timeout allows this to happen async to let rendering continue in IE
+            setTimeout(function () {
+                link.rel = 'stylesheet'
+                link.media = 'only x'
+            })
+            // also enable media after 3 seconds,
+            // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+            setTimeout(enableStylesheet, 3000)
+        }
+
+        // loop through link elements in DOM
+        rp.poly = function () {
+            // double check this to prevent external calls from running
+            if (rp.support()) {
+                return
+            }
+            var links = w.document.getElementsByTagName('link')
+            for (var i = 0; i < links.length; i++) {
+                var link = links[i]
+                // qualify links to those with rel=preload and as=style attrs
+                if (
+                    link.rel === 'preload' &&
+                    link.getAttribute('as') === 'style' &&
+                    !link.getAttribute('data-loadcss')
+                ) {
+                    // prevent rerunning on link
+                    link.setAttribute('data-loadcss', true)
+                    // bind listeners to toggle media back
+                    rp.bindMediaToggle(link)
+                }
+            }
+        }
+
+        // if unsupported, run the polyfill
+        if (!rp.support()) {
+            // run once at least
+            rp.poly()
+
+            // rerun poly on an interval until onload
+            var run = w.setInterval(rp.poly, 500)
+            if (w.addEventListener) {
+                w.addEventListener('load', function () {
+                    rp.poly()
+                    w.clearInterval(run)
+                })
+            } else if (w.attachEvent) {
+                w.attachEvent('onload', function () {
+                    rp.poly()
+                    w.clearInterval(run)
+                })
+            }
+        }
+
+        // commonjs
+        if (typeof exports !== 'undefined') {
+            exports.loadCSS = loadCSS
+        } else {
+            w.loadCSS = loadCSS
+        }
+    })(typeof global !== 'undefined' ? global : this)
+</script>
+
+    <style type="text/css">
+    @font-face {
+        font-family: 'Oswald-Regular';
+        src: url("/font/Oswald-Regular.ttf");
+    }
+
+    body {
+        margin: 0;
+    }
+
+    header,
+    footer,
+    .back-top,
+    .sidebar,
+    .container,
+    .site-intro-meta,
+    .toc-wrapper {
+        display: none;
+    }
+
+    .site-intro {
+        position: relative;
+        z-index: 3;
+        width: 100%;
+        /* height: 50vh; */
+        overflow: hidden;
+    }
+
+    .site-intro-placeholder {
+        position: absolute;
+        z-index: -2;
+        top: 0;
+        left: 0;
+        width: calc(100% + 300px);
+        height: 100%;
+        background: repeating-linear-gradient(-45deg, #444 0, #444 80px, #333 80px, #333 160px);
+        background-position: center center;
+        transform: translate3d(-226px, 0, 0);
+        animation: gradient-move 2.5s ease-out 0s infinite;
+    }
+
+    @keyframes gradient-move {
+        0% {
+            transform: translate3d(-226px, 0, 0);
+        }
+        100% {
+            transform: translate3d(0, 0, 0);
+        }
+    }
+</style>
+
+    <link rel="preload" href="/css/style.css?v=20211217" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="/css/dark.css?v=20211217" as="style">
+    <link rel="stylesheet" href="/css/dark.css">
+    <link rel="stylesheet" href="/css/mobile.css?v=20211217" media="(max-width: 960px)">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" as="script">
+    <link rel="preload" href="/scripts/main.js?v=20211217" as="script">
+    <link rel="preload" href="/scripts/dark.js?v=20211217" as="script">
+    <link rel="preload" href="/font/Oswald-Regular.ttf" as="font" crossorigin>
+    <link rel="preload" href="https://at.alicdn.com/t/font_327081_1dta1rlogw17zaor.woff" as="font" crossorigin>
+    <!-- algolia -->
+    
+    <!-- 百度统计  -->
+    
+    <!-- Google tag (gtag.js) -->
+    
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6058253486086884"
+    crossorigin="anonymous"></script>
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>    
+    <script type="text/javascript">
+        if (typeof window.$ == undefined) {
+            console.warn('jquery load from jsdelivr failed, will load local script')
+            document.write('<script src="/lib/jquery.min.js" />')
+        }
+    </script>
+    
+        <body class="post-body">
+    
+        <!-- header -->
+        <header class="header header-mobile">
+    <!-- top read progress line -->
+    <div class="header-element">
+        <div class="read-progress"></div>
+    </div>
+    <!-- sidebar menu button -->
+    <div class="header-element">
+        
+            <div class="header-sidebar-menu">
+        
+            
+                <div style="padding-left: 1px;">&#xe775;</div>
+            
+        </div>
+    </div>
+    <!-- header actions -->
+    <div class="header-actions">
+        <!-- theme mode switch button -->
+        <span class="header-theme-btn header-element">
+            <i class="fas fa-adjust"></i>
+        </span>
+        <!-- back to home page text -->
+        <span class="home-link header-element">
+            <a href=/>个人技术日常分享</a>
+        </span>
+    </div>
+    <!-- toggle banner for post layout -->
+    
+        
+            <div class="banner">
+        
+            <div class="blog-title header-element">
+                <a href="/">个人技术日常分享</a>
+            </div>
+            <div class="post-title header-element">
+                <a href="#" class="post-name">AI驱动的自动化测试：探索MidScene.js的强大功能</a>
+            </div>
+        </div>
+    
+</header>
+
+        <!-- fixed footer -->
+        <footer class="footer-fixed">
+    <!-- back to top button -->
+    <div class="footer-fixed-element">
+        
+            <div class="back-top back-top-hidden">
+        
+        
+            <div>&#xe639;</div>
+        
+        </div>
+    </div>
+</footer>
+
+        <!-- wrapper -->
+        <div class="wrapper">
+            <div class="site-intro" style="
+
+
+
+
+
+
+
+    height:50vh;
+
+">
+    
+    <!-- 主页  -->
+    
+        
+    <!-- 404页  -->
+    
+    <div class="site-intro-placeholder"></div>
+    <div class="site-intro-img" style="background-image: url(/intro/post-bg.jpg)"></div>
+    <div class="site-intro-meta">
+        <!-- 标题  -->
+        <h1 class="intro-title">
+            <!-- 主页  -->
+            
+                AI驱动的自动化测试：探索MidScene.js的强大功能
+            <!-- 404 -->
+            
+        </h1>
+        <!-- 副标题 -->
+        <p class="intro-subtitle">
+            <!-- 主页副标题  -->
+            
+                
+            <!-- 404 -->
+            
+        </p>
+        <!-- 文章页 meta -->
+        
+            <div class="post-intros">
+                <!-- 文章页标签  -->
+                
+                    <div class= post-intro-tags >
+    
+    
+</div>
+
+                
+                <!-- 文章字数统计 -->
+                
+                <div class="post-intro-meta">
+                    <!-- 撰写日期 -->
+                    <span class="iconfont-archer post-intro-calander">&#xe676;</span>
+                    <span class="post-intro-time">2025/02/27</span>
+                    <!-- busuanzi -->
+                    
+                        <span id="busuanzi_container_page_pv" class="busuanzi-pv">
+                            <span class="iconfont-archer post-intro-busuanzi">&#xe602;</span>
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    
+                    <!-- 文章分享 -->
+                    <span class="share-wrapper">
+                        <span class="iconfont-archer share-icon">&#xe71d;</span>
+                        <span class="share-text">Share</span>
+                        <ul class="share-list">
+                            <li class="iconfont-archer share-qr" data-type="qr">&#xe75b;
+                                <div class="share-qrcode"></div>
+                            </li>
+                            <li class="iconfont-archer" data-type="weibo">&#xe619;</li>
+                            <li class="iconfont-archer" data-type="qzone">&#xe62e;</li>
+                            <li class="iconfont-archer" data-type="twitter">&#xe634;</li>
+                            <li class="iconfont-archer" data-type="facebook">&#xe67a;</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
+        
+    </div>
+</div>
+
+            <script>
+  // get user agent
+  function getBrowserVersions() {
+    var u = window.navigator.userAgent
+    return {
+      userAgent: u,
+      trident: u.indexOf('Trident') > -1, //IE内核
+      presto: u.indexOf('Presto') > -1, //opera内核
+      webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+      gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
+      mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
+      ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+      android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器
+      iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者安卓QQ浏览器
+      iPad: u.indexOf('iPad') > -1, //是否为iPad
+      webApp: u.indexOf('Safari') == -1, //是否为web应用程序，没有头部与底部
+      weixin: u.indexOf('MicroMessenger') == -1, //是否为微信浏览器
+      uc: u.indexOf('UCBrowser') > -1, //是否为android下的UC浏览器
+    }
+  }
+  var browser = {
+    versions: getBrowserVersions(),
+  }
+  console.log('userAgent: ' + browser.versions.userAgent)
+
+  // callback
+  function fontLoaded() {
+    console.log('font loaded')
+    if (document.getElementsByClassName('site-intro-meta')) {
+      document
+        .getElementsByClassName('intro-title')[0]
+        .classList.add('intro-fade-in')
+      document
+        .getElementsByClassName('intro-subtitle')[0]
+        .classList.add('intro-fade-in')
+      var postIntros = document.getElementsByClassName('post-intros')[0]
+      if (postIntros) {
+        postIntros.classList.add('post-fade-in')
+      }
+    }
+  }
+
+  // UC不支持跨域，所以直接显示
+  function asyncCb() {
+    if (browser.versions.uc) {
+      console.log('UCBrowser')
+      fontLoaded()
+    } else {
+      WebFont.load({
+        custom: {
+          families: ['Oswald-Regular'],
+        },
+        loading: function () {
+          // 所有字体开始加载
+          // console.log('font loading');
+        },
+        active: function () {
+          // 所有字体已渲染
+          fontLoaded()
+        },
+        inactive: function () {
+          // 字体预加载失败，无效字体或浏览器不支持加载
+          console.log('inactive: timeout')
+          fontLoaded()
+        },
+        timeout: 5000, // Set the timeout to two seconds
+      })
+    }
+  }
+
+  function asyncErr() {
+    console.warn('script load from CDN failed, will load local script')
+  }
+
+  // load webfont-loader async, and add callback function
+  function async(u, cb, err) {
+    var d = document,
+      t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0]
+    o.src = u
+    if (cb) {
+      o.addEventListener(
+        'load',
+        function (e) {
+          cb(null, e)
+        },
+        false
+      )
+    }
+    if (err) {
+      o.addEventListener(
+        'error',
+        function (e) {
+          err(null, e)
+        },
+        false
+      )
+    }
+    s.parentNode.insertBefore(o, s)
+  }
+
+  var asyncLoadWithFallBack = function (arr, success, reject) {
+    var currReject = function () {
+      reject()
+      arr.shift()
+      if (arr.length) async(arr[0], success, currReject)
+    }
+
+    async(arr[0], success, currReject)
+  }
+
+  asyncLoadWithFallBack(
+    [
+      'https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js',
+      'https://cdn.bootcss.com/webfont/1.6.28/webfontloader.js',
+      "/lib/webfontloader.min.js",
+    ],
+    asyncCb,
+    asyncErr
+  )
+</script>
+
+            <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
+            <div class="container container-unloaded">
+                <main class="main post-page">
+    <article class="article-entry">
+        <p>随着AI快速发展，AI技术可以说已经渗透到了我们的生活和工作中。在开发领域，代码生成工具可以说是百花齐放，无处不在。而测试工具就寥寥无几了。</p>
+<p>在现代Web开发中，自动化测试已经成为提高开发效率和保证代码质量的重要手段。随着前端应用变得越来越复杂，传统的UI自动化测试方法面临着一些挑战，例如页面结构变化、动态内容加载等问题。为了解决这些问题，字节跳动推出了 MidScene.js ——一款AI驱动的UI自动化测试工具，旨在通过智能识别UI组件，帮助开发者更高效地进行自动化测试。它的目标是通过AI技术，自动识别和操作UI元素，从而进行自动化测试。与传统的基于选择器（如ID、class等）定位元素的自动化测试工具不同，MidScene.js通过机器视觉、图像识别和文本分析来识别和操作页面元素。</p>
+<p>在本文中，我们将深入探讨 MidScene.js 的工作原理、使用场景以及如何在项目中利用它进行UI自动化测试。<br><img src="/./images/midscenejs/bg.png" alt="midscenejs"></p>
+<h1 id="MidScene-js的工作原理"><a href="#MidScene-js的工作原理" class="headerlink" title="MidScene.js的工作原理"></a>MidScene.js的工作原理</h1><p>MidScene.js 的核心原理是通过AI来分析页面内容，识别UI组件，并模拟用户操作。它的工作流程可以分为以下几个步骤：</p>
+<p><img src="/./images/midscenejs/principle.png" alt="工作原理"></p>
+<ol>
+<li>页面截图与UI元素分析</li>
+</ol>
+<ul>
+<li>MidScene.js首先对页面进行截图或解析DOM，捕捉页面的视觉内容。</li>
+<li>然后，利用AI技术分析页面中的各种元素（按钮、输入框、图片等），并识别它们的功能和行为。</li>
+</ul>
+<ol start="2">
+<li>元素定位与事件触发</li>
+</ol>
+<ul>
+<li>识别到UI元素后，MidScene.js通过AI定位它们的位置和交互方式，不需要依赖传统的CSS选择器。</li>
+<li>一旦定位到目标元素，它会模拟用户操作，如点击、输入、滑动等，触发相应的事件。</li>
+</ul>
+<ol start="3">
+<li>状态验证与测试反馈</li>
+</ol>
+<ul>
+<li>在执行操作后，MidScene.js会检查页面的反馈，验证UI是否按照预期行为进行反应。</li>
+<li>如果出现异常或不符合预期的行为，MidScene.js会生成详细的测试报告。</li>
+</ul>
+<h1 id="MidScene-js到底怎么样？"><a href="#MidScene-js到底怎么样？" class="headerlink" title="MidScene.js到底怎么样？"></a>MidScene.js到底怎么样？</h1><p>为了帮助大家更好地理解如何使用MidScene.js，以及MidScene.js到底效果怎么样。 下面我们通过一系列简单的场景，展示如何通过MidScene.js进行UI测试。同时我们把playwright和midscenejs的测试过程和结果进行对比。通过对比让大家更好地理解MidScene.js的强大功能。</p>
+<h2 id="登录页面自动化测试"><a href="#登录页面自动化测试" class="headerlink" title="登录页面自动化测试"></a>登录页面自动化测试</h2><p>登录可以说是web应用测试中的代表场景之一了。这里我实现了一个简单的测试场景，实现登录页面的自动化测试。<br><img src="/./images/midscenejs/login.png" alt="登录页面"></p>
+<h3 id="playwright"><a href="#playwright" class="headerlink" title="playwright"></a>playwright</h3><p>playwright测试脚本如下</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; test, expect &#125; <span class="keyword">from</span> <span class="string">&#x27;@playwright/test&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="title function_">test</span>(<span class="string">&#x27;用户可以成功登录&#x27;</span>, <span class="title function_">async</span> (&#123; page &#125;) =&gt; &#123;</span><br><span class="line">  <span class="comment">// 1. 访问登录页面</span></span><br><span class="line">  <span class="keyword">await</span> page.<span class="title function_">goto</span>(<span class="string">&#x27;http://localhost:8000/login.html&#x27;</span>);</span><br><span class="line">  <span class="comment">// 2. 输入用户名和密码</span></span><br><span class="line">  <span class="keyword">await</span> page.<span class="title function_">fill</span>(<span class="string">&#x27;input[name=&quot;username&quot;]&#x27;</span>, <span class="string">&#x27;admin&#x27;</span>);</span><br><span class="line">  <span class="keyword">await</span> page.<span class="title function_">fill</span>(<span class="string">&#x27;input[name=&quot;password&quot;]&#x27;</span>, <span class="string">&#x27;1234&#x27;</span>);</span><br><span class="line">  <span class="comment">// 3. 点击登录按钮</span></span><br><span class="line">  <span class="keyword">await</span> page.<span class="title function_">click</span>(<span class="string">&#x27;input[type=&quot;submit&quot;]&#x27;</span>);</span><br><span class="line">  <span class="comment">// 4. 断言是否跳转到首页或某个特定页面</span></span><br><span class="line">  <span class="keyword">await</span> <span class="title function_">expect</span>(page).<span class="title function_">toHaveURL</span>(<span class="regexp">/.*list.*/</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>测试报告如下<br><img src="/./images/midscenejs/playwright-report.png" alt="playwright测试报告"></p>
+<h3 id="MidScene-js"><a href="#MidScene-js" class="headerlink" title="MidScene.js"></a>MidScene.js</h3><p>这款 AI 工具最令人兴奋的一点是它能够使用<font color="#dd0000">自然语言</font>。只需描述测试步骤要做什么，它就可以开始。</p>
+<p>MidScene.js测试脚本如下</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; <span class="title class_">AgentOverChromeBridge</span> &#125; <span class="keyword">from</span> <span class="string">&quot;@midscene/web/bridge-mode&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> * <span class="keyword">as</span> dotenv <span class="keyword">from</span> <span class="string">&#x27;dotenv&#x27;</span>;</span><br><span class="line"></span><br><span class="line">dotenv.<span class="title function_">config</span>();</span><br><span class="line"><span class="keyword">const</span> <span class="title function_">sleep</span> = (<span class="params">ms</span>) =&gt; <span class="keyword">new</span> <span class="title class_">Promise</span>(<span class="function">(<span class="params">r</span>) =&gt;</span> <span class="built_in">setTimeout</span>(r, ms));</span><br><span class="line"><span class="title class_">Promise</span>.<span class="title function_">resolve</span>(</span><br><span class="line">  (<span class="title function_">async</span> () =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> agent = <span class="keyword">new</span> <span class="title class_">AgentOverChromeBridge</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">await</span> agent.<span class="title function_">connectNewTabWithUrl</span>(<span class="string">&quot;http://localhost:8000/login.html&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">await</span> agent.<span class="title function_">ai</span>(<span class="string">&#x27;在“用户名”输入框里面输入“admin”&#x27;</span>);</span><br><span class="line">    <span class="keyword">await</span> agent.<span class="title function_">ai</span>(<span class="string">&#x27;在“密码”输入框里面输入“1234”&#x27;</span>);</span><br><span class="line">    <span class="keyword">await</span> agent.<span class="title function_">ai</span>(<span class="string">&#x27;点击“登录”按钮&#x27;</span>);</span><br><span class="line">    <span class="keyword">await</span> <span class="title function_">sleep</span>(<span class="number">3000</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">await</span> agent.<span class="title function_">aiAssert</span>(<span class="string">&quot;跳转&#x27;键盘列表&#x27;页面”&quot;</span>);</span><br><span class="line">    <span class="keyword">await</span> agent.<span class="title function_">destroy</span>();</span><br><span class="line">  &#125;)()</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<p>测试过程如下，这里我用的桥接模式进行测试的，方便大家看到整个过程。<br><img src="/./images/midscenejs/midscene-login.gif" alt="测试过程"><br>每次测试脚本执行完成之后midscene会生成一份测试报告<br><img src="/./images/midscenejs/login-result.png" alt="测试报告"><br>我们可以看到具体的测试结果<br><img src="/./images/midscenejs/login-report.png" alt="测试结果"></p>
+<h3 id="对比"><a href="#对比" class="headerlink" title="对比"></a>对比</h3><p>从这个场景中我们大致可以得出以下结论：</p>
+<ol>
+<li>可写&#x2F;读性：</li>
+</ol>
+<ul>
+<li><p>👍 可书写算是一大亮点吧 ，大大降低了维护自动化脚本对前端的要求。可读性那必须是MidScene的强项了，基本上是所见即所得，完全不需要去找元素对应。</p>
+</li>
+<li><p>👎没有办法隐藏一些敏感信息（用户名和密码），需要在提示词中直接发送这些内容，而如果没有 Midscene.js，可以在单独的数据文件中隐藏它们。</p>
+</li>
+<li><p>👎阅读起来可能比较冗长。 比起代码来说，描述起来的文本可能会稍微长一些。</p>
+</li>
+</ul>
+<ol start="2">
+<li>执行时间：</li>
+</ol>
+<ul>
+<li><p>👎由于 Midscene.js 依赖第三方的AI 提供支持还需要屏幕截图，因此执行时间非常慢。AI 需要时间来规划和“思考”它需要做什么。报告和 JSON 输出清楚地显示了完成每项任务所需的时间。</p>
+</li>
+<li><p>👎在 Playwright 中，通过角色（role）定位元素是一种推荐的做法，并且能够自然地测试 Web 应用的无障碍性（a11y）。而 Midscene.js 使用的是截图方式，因此偏离了这种做法。</p>
+</li>
+</ul>
+<p>  <img src="/./images/midscenejs/midscene-locate.png" alt="定位"></p>
+<p>  整个运行事件也基本上在我们的预期里面吧</p>
+<ul>
+<li>MidScene.js 的执行时间在 36 秒左右。</li>
+<li>Playwright 的执行时间在 5 秒左右。</li>
+</ul>
+<ol start="3">
+<li>可维护性：</li>
+</ol>
+<ul>
+<li>👍如果重构我们上面的登录页面（ ID、标签），测试用例可能仍会正确执行所有的操作。但是如果是 Playwright 就需要做些维护工作了。</li>
+<li>👎如果需要对测试脚本进行维护，调试过程将是反复试错。我们需要通过反复更改测试的提示词来进行。</li>
+<li>👎Playwright 测试是采用 页面对象模式编写的，这有助于保持代码的可维护性和可扩展性。而在 Midscene.js 中，测试是直接写在测试文件中的，这正是 Midscene.js 设计的初衷。因此，虽然使用自然语言编写测试速度快且简单，但如果需要修改多个测试文件，将会变得非常麻烦。</li>
+</ul>
+<h2 id="登录失败案例"><a href="#登录失败案例" class="headerlink" title="登录失败案例"></a>登录失败案例</h2><p>下面我们来看一个失败的测试案例，看看MidScene.js到底有多智能。</p>
+<p>更改上面登录的脚本，把密码改成错误的密码，看看测试结果如何。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="title class_">Promise</span>.<span class="title function_">resolve</span>(</span><br><span class="line">  (<span class="title function_">async</span> () =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> agent = <span class="keyword">new</span> <span class="title class_">AgentOverChromeBridge</span>();</span><br><span class="line">    <span class="keyword">await</span> agent.<span class="title function_">connectNewTabWithUrl</span>(<span class="string">&quot;http://localhost:8000/login.html&quot;</span>);</span><br><span class="line">    <span class="keyword">await</span> agent.<span class="title function_">ai</span>(<span class="string">&#x27;在“用户名”输入框里面输入“admin”&#x27;</span>);</span><br><span class="line">    <span class="keyword">await</span> agent.<span class="title function_">ai</span>(<span class="string">&#x27;在“密码”输入框里面输入“wrong password”&#x27;</span>);</span><br><span class="line">    <span class="keyword">await</span> agent.<span class="title function_">ai</span>(<span class="string">&#x27;点击“登录”按钮&#x27;</span>);</span><br><span class="line">    <span class="keyword">await</span> <span class="title function_">sleep</span>(<span class="number">3000</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">await</span> agent.<span class="title function_">aiAssert</span>(<span class="string">&quot;用户无法登录&quot;</span>);</span><br><span class="line">    <span class="keyword">await</span> agent.<span class="title function_">destroy</span>();</span><br><span class="line">  &#125;)()</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<p>查看报告的结果可以很好的让我们知道它是如何做的断言, 断言也是根据语义结合具体的场景来判断的，非常的灵活！<br><img src="/./images/midscenejs/fail.png" alt="失败案例"></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>通过AI驱动的 MidScene.js，开发者可以轻松进行自动化UI测试，减少传统UI测试中的元素选择和维护负担。它能够适应动态变化的UI，智能识别和操作页面元素，极大地提升了自动化测试的效率和准确性。无论是回归测试，还是复杂UI交互的自动化，MidScene.js都能够为开发者提供强大的支持。</p>
+<h2 id="优势："><a href="#优势：" class="headerlink" title="优势："></a>优势：</h2><ul>
+<li>快速的初始和用例编写，易于使用，简单、快捷</li>
+<li>适应动态变化的UI</li>
+<li>可读性（自然语言）</li>
+<li>可能是一个很好的UI自动化测试工具</li>
+</ul>
+<h2 id="劣势："><a href="#劣势：" class="headerlink" title="劣势："></a>劣势：</h2><ul>
+<li>执行时间较长</li>
+<li>缺乏使用变量的能力</li>
+<li>仅捕获当前窗口中可见的内容 </li>
+<li>需要一个框架来在提示中使用正确的语言，以提高操作和断言的准确性（否则可能需要反复调试，或者同一个测试用例偶发失败的问题）</li>
+<li>第三方AI需要读取浏览器截图，是否可能存在安全问题（第三方AI是否会存储截图？）</li>
+</ul>
+<p>希望这篇文章能帮助你更好地理解和使用MidScene.js，如果你有任何问题或建议，欢迎在评论区留言！感兴趣的老铁也可以访问<a target="_blank" rel="noopener" href="https://midscenejs.com/">MidScene.js</a>的官网了解更多信息，也可访问老夫的<a target="_blank" rel="noopener" href="https://github.com/ItProHub/midscenejs">GitHub</a>获取完整的示例代码</p>
+
+    </article>
+    <!-- license -->
+    
+        <div class="license-wrapper">
+            <p>原文作者：<a href="https://www.itprohub.site">乐予吕</a>
+            <p>原文链接：<a href="https://www.itprohub.site/2025/02/27/midscenejs/">https://www.itprohub.site/2025/02/27/midscenejs/</a>
+            <p>发表日期：<a href="https://www.itprohub.site/2025/02/27/midscenejs/">February 27th 2025, 2:10:28 pm</a>
+            <p>更新日期：<a href="https://www.itprohub.site/2025/02/27/midscenejs/">March 4th 2025, 7:26:14 am</a>
+            <p>版权声明：本文采用<a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
+        </div>
+    
+    <!-- paginator -->
+    <ul class="post-paginator">
+        <li class="next">
+            
+                <div class="nextSlogan">Next Post</div>
+                <a href="/2025/03/04/hello-world/" title="欢迎来到 ITProHub！">
+                    <div class="nextTitle">欢迎来到 ITProHub！</div>
+                </a>
+            
+        </li>
+        <li class="previous">
+            
+                <div class="prevSlogan">Previous Post</div>
+                <a href="/2025/02/21/function-calling/" title="让AI模型不再只是“说话”——探索AI模型的函数调用">
+                    <div class="prevTitle">让AI模型不再只是“说话”——探索AI模型的函数调用</div>
+                </a>
+            
+        </li>
+    </ul>
+    <!-- comment -->
+    
+        <div class="post-comment">
+            <!-- 来必力 City 版安装代码 -->
+
+
+            
+
+            
+
+            
+
+            <!-- utteranc评论 -->
+
+
+            <!-- partial('_partial/comment/changyan') -->
+            <!--PC版-->
+
+
+            
+            
+
+            
+
+        </div>
+    
+    <!-- timeliness note -->
+    <!-- idea from: https://hexo.fluid-dev.com/posts/hexo-injector/#%E6%96%87%E7%AB%A0%E6%97%B6%E6%95%88%E6%80%A7%E6%8F%90%E7%A4%BA -->
+    
+    <!-- Mathjax -->
+    
+</main>
+
+                <!-- profile -->
+                
+            </div>
+            <footer class="footer footer-unloaded">
+    <!-- social  -->
+    
+        <div class="social">
+            
+    
+        
+            
+                <a href="mailto:287678478@qq.com" class="iconfont-archer email" title=email ></a>
+            
+        
+    
+        
+            
+                <a href="//github.com/ItProHub" class="iconfont-archer github" target="_blank" title=github></a>
+            
+        
+    
+        
+            
+                <span class="iconfont-archer wechat" title=wechat>
+                    
+                    <img class="profile-qr" src="/assets/wechat_qr.jpg" />
+                </span>
+            
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+            
+                <a href="//juejin.cn/user/1489196396594523" class="iconfont-archer juejin" target="_blank" title=juejin></a>
+            
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+
+        </div>
+    
+    <!-- powered by Hexo  -->
+    <div class="copyright">
+        <span id="hexo-power">Powered by <a href="https://www.itprohub.site/" target="_blank">ITProHub</a></span><span class="iconfont-archer power">&#xe635;</span><span id="theme-info">theme <a href="https://github.com/fi3ework/hexo-theme-archer" target="_blank">Archer</a></span>
+    </div>
+    <!-- website approve for Chinese user -->
+    
+        <div class="website-approve">
+            
+                <span id="icp-approve" class="icp-approve">
+                    <a href="https://beian.miit.gov.cn/" target="_blank">备案号：鄂ICP备2024045313号</a>
+                </span>
+            
+            
+        </div>
+    
+    <!-- 不蒜子  -->
+    
+        <div class="busuanzi-container">
+            
+            
+                <span id="busuanzi_container_site_pv">PV: <span id="busuanzi_value_site_pv"></span> :)</span>
+            
+        </div>
+    
+</footer>
+
+        </div>
+        <!-- toc -->
+        
+            <div class="toc-wrapper toc-wrapper-loding" style=
+
+
+
+
+
+
+
+    top:50vh;
+
+>
+                <div class="toc-catalog">
+                    <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
+                </div>
+                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#MidScene-js%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="toc-number">1.</span> <span class="toc-text">MidScene.js的工作原理</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#MidScene-js%E5%88%B0%E5%BA%95%E6%80%8E%E4%B9%88%E6%A0%B7%EF%BC%9F"><span class="toc-number">2.</span> <span class="toc-text">MidScene.js到底怎么样？</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%99%BB%E5%BD%95%E9%A1%B5%E9%9D%A2%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95"><span class="toc-number">2.1.</span> <span class="toc-text">登录页面自动化测试</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#playwright"><span class="toc-number">2.1.1.</span> <span class="toc-text">playwright</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MidScene-js"><span class="toc-number">2.1.2.</span> <span class="toc-text">MidScene.js</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%B9%E6%AF%94"><span class="toc-number">2.1.3.</span> <span class="toc-text">对比</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%99%BB%E5%BD%95%E5%A4%B1%E8%B4%A5%E6%A1%88%E4%BE%8B"><span class="toc-number">2.2.</span> <span class="toc-text">登录失败案例</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">3.</span> <span class="toc-text">总结</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BC%98%E5%8A%BF%EF%BC%9A"><span class="toc-number">3.1.</span> <span class="toc-text">优势：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8A%A3%E5%8A%BF%EF%BC%9A"><span class="toc-number">3.2.</span> <span class="toc-text">劣势：</span></a></li></ol></li></ol>
+            </div>
+        
+        <!-- sidebar -->
+        <div class="sidebar sidebar-hide">
+    <ul class="sidebar-tabs sidebar-tabs-active-0">
+        <li class="sidebar-tab-archives"><span class="iconfont-archer">&#xe67d;</span><span class="tab-name">Archive</span></li>
+        <li class="sidebar-tab-tags"><span class="iconfont-archer">&#xe61b;</span><span class="tab-name">Tag</span></li>
+        <li class="sidebar-tab-categories"><span class="iconfont-archer">&#xe666;</span><span class="tab-name">Cate</span></li>
+    </ul>
+    <div class="sidebar-content sidebar-content-show-archive">
+        <div class="sidebar-panel-archives">
+    <!-- 在 ejs 中将 archive 按照时间排序 -->
+    
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    
+    
+    
+    
+    <div class="total-and-search">
+        <div class="total-archive">
+        Total : 34
+        </div>
+        <!-- search  -->
+        
+    </div>
+    
+    <div class="post-archive">
+    
+        
+            
+            
+            <div class="archive-year"> 2025 </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/27</span>
+            <a class="archive-post-title" href="/2025/02/27/midscenejs/">AI驱动的自动化测试：探索MidScene.js的强大功能</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/21</span>
+            <a class="archive-post-title" href="/2025/02/21/function-calling/">让AI模型不再只是“说话”——探索AI模型的函数调用</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/12</span>
+            <a class="archive-post-title" href="/2025/02/12/openai-operator/">「AI」科普向 | OpenAI Operator：推动数字世界的新纪元</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/12</span>
+            <a class="archive-post-title" href="/2025/02/12/deepseek-vscode/">Cursor平替：把 DeepSeek 接入 VS Code</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/07</span>
+            <a class="archive-post-title" href="/2025/02/07/deepseek-1/">DeepSeek 本地部署+web端访问 指南</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/05</span>
+            <a class="archive-post-title" href="/2025/02/05/docker-log/">减少 Docker 日志大小：实用的日志管理指南</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">01/07</span>
+            <a class="archive-post-title" href="/2025/01/07/parallelism/">并发不是并行！</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> 2024 </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/18</span>
+            <a class="archive-post-title" href="/2024/12/18/log/">程序日志设计与存储：实践与注意事项(一)</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/16</span>
+            <a class="archive-post-title" href="/2024/12/16/web-rtc/">WebRTC入门：让浏览器之间的实时通信变得简单</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/11</span>
+            <a class="archive-post-title" href="/2024/12/11/k8s-helm/">Kubernetes 分享：如何使用 Helm 优化 Kubernetes 应用部署</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/29</span>
+            <a class="archive-post-title" href="/2024/11/29/rspack/">Rspack：一个新一代的 JavaScript 打包工具</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/20</span>
+            <a class="archive-post-title" href="/2024/11/20/mfa/">深入解读 MFA 和 TOTP 的实现原理与应用</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/08</span>
+            <a class="archive-post-title" href="/2024/11/08/stream-output/">解读大型语言模型（LLM）API：了解流式输出的工作原理</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/06</span>
+            <a class="archive-post-title" href="/2024/11/06/encrypt-hash-signature/">加密、哈希与签名：基本原理与区别解析</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/30</span>
+            <a class="archive-post-title" href="/2024/10/30/js-signal/">JavaScript 信号：如何将响应式功能带到普通 Web 开发中</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/28</span>
+            <a class="archive-post-title" href="/2024/08/28/sticky-packet/">深入探讨 TCP 粘包现象：问题、原因与解决方案</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/16</span>
+            <a class="archive-post-title" href="/2024/08/16/quic/">QUIC:被寄予厚望的下一代互联网传输协议</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/08</span>
+            <a class="archive-post-title" href="/2024/08/08/docker-layer/">深入理解容器镜像层</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/01</span>
+            <a class="archive-post-title" href="/2024/08/01/daemonset/">Kubernetes DaemonSet – 它是什么以及如何使用</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/11</span>
+            <a class="archive-post-title" href="/2024/07/11/rabbitmq-quorum/">RabbitMQ之三种队列之间的区别及如何选型</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/09</span>
+            <a class="archive-post-title" href="/2024/07/09/rabbitmq-basic/">深入理解 RabbitMQ 中的基础概念</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/08</span>
+            <a class="archive-post-title" href="/2024/07/08/docker-2/">Docker镜像构建优化</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/05</span>
+            <a class="archive-post-title" href="/2024/07/05/docker-1/">Docker隐藏在细节中的技术基础</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">06/20</span>
+            <a class="archive-post-title" href="/2024/06/20/proxy/">代理服务解析：正向代理、反向代理和透明代理</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/30</span>
+            <a class="archive-post-title" href="/2024/05/30/similar-image-search/">从零开始搭建自己的相似图片搜索引擎</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/30</span>
+            <a class="archive-post-title" href="/2024/05/30/TaskCompletionSource/">C# 学习笔记： TaskCompletionSource</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/22</span>
+            <a class="archive-post-title" href="/2024/05/22/dead-message/">深入解析消息队列中的死信队列</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/28</span>
+            <a class="archive-post-title" href="/2024/04/28/dump/">Dump分析入门指南</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> Invalid date </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span>
+            <a class="archive-post-title" href="/2025/03/04/hello-world/">欢迎来到 ITProHub！</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> 2024 </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/18</span>
+            <a class="archive-post-title" href="/2024/04/18/redis-interview-1/">Redis成长记 - Redis的陷阱（一）</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/11</span>
+            <a class="archive-post-title" href="/2024/04/11/https/">HTTPS的工作原理以及安装</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/07</span>
+            <a class="archive-post-title" href="/2024/04/07/garnet/">Garnet，缓存的新选择！</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/28</span>
+            <a class="archive-post-title" href="/2024/03/28/organization-internal-loss/">组织发展致命杀手：内耗</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/19</span>
+            <a class="archive-post-title" href="/2024/03/19/http/">深入理解 HTTP Connection 头</a>
+        </li>
+    
+    </div>
+</div>
+
+        <div class="sidebar-panel-tags">
+    <div class="sidebar-tags-name">
+        
+            <span class="sidebar-tag-name" data-tags="dump 性能 异常">
+                <span class="iconfont-archer">&#xe606;</span>
+                dump 性能 异常
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="http http协议 Connection">
+                <span class="iconfont-archer">&#xe606;</span>
+                http http协议 Connection
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="Garnet 缓存 微软">
+                <span class="iconfont-archer">&#xe606;</span>
+                Garnet 缓存 微软
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="https http ssl tls">
+                <span class="iconfont-archer">&#xe606;</span>
+                https http ssl tls
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="组织 内耗">
+                <span class="iconfont-archer">&#xe606;</span>
+                组织 内耗
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="redis 面试 求职">
+                <span class="iconfont-archer">&#xe606;</span>
+                redis 面试 求职
+            </span>
+        
+    </div>
+    <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
+    <div class="tag-load-fail" style="display: none; color: #ccc; font-size: 0.6rem;">
+        缺失模块，请参考主题文档进行安装配置：https://github.com/fi3ework/hexo-theme-archer#%E5%AE%89%E8%A3%85%E4%B8%BB%E9%A2%98
+    </div> 
+    <div class="sidebar-tags-list"></div>
+</div>
+
+        <div class="sidebar-panel-categories">
+    <div class="sidebar-categories-name">
+    
+    </div>
+    <div class="iconfont-archer sidebar-categories-empty">&#xe678;</div>
+    <div class="sidebar-categories-list"></div>
+</div>
+
+    </div>
+</div>
+
+        <!-- site-meta -->
+        <script>
+    var siteMetaRoot = "/"
+    if (siteMetaRoot === "undefined") {
+        siteMetaRoot = '/'
+    }
+    var siteMeta = {
+        url: "https://www.itprohub.site",
+        root: siteMetaRoot,
+        author: "乐予吕"
+    }
+</script>
+
+        <!-- import experimental options here -->
+        <!-- Custom Font -->
+
+
+        <!-- main func -->
+        <script src="/scripts/main.js?v=20211217"></script>
+        <!-- dark mode -->
+        <script src="/scripts/dark.js?v=20211217"></script>
+        <!-- fancybox -->
+        <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" defer></script>
+        <!-- algolia -->
+        
+        <!-- busuanzi -->
+        
+            <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+        
+        <!-- CNZZ -->
+        
+        <!-- async load share.js -->
+        
+            <script src="/scripts/share.js?v=20211217" async></script>
+        
+        <!-- mermaid -->
+        
+    </body>
+</html>
