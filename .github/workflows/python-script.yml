@@ -1,0 +1,33 @@
+name: Deploy Blog Site
+
+on:
+  push:
+    branches:
+      - main  # 或你希望触发的其他分支
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v2
+
+      - name: 设置 Node.js 环境
+        uses: actions/setup-node@v2
+        with:
+          node-version: '21'  # 根据项目需要选择 Node 版本
+
+      - name: 安装依赖
+        run: npm install
+
+      - name: 清理输出目录
+        run: npm run clean
+
+      - name: 构建站点
+        run: npm run build
+
+      - name: 发布站点到 GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public  # 修改为构建输出目录或你希望部署的目录
