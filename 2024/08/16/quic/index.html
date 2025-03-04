@@ -22,23 +22,23 @@
     <meta name="description" content="HTTP协议是一种应用协议，它通常运行在TCP之上。但是TCP协议存在一些限制，导致Web应用程序响应速度较慢。 为了克服 TCP 的缺点，Google开发了一种改变游戏规则的传输协议 QUIC。QUIC（Quick UDP Internet Connections）是一种传输层网络协议，最早由Google在2012年提出，旨在改善HTTP&#x2F;2的性能，特别是在高延迟和不稳定网络条件下。Q">
 <meta property="og:type" content="article">
 <meta property="og:title" content="QUIC:被寄予厚望的下一代互联网传输协议">
-<meta property="og:url" content="https://www.itprohub.site/2024/08/16/quic/index.html">
+<meta property="og:url" content="https://itprohub.github.io/blog/2024/08/16/quic/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="HTTP协议是一种应用协议，它通常运行在TCP之上。但是TCP协议存在一些限制，导致Web应用程序响应速度较慢。 为了克服 TCP 的缺点，Google开发了一种改变游戏规则的传输协议 QUIC。QUIC（Quick UDP Internet Connections）是一种传输层网络协议，最早由Google在2012年提出，旨在改善HTTP&#x2F;2的性能，特别是在高延迟和不稳定网络条件下。Q">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://www.itprohub.site/images/http/TCP-connection-1.png">
-<meta property="og:image" content="https://www.itprohub.site/images/quic/head_of_line_blocking.png">
-<meta property="og:image" content="https://www.itprohub.site/images/quic/handshake.png">
-<meta property="og:image" content="https://www.itprohub.site/images/quic/tcp.png">
-<meta property="og:image" content="https://www.itprohub.site/images/quic/quic.png">
+<meta property="og:image" content="https://itprohub.github.io/blog/images/http/TCP-connection-1.png">
+<meta property="og:image" content="https://itprohub.github.io/blog/images/quic/head_of_line_blocking.png">
+<meta property="og:image" content="https://itprohub.github.io/blog/images/quic/handshake.png">
+<meta property="og:image" content="https://itprohub.github.io/blog/images/quic/tcp.png">
+<meta property="og:image" content="https://itprohub.github.io/blog/images/quic/quic.png">
 <meta property="article:published_time" content="2024-08-16T16:45:11.000Z">
-<meta property="article:modified_time" content="2025-03-04T07:59:03.302Z">
+<meta property="article:modified_time" content="2025-03-04T08:25:21.089Z">
 <meta property="article:author" content="乐予吕">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://www.itprohub.site/images/http/TCP-connection-1.png">
+<meta name="twitter:image" content="https://itprohub.github.io/blog/images/http/TCP-connection-1.png">
     <meta http-equiv="Cache-control" content="no-cache">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <link rel="icon" href="/assets/favicon.ico">
+    <link rel="icon" href="/blog/assets/favicon.ico">
     
     <title>QUIC:被寄予厚望的下一代互联网传输协议 · 个人技术日常分享</title>
     <!-- /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
@@ -153,7 +153,7 @@
     <style type="text/css">
     @font-face {
         font-family: 'Oswald-Regular';
-        src: url("/font/Oswald-Regular.ttf");
+        src: url("/blog/font/Oswald-Regular.ttf");
     }
 
     body {
@@ -201,15 +201,15 @@
     }
 </style>
 
-    <link rel="preload" href="/css/style.css?v=20211217" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <link rel="preload" href="/css/dark.css?v=20211217" as="style">
-    <link rel="stylesheet" href="/css/dark.css">
-    <link rel="stylesheet" href="/css/mobile.css?v=20211217" media="(max-width: 960px)">
+    <link rel="preload" href="/blog/css/style.css?v=20211217" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="/blog/css/dark.css?v=20211217" as="style">
+    <link rel="stylesheet" href="/blog/css/dark.css">
+    <link rel="stylesheet" href="/blog/css/mobile.css?v=20211217" media="(max-width: 960px)">
     <link rel="preload" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <link rel="preload" href="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" as="script">
-    <link rel="preload" href="/scripts/main.js?v=20211217" as="script">
-    <link rel="preload" href="/scripts/dark.js?v=20211217" as="script">
-    <link rel="preload" href="/font/Oswald-Regular.ttf" as="font" crossorigin>
+    <link rel="preload" href="/blog/scripts/main.js?v=20211217" as="script">
+    <link rel="preload" href="/blog/scripts/dark.js?v=20211217" as="script">
+    <link rel="preload" href="/blog/font/Oswald-Regular.ttf" as="font" crossorigin>
     <link rel="preload" href="https://at.alicdn.com/t/font_327081_1dta1rlogw17zaor.woff" as="font" crossorigin>
     <!-- algolia -->
     
@@ -225,7 +225,7 @@
     <script type="text/javascript">
         if (typeof window.$ == undefined) {
             console.warn('jquery load from jsdelivr failed, will load local script')
-            document.write('<script src="/lib/jquery.min.js" />')
+            document.write('<script src="/blog/lib/jquery.min.js" />')
         }
     </script>
     
@@ -255,7 +255,7 @@
         </span>
         <!-- back to home page text -->
         <span class="home-link header-element">
-            <a href=/>个人技术日常分享</a>
+            <a href=/blog/>个人技术日常分享</a>
         </span>
     </div>
     <!-- toggle banner for post layout -->
@@ -264,7 +264,7 @@
             <div class="banner">
         
             <div class="blog-title header-element">
-                <a href="/">个人技术日常分享</a>
+                <a href="/blog/">个人技术日常分享</a>
             </div>
             <div class="post-title header-element">
                 <a href="#" class="post-name">QUIC:被寄予厚望的下一代互联网传输协议</a>
@@ -307,7 +307,7 @@
     <!-- 404页  -->
     
     <div class="site-intro-placeholder"></div>
-    <div class="site-intro-img" style="background-image: url(/intro/post-bg.jpg)"></div>
+    <div class="site-intro-img" style="background-image: url(/blog/intro/post-bg.jpg)"></div>
     <div class="site-intro-meta">
         <!-- 标题  -->
         <h1 class="intro-title">
@@ -485,14 +485,14 @@
     [
       'https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js',
       'https://cdn.bootcss.com/webfont/1.6.28/webfontloader.js',
-      "/lib/webfontloader.min.js",
+      "/blog/lib/webfontloader.min.js",
     ],
     asyncCb,
     asyncErr
   )
 </script>
 
-            <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
+            <img class="loading" src="/blog/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
             <div class="container container-unloaded">
                 <main class="main post-page">
     <article class="article-entry">
@@ -501,7 +501,7 @@
 <p>本文我们将开始了解 QUIC 将如何取代 TCP。我们将首先介绍 TCP 和 UDP 的一些基本网络概念。然后我们将了解 QUIC 是什么以及它是如何工作的。我们将探讨为什么 QUIC 比 TCP 具有更高的性能</p>
 <h1 id="为什么选择QUIC？"><a href="#为什么选择QUIC？" class="headerlink" title="为什么选择QUIC？"></a>为什么选择QUIC？</h1><p>传统的HTTP&#x2F;2虽然引入了多路复用，但它仍然依赖于TCP（传输控制协议）。TCP在设计时主要考虑可靠性，而不是速度。这导致了几个问题，特别是在移动设备或高延迟网络中：</p>
 <ol>
-<li><p>连接建立慢：TCP的握手过程需要三次往返，特别是在TLS（传输层安全）上使用时，可能还需要额外的握手。<br><img src="/images/http/TCP-connection-1.png" alt="三次握手"><center>(图片来源网络)</center></p>
+<li><p>连接建立慢：TCP的握手过程需要三次往返，特别是在TLS（传输层安全）上使用时，可能还需要额外的握手。<br><img src="/blog/images/http/TCP-connection-1.png" alt="三次握手"><center>(图片来源网络)</center></p>
 </li>
 <li><p>队头阻塞（Head-of-Line Blocking）：虽然HTTP&#x2F;2在应用层引入了多路复用，但底层TCP流仍然是串行的，任何丢包都会导致所有流的传输被阻塞。</p>
 <blockquote>
@@ -509,7 +509,7 @@
 </blockquote>
 </li>
 </ol>
-<p><img src="/images/quic/head_of_line_blocking.png" alt="队头阻塞"><center>(图片来源网络)</center></p>
+<p><img src="/blog/images/quic/head_of_line_blocking.png" alt="队头阻塞"><center>(图片来源网络)</center></p>
 <p>QUIC通过以下方式解决了这些问题：</p>
 <ol>
 <li>更快的连接建立：QUIC将握手时间减少到一次往返（0-RTT），在某些情况下甚至可以做到无往返（0-RTT Resumption）。</li>
@@ -571,7 +571,7 @@
 <td>表现优秀，适合低延迟传输</td>
 </tr>
 </tbody></table>
-<h1 id="QUIC建立连接"><a href="#QUIC建立连接" class="headerlink" title="QUIC建立连接"></a>QUIC建立连接</h1><p>在QUIC协议的握手过程中，特别是使用TLS 1.3时，客户端和服务器之间需要多次交换消息来完成连接的建立和加密密钥的协商。<br><img src="/images/quic/handshake.png" alt="handshake"></p>
+<h1 id="QUIC建立连接"><a href="#QUIC建立连接" class="headerlink" title="QUIC建立连接"></a>QUIC建立连接</h1><p>在QUIC协议的握手过程中，特别是使用TLS 1.3时，客户端和服务器之间需要多次交换消息来完成连接的建立和加密密钥的协商。<br><img src="/blog/images/quic/handshake.png" alt="handshake"></p>
 <h2 id="简单流程图总结："><a href="#简单流程图总结：" class="headerlink" title="简单流程图总结："></a>简单流程图总结：</h2><ol>
 <li>ClientHello -&gt; 客户端发起握手请求，包含支持的加密算法和其他参数。</li>
 <li>ServerHello -&gt; 服务器回应，选择加密算法，并发送证书。</li>
@@ -591,8 +591,8 @@
 <p>然后用手机访问该站点，过程中我们切换手机网络，并在服务端进行抓包。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo tcpdump -i eth0 udp port 443 -w quic_capture.pcap</span><br></pre></td></tr></table></figure>
 <p>最后我们用wireshark 分析抓包文件</p>
-<p>TCP如下：<br><img src="/images/quic/tcp.png" alt="TCP"></p>
-<p>QUIC如下：<br><img src="/images/quic/quic.png" alt="QUIC"></p>
+<p>TCP如下：<br><img src="/blog/images/quic/tcp.png" alt="TCP"></p>
+<p>QUIC如下：<br><img src="/blog/images/quic/quic.png" alt="QUIC"></p>
 <p>对比两次的结果，我们会发现TCP切换网络之后ip立即发生的变化，并且重新进行握手。而QUIC没有立即变化ip，同时没有重新握手的过程。</p>
 <p>QUIC 协议设计的一个关键点就是支持连接迁移，即使客户端的 IP 地址发生变化，QUIC 也会尽量保持同一个连接不中断。因此，当你切换网络时，QUIC 可能会继续使用旧的连接来发送数据包，而不会立即使用新的 IP 地址，这就是为什么 Wireshark 可能不会立即显示 IP 变化。</p>
 <p>具体来说，QUIC 会尝试通过网络路径发现（Path Validation）来验证新的网络路径是否可用，这个过程可能需要一些时间。在切换网络后的短时间内，QUIC 可能仍会通过旧的路径发送数据，直到确认新路径可用。这就解释了为什么你在 Wireshark 中看到 QUIC 的 IP 地址没有变化，而 TCP 切换网络后立即更新了 IP 地址。</p>
@@ -624,10 +624,10 @@
     <!-- license -->
     
         <div class="license-wrapper">
-            <p>原文作者：<a href="https://www.itprohub.site">乐予吕</a>
-            <p>原文链接：<a href="https://www.itprohub.site/2024/08/16/quic/">https://www.itprohub.site/2024/08/16/quic/</a>
-            <p>发表日期：<a href="https://www.itprohub.site/2024/08/16/quic/">August 16th 2024, 4:45:11 pm</a>
-            <p>更新日期：<a href="https://www.itprohub.site/2024/08/16/quic/">March 4th 2025, 7:59:03 am</a>
+            <p>原文作者：<a href="https://itprohub.github.io/blog">乐予吕</a>
+            <p>原文链接：<a href="https://itprohub.github.io/blog/2024/08/16/quic/">https://itprohub.github.io/blog/2024/08/16/quic/</a>
+            <p>发表日期：<a href="https://itprohub.github.io/blog/2024/08/16/quic/">August 16th 2024, 4:45:11 pm</a>
+            <p>更新日期：<a href="https://itprohub.github.io/blog/2024/08/16/quic/">March 4th 2025, 8:25:21 am</a>
             <p>版权声明：本文采用<a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
         </div>
     
@@ -636,7 +636,7 @@
         <li class="next">
             
                 <div class="nextSlogan">Next Post</div>
-                <a href="/2024/08/28/sticky-packet/" title="深入探讨 TCP 粘包现象：问题、原因与解决方案">
+                <a href="/blog/2024/08/28/sticky-packet/" title="深入探讨 TCP 粘包现象：问题、原因与解决方案">
                     <div class="nextTitle">深入探讨 TCP 粘包现象：问题、原因与解决方案</div>
                 </a>
             
@@ -644,7 +644,7 @@
         <li class="previous">
             
                 <div class="prevSlogan">Previous Post</div>
-                <a href="/2024/08/08/docker-layer/" title="深入理解容器镜像层">
+                <a href="/blog/2024/08/08/docker-layer/" title="深入理解容器镜像层">
                     <div class="prevTitle">深入理解容器镜像层</div>
                 </a>
             
@@ -708,7 +708,7 @@
             
                 <span class="iconfont-archer wechat" title=wechat>
                     
-                    <img class="profile-qr" src="/assets/wechat_qr.jpg" />
+                    <img class="profile-qr" src="/blog/assets/wechat_qr.jpg" />
                 </span>
             
         
@@ -1268,49 +1268,49 @@
         
         <li class="archive-post-item">
             <span class="archive-post-date">03/04</span>
-            <a class="archive-post-title" href="/2025/03/04/hello-world/">欢迎来到 ITProHub！</a>
+            <a class="archive-post-title" href="/blog/2025/03/04/hello-world/">欢迎来到 ITProHub！</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">02/27</span>
-            <a class="archive-post-title" href="/2025/02/27/midscenejs/">AI驱动的自动化测试：探索MidScene.js的强大功能</a>
+            <a class="archive-post-title" href="/blog/2025/02/27/midscenejs/">AI驱动的自动化测试：探索MidScene.js的强大功能</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">02/21</span>
-            <a class="archive-post-title" href="/2025/02/21/function-calling/">让AI模型不再只是“说话”——探索AI模型的函数调用</a>
+            <a class="archive-post-title" href="/blog/2025/02/21/function-calling/">让AI模型不再只是“说话”——探索AI模型的函数调用</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">02/12</span>
-            <a class="archive-post-title" href="/2025/02/12/openai-operator/">「AI」科普向 | OpenAI Operator：推动数字世界的新纪元</a>
+            <a class="archive-post-title" href="/blog/2025/02/12/openai-operator/">「AI」科普向 | OpenAI Operator：推动数字世界的新纪元</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">02/12</span>
-            <a class="archive-post-title" href="/2025/02/12/deepseek-vscode/">Cursor平替：把 DeepSeek 接入 VS Code</a>
+            <a class="archive-post-title" href="/blog/2025/02/12/deepseek-vscode/">Cursor平替：把 DeepSeek 接入 VS Code</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">02/07</span>
-            <a class="archive-post-title" href="/2025/02/07/deepseek-1/">DeepSeek 本地部署+web端访问 指南</a>
+            <a class="archive-post-title" href="/blog/2025/02/07/deepseek-1/">DeepSeek 本地部署+web端访问 指南</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">02/05</span>
-            <a class="archive-post-title" href="/2025/02/05/docker-log/">减少 Docker 日志大小：实用的日志管理指南</a>
+            <a class="archive-post-title" href="/blog/2025/02/05/docker-log/">减少 Docker 日志大小：实用的日志管理指南</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">01/07</span>
-            <a class="archive-post-title" href="/2025/01/07/parallelism/">并发不是并行！</a>
+            <a class="archive-post-title" href="/blog/2025/01/07/parallelism/">并发不是并行！</a>
         </li>
     
         
@@ -1325,157 +1325,157 @@
         
         <li class="archive-post-item">
             <span class="archive-post-date">12/18</span>
-            <a class="archive-post-title" href="/2024/12/18/log/">程序日志设计与存储：实践与注意事项(一)</a>
+            <a class="archive-post-title" href="/blog/2024/12/18/log/">程序日志设计与存储：实践与注意事项(一)</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">12/16</span>
-            <a class="archive-post-title" href="/2024/12/16/web-rtc/">WebRTC入门：让浏览器之间的实时通信变得简单</a>
+            <a class="archive-post-title" href="/blog/2024/12/16/web-rtc/">WebRTC入门：让浏览器之间的实时通信变得简单</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">12/11</span>
-            <a class="archive-post-title" href="/2024/12/11/k8s-helm/">Kubernetes 分享：如何使用 Helm 优化 Kubernetes 应用部署</a>
+            <a class="archive-post-title" href="/blog/2024/12/11/k8s-helm/">Kubernetes 分享：如何使用 Helm 优化 Kubernetes 应用部署</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">11/29</span>
-            <a class="archive-post-title" href="/2024/11/29/rspack/">Rspack：一个新一代的 JavaScript 打包工具</a>
+            <a class="archive-post-title" href="/blog/2024/11/29/rspack/">Rspack：一个新一代的 JavaScript 打包工具</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">11/20</span>
-            <a class="archive-post-title" href="/2024/11/20/mfa/">深入解读 MFA 和 TOTP 的实现原理与应用</a>
+            <a class="archive-post-title" href="/blog/2024/11/20/mfa/">深入解读 MFA 和 TOTP 的实现原理与应用</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">11/08</span>
-            <a class="archive-post-title" href="/2024/11/08/stream-output/">解读大型语言模型（LLM）API：了解流式输出的工作原理</a>
+            <a class="archive-post-title" href="/blog/2024/11/08/stream-output/">解读大型语言模型（LLM）API：了解流式输出的工作原理</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">11/06</span>
-            <a class="archive-post-title" href="/2024/11/06/encrypt-hash-signature/">加密、哈希与签名：基本原理与区别解析</a>
+            <a class="archive-post-title" href="/blog/2024/11/06/encrypt-hash-signature/">加密、哈希与签名：基本原理与区别解析</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">10/30</span>
-            <a class="archive-post-title" href="/2024/10/30/js-signal/">JavaScript 信号：如何将响应式功能带到普通 Web 开发中</a>
+            <a class="archive-post-title" href="/blog/2024/10/30/js-signal/">JavaScript 信号：如何将响应式功能带到普通 Web 开发中</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">08/28</span>
-            <a class="archive-post-title" href="/2024/08/28/sticky-packet/">深入探讨 TCP 粘包现象：问题、原因与解决方案</a>
+            <a class="archive-post-title" href="/blog/2024/08/28/sticky-packet/">深入探讨 TCP 粘包现象：问题、原因与解决方案</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">08/16</span>
-            <a class="archive-post-title" href="/2024/08/16/quic/">QUIC:被寄予厚望的下一代互联网传输协议</a>
+            <a class="archive-post-title" href="/blog/2024/08/16/quic/">QUIC:被寄予厚望的下一代互联网传输协议</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">08/08</span>
-            <a class="archive-post-title" href="/2024/08/08/docker-layer/">深入理解容器镜像层</a>
+            <a class="archive-post-title" href="/blog/2024/08/08/docker-layer/">深入理解容器镜像层</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">08/01</span>
-            <a class="archive-post-title" href="/2024/08/01/daemonset/">Kubernetes DaemonSet – 它是什么以及如何使用</a>
+            <a class="archive-post-title" href="/blog/2024/08/01/daemonset/">Kubernetes DaemonSet – 它是什么以及如何使用</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">07/11</span>
-            <a class="archive-post-title" href="/2024/07/11/rabbitmq-quorum/">RabbitMQ之三种队列之间的区别及如何选型</a>
+            <a class="archive-post-title" href="/blog/2024/07/11/rabbitmq-quorum/">RabbitMQ之三种队列之间的区别及如何选型</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">07/09</span>
-            <a class="archive-post-title" href="/2024/07/09/rabbitmq-basic/">深入理解 RabbitMQ 中的基础概念</a>
+            <a class="archive-post-title" href="/blog/2024/07/09/rabbitmq-basic/">深入理解 RabbitMQ 中的基础概念</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">07/08</span>
-            <a class="archive-post-title" href="/2024/07/08/docker-2/">Docker镜像构建优化</a>
+            <a class="archive-post-title" href="/blog/2024/07/08/docker-2/">Docker镜像构建优化</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">07/05</span>
-            <a class="archive-post-title" href="/2024/07/05/docker-1/">Docker隐藏在细节中的技术基础</a>
+            <a class="archive-post-title" href="/blog/2024/07/05/docker-1/">Docker隐藏在细节中的技术基础</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">06/20</span>
-            <a class="archive-post-title" href="/2024/06/20/proxy/">代理服务解析：正向代理、反向代理和透明代理</a>
+            <a class="archive-post-title" href="/blog/2024/06/20/proxy/">代理服务解析：正向代理、反向代理和透明代理</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">05/30</span>
-            <a class="archive-post-title" href="/2024/05/30/similar-image-search/">从零开始搭建自己的相似图片搜索引擎</a>
+            <a class="archive-post-title" href="/blog/2024/05/30/similar-image-search/">从零开始搭建自己的相似图片搜索引擎</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">05/30</span>
-            <a class="archive-post-title" href="/2024/05/30/TaskCompletionSource/">C# 学习笔记： TaskCompletionSource</a>
+            <a class="archive-post-title" href="/blog/2024/05/30/TaskCompletionSource/">C# 学习笔记： TaskCompletionSource</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">05/22</span>
-            <a class="archive-post-title" href="/2024/05/22/dead-message/">深入解析消息队列中的死信队列</a>
+            <a class="archive-post-title" href="/blog/2024/05/22/dead-message/">深入解析消息队列中的死信队列</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">04/28</span>
-            <a class="archive-post-title" href="/2024/04/28/dump/">Dump分析入门指南</a>
+            <a class="archive-post-title" href="/blog/2024/04/28/dump/">Dump分析入门指南</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">04/18</span>
-            <a class="archive-post-title" href="/2024/04/18/redis-interview-1/">Redis成长记 - Redis的陷阱（一）</a>
+            <a class="archive-post-title" href="/blog/2024/04/18/redis-interview-1/">Redis成长记 - Redis的陷阱（一）</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">04/11</span>
-            <a class="archive-post-title" href="/2024/04/11/https/">HTTPS的工作原理以及安装</a>
+            <a class="archive-post-title" href="/blog/2024/04/11/https/">HTTPS的工作原理以及安装</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">04/07</span>
-            <a class="archive-post-title" href="/2024/04/07/garnet/">Garnet，缓存的新选择！</a>
+            <a class="archive-post-title" href="/blog/2024/04/07/garnet/">Garnet，缓存的新选择！</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">03/28</span>
-            <a class="archive-post-title" href="/2024/03/28/organization-internal-loss/">组织发展致命杀手：内耗</a>
+            <a class="archive-post-title" href="/blog/2024/03/28/organization-internal-loss/">组织发展致命杀手：内耗</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">03/19</span>
-            <a class="archive-post-title" href="/2024/03/19/http/">深入理解 HTTP Connection 头</a>
+            <a class="archive-post-title" href="/blog/2024/03/19/http/">深入理解 HTTP Connection 头</a>
         </li>
     
     </div>
@@ -1535,12 +1535,12 @@
 
         <!-- site-meta -->
         <script>
-    var siteMetaRoot = "/"
+    var siteMetaRoot = "/blog/"
     if (siteMetaRoot === "undefined") {
         siteMetaRoot = '/'
     }
     var siteMeta = {
-        url: "https://www.itprohub.site",
+        url: "https://itprohub.github.io/blog",
         root: siteMetaRoot,
         author: "乐予吕"
     }
@@ -1551,9 +1551,9 @@
 
 
         <!-- main func -->
-        <script src="/scripts/main.js?v=20211217"></script>
+        <script src="/blog/scripts/main.js?v=20211217"></script>
         <!-- dark mode -->
-        <script src="/scripts/dark.js?v=20211217"></script>
+        <script src="/blog/scripts/dark.js?v=20211217"></script>
         <!-- fancybox -->
         <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" defer></script>
         <!-- algolia -->
@@ -1566,7 +1566,7 @@
         
         <!-- async load share.js -->
         
-            <script src="/scripts/share.js?v=20211217" async></script>
+            <script src="/blog/scripts/share.js?v=20211217" async></script>
         
         <!-- mermaid -->
         

@@ -22,23 +22,23 @@
     <meta name="description" content="引入在当今数字化时代，人工智能（AI）技术已经成为我们生活中不可或缺的一部分。从语音助手到智能客服，AI模型已经成为我们日常生活中不可或缺的一部分。然而，随着AI技术的不断发展，我们面临了一个新的挑战：如何让AI模型真正“做事”？  在过去，AI模型主要被训练为生成文字，回答问题，或者提供信息。然而，随着AI模型的不断发展，我们开始看到它能够执行更复杂的任务，如自动化任务、数据处理、决策支持等。这">
 <meta property="og:type" content="article">
 <meta property="og:title" content="让AI模型不再只是“说话”——探索AI模型的函数调用">
-<meta property="og:url" content="https://www.itprohub.site/2025/02/21/function-calling/index.html">
+<meta property="og:url" content="https://itprohub.github.io/blog/2025/02/21/function-calling/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="引入在当今数字化时代，人工智能（AI）技术已经成为我们生活中不可或缺的一部分。从语音助手到智能客服，AI模型已经成为我们日常生活中不可或缺的一部分。然而，随着AI技术的不断发展，我们面临了一个新的挑战：如何让AI模型真正“做事”？  在过去，AI模型主要被训练为生成文字，回答问题，或者提供信息。然而，随着AI模型的不断发展，我们开始看到它能够执行更复杂的任务，如自动化任务、数据处理、决策支持等。这">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://www.itprohub.site/images/function-calling/labour.jpg">
-<meta property="og:image" content="https://www.itprohub.site/images/function-calling/out.jpg">
-<meta property="og:image" content="https://www.itprohub.site/images/function-calling/process.png">
-<meta property="og:image" content="https://www.itprohub.site/images/function-calling/search.png">
-<meta property="og:image" content="https://www.itprohub.site/images/function-calling/result.gif">
+<meta property="og:image" content="https://itprohub.github.io/blog/images/function-calling/labour.jpg">
+<meta property="og:image" content="https://itprohub.github.io/blog/images/function-calling/out.jpg">
+<meta property="og:image" content="https://itprohub.github.io/blog/images/function-calling/process.png">
+<meta property="og:image" content="https://itprohub.github.io/blog/images/function-calling/search.png">
+<meta property="og:image" content="https://itprohub.github.io/blog/images/function-calling/result.gif">
 <meta property="article:published_time" content="2025-02-21T14:02:30.000Z">
-<meta property="article:modified_time" content="2025-03-04T07:59:03.301Z">
+<meta property="article:modified_time" content="2025-03-04T08:25:21.088Z">
 <meta property="article:author" content="乐予吕">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://www.itprohub.site/images/function-calling/labour.jpg">
+<meta name="twitter:image" content="https://itprohub.github.io/blog/images/function-calling/labour.jpg">
     <meta http-equiv="Cache-control" content="no-cache">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <link rel="icon" href="/assets/favicon.ico">
+    <link rel="icon" href="/blog/assets/favicon.ico">
     
     <title>让AI模型不再只是“说话”——探索AI模型的函数调用 · 个人技术日常分享</title>
     <!-- /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
@@ -153,7 +153,7 @@
     <style type="text/css">
     @font-face {
         font-family: 'Oswald-Regular';
-        src: url("/font/Oswald-Regular.ttf");
+        src: url("/blog/font/Oswald-Regular.ttf");
     }
 
     body {
@@ -201,15 +201,15 @@
     }
 </style>
 
-    <link rel="preload" href="/css/style.css?v=20211217" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <link rel="preload" href="/css/dark.css?v=20211217" as="style">
-    <link rel="stylesheet" href="/css/dark.css">
-    <link rel="stylesheet" href="/css/mobile.css?v=20211217" media="(max-width: 960px)">
+    <link rel="preload" href="/blog/css/style.css?v=20211217" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="/blog/css/dark.css?v=20211217" as="style">
+    <link rel="stylesheet" href="/blog/css/dark.css">
+    <link rel="stylesheet" href="/blog/css/mobile.css?v=20211217" media="(max-width: 960px)">
     <link rel="preload" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <link rel="preload" href="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" as="script">
-    <link rel="preload" href="/scripts/main.js?v=20211217" as="script">
-    <link rel="preload" href="/scripts/dark.js?v=20211217" as="script">
-    <link rel="preload" href="/font/Oswald-Regular.ttf" as="font" crossorigin>
+    <link rel="preload" href="/blog/scripts/main.js?v=20211217" as="script">
+    <link rel="preload" href="/blog/scripts/dark.js?v=20211217" as="script">
+    <link rel="preload" href="/blog/font/Oswald-Regular.ttf" as="font" crossorigin>
     <link rel="preload" href="https://at.alicdn.com/t/font_327081_1dta1rlogw17zaor.woff" as="font" crossorigin>
     <!-- algolia -->
     
@@ -225,7 +225,7 @@
     <script type="text/javascript">
         if (typeof window.$ == undefined) {
             console.warn('jquery load from jsdelivr failed, will load local script')
-            document.write('<script src="/lib/jquery.min.js" />')
+            document.write('<script src="/blog/lib/jquery.min.js" />')
         }
     </script>
     
@@ -255,7 +255,7 @@
         </span>
         <!-- back to home page text -->
         <span class="home-link header-element">
-            <a href=/>个人技术日常分享</a>
+            <a href=/blog/>个人技术日常分享</a>
         </span>
     </div>
     <!-- toggle banner for post layout -->
@@ -264,7 +264,7 @@
             <div class="banner">
         
             <div class="blog-title header-element">
-                <a href="/">个人技术日常分享</a>
+                <a href="/blog/">个人技术日常分享</a>
             </div>
             <div class="post-title header-element">
                 <a href="#" class="post-name">让AI模型不再只是“说话”——探索AI模型的函数调用</a>
@@ -307,7 +307,7 @@
     <!-- 404页  -->
     
     <div class="site-intro-placeholder"></div>
-    <div class="site-intro-img" style="background-image: url(/intro/post-bg.jpg)"></div>
+    <div class="site-intro-img" style="background-image: url(/blog/intro/post-bg.jpg)"></div>
     <div class="site-intro-meta">
         <!-- 标题  -->
         <h1 class="intro-title">
@@ -485,21 +485,21 @@
     [
       'https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js',
       'https://cdn.bootcss.com/webfont/1.6.28/webfontloader.js',
-      "/lib/webfontloader.min.js",
+      "/blog/lib/webfontloader.min.js",
     ],
     asyncCb,
     asyncErr
   )
 </script>
 
-            <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
+            <img class="loading" src="/blog/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
             <div class="container container-unloaded">
                 <main class="main post-page">
     <article class="article-entry">
         <h1 id="引入"><a href="#引入" class="headerlink" title="引入"></a>引入</h1><p>在当今数字化时代，人工智能（AI）技术已经成为我们生活中不可或缺的一部分。从语音助手到智能客服，AI模型已经成为我们日常生活中不可或缺的一部分。然而，随着AI技术的不断发展，我们面临了一个新的挑战：如何让AI模型真正“做事”？</p>
-<p><img src="/./images/function-calling/labour.jpg" alt="AI"></p>
+<p><img src="/blog/./images/function-calling/labour.jpg" alt="AI"></p>
 <p>在过去，AI模型主要被训练为生成文字，回答问题，或者提供信息。然而，随着AI模型的不断发展，我们开始看到它能够执行更复杂的任务，如自动化任务、数据处理、决策支持等。这一趋势的一个关键驱动力是<strong>函数调用</strong>的引入。</p>
-<p>如果现在的你还只会使用AI模型来生成文字，那么作为一个开发人员，你已经OUT了！<br><img src="/./images/function-calling/out.jpg" alt="AI"></p>
+<p>如果现在的你还只会使用AI模型来生成文字，那么作为一个开发人员，你已经OUT了！<br><img src="/blog/./images/function-calling/out.jpg" alt="AI"></p>
 <p>生成式人工智能的一个显著优点是它能够使用自然语言与用户进行互动。然而，对于那些希望将人工智能的响应与其他应用程序进行集成的开发者来说，这可能成为一项挑战。通常，开发者不得不依赖正则表达式（Regex）或精心设计的提示工程，将输出转换为所需格式，才能顺利地将数据传递给其他系统。</p>
 <p>为了解决这一问题，OpenAI 引入了一个创新的概念——函数调用（function calling）。本文，我将结合具体的例子，详细阐释这一概念。</p>
 <h1 id="什么是函数调用？"><a href="#什么是函数调用？" class="headerlink" title="什么是函数调用？"></a>什么是函数调用？</h1><p>随着人工智能技术的快速发展，AI模型已经不再仅仅是生成文字的工具。通过引入<strong>函数调用</strong>，大型语言模型（LLM）不仅能理解用户的输入，还能够执行实际操作，调用外部工具和API，获取实时数据，从而解决实际问题。在这篇博客中，我们将深入探讨函数调用的概念及其实际应用，展示如何通过AI模型的函数调用，让AI真正成为一个动态的助手，协助用户完成复杂任务。</p>
@@ -515,12 +515,12 @@
 </li>
 <li>数据获取与集成：AI模型从外部工具或API获取数据后，整合结果并生成适合的响应。</li>
 </ol>
-<p><img src="/./images/function-calling/process.png" alt="AI"></p>
+<p><img src="/blog/./images/function-calling/process.png" alt="AI"></p>
 <p>通过这种方式，AI模型不仅限于生成答案，还能自动执行操作，极大增强了其功能和实用性。</p>
 <h1 id="函数调用的示例：创建一个实时查询工具"><a href="#函数调用的示例：创建一个实时查询工具" class="headerlink" title="函数调用的示例：创建一个实时查询工具"></a>函数调用的示例：创建一个实时查询工具</h1><p>为了更直观地展示函数调用如何发挥作用，我们将创建一个简单的AI工具，它可以根据用户的输入实时查询网络信息或者查询本地数据库。我们将使用一个Python库，以及AI模型来实现这一功能。</p>
 <ol>
 <li><p>查询API和LLM模型<br>首先，我们需要一个网络查询API，并将其与AI模型连接。在本示例中，我们使用Google Search API来获取网络数据。</p>
-<p>本地用Ollama启动模型qwen2.5:0.5b，当然也可以使用其他模型。不过在选择模型的时候记得选择支持函数调用的模型。<br><img src="/./images/function-calling/search.png" alt="函数调用模型"></p>
+<p>本地用Ollama启动模型qwen2.5:0.5b，当然也可以使用其他模型。不过在选择模型的时候记得选择支持函数调用的模型。<br><img src="/blog/./images/function-calling/search.png" alt="函数调用模型"></p>
 </li>
 <li><p>定义函数调用<br>AI模型通过判断用户请求是否涉及网络搜索或者查询本地数据库 来决定是否使用tool 或者说 使用哪个tool。下面是我们定义的函数调用逻辑：</p>
 </li>
@@ -539,7 +539,7 @@
 <ol start="4">
 <li><p>获取实时数据并返回给用户<br>通过这种方式，AI模型不仅仅是生成“天气好坏”的模糊回答，而是调用API获取实时数据，并返回具体的天气信息，让用户得到更加准确的答案。</p>
 </li>
-<li><p>运行示例<br>现在，我们可以运行这个示例，看看AI模型是如何根据用户的输入实时查询网络信息或者查询本地数据库的。<br><img src="/./images/function-calling/result.gif" alt="运行示例"></p>
+<li><p>运行示例<br>现在，我们可以运行这个示例，看看AI模型是如何根据用户的输入实时查询网络信息或者查询本地数据库的。<br><img src="/blog/./images/function-calling/result.gif" alt="运行示例"></p>
 </li>
 </ol>
 <p>上面的代码示例因为篇幅原因，仅给出了大致结构。如果需要完整代码，可以在我的<a target="_blank" rel="noopener" href="https://github.com/ItProHub/function-calling">github</a>上下载。</p>
@@ -551,10 +551,10 @@
     <!-- license -->
     
         <div class="license-wrapper">
-            <p>原文作者：<a href="https://www.itprohub.site">乐予吕</a>
-            <p>原文链接：<a href="https://www.itprohub.site/2025/02/21/function-calling/">https://www.itprohub.site/2025/02/21/function-calling/</a>
-            <p>发表日期：<a href="https://www.itprohub.site/2025/02/21/function-calling/">February 21st 2025, 2:02:30 pm</a>
-            <p>更新日期：<a href="https://www.itprohub.site/2025/02/21/function-calling/">March 4th 2025, 7:59:03 am</a>
+            <p>原文作者：<a href="https://itprohub.github.io/blog">乐予吕</a>
+            <p>原文链接：<a href="https://itprohub.github.io/blog/2025/02/21/function-calling/">https://itprohub.github.io/blog/2025/02/21/function-calling/</a>
+            <p>发表日期：<a href="https://itprohub.github.io/blog/2025/02/21/function-calling/">February 21st 2025, 2:02:30 pm</a>
+            <p>更新日期：<a href="https://itprohub.github.io/blog/2025/02/21/function-calling/">March 4th 2025, 8:25:21 am</a>
             <p>版权声明：本文采用<a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
         </div>
     
@@ -563,7 +563,7 @@
         <li class="next">
             
                 <div class="nextSlogan">Next Post</div>
-                <a href="/2025/02/27/midscenejs/" title="AI驱动的自动化测试：探索MidScene.js的强大功能">
+                <a href="/blog/2025/02/27/midscenejs/" title="AI驱动的自动化测试：探索MidScene.js的强大功能">
                     <div class="nextTitle">AI驱动的自动化测试：探索MidScene.js的强大功能</div>
                 </a>
             
@@ -571,7 +571,7 @@
         <li class="previous">
             
                 <div class="prevSlogan">Previous Post</div>
-                <a href="/2025/02/12/openai-operator/" title="「AI」科普向 | OpenAI Operator：推动数字世界的新纪元">
+                <a href="/blog/2025/02/12/openai-operator/" title="「AI」科普向 | OpenAI Operator：推动数字世界的新纪元">
                     <div class="prevTitle">「AI」科普向 | OpenAI Operator：推动数字世界的新纪元</div>
                 </a>
             
@@ -635,7 +635,7 @@
             
                 <span class="iconfont-archer wechat" title=wechat>
                     
-                    <img class="profile-qr" src="/assets/wechat_qr.jpg" />
+                    <img class="profile-qr" src="/blog/assets/wechat_qr.jpg" />
                 </span>
             
         
@@ -1195,49 +1195,49 @@
         
         <li class="archive-post-item">
             <span class="archive-post-date">03/04</span>
-            <a class="archive-post-title" href="/2025/03/04/hello-world/">欢迎来到 ITProHub！</a>
+            <a class="archive-post-title" href="/blog/2025/03/04/hello-world/">欢迎来到 ITProHub！</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">02/27</span>
-            <a class="archive-post-title" href="/2025/02/27/midscenejs/">AI驱动的自动化测试：探索MidScene.js的强大功能</a>
+            <a class="archive-post-title" href="/blog/2025/02/27/midscenejs/">AI驱动的自动化测试：探索MidScene.js的强大功能</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">02/21</span>
-            <a class="archive-post-title" href="/2025/02/21/function-calling/">让AI模型不再只是“说话”——探索AI模型的函数调用</a>
+            <a class="archive-post-title" href="/blog/2025/02/21/function-calling/">让AI模型不再只是“说话”——探索AI模型的函数调用</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">02/12</span>
-            <a class="archive-post-title" href="/2025/02/12/openai-operator/">「AI」科普向 | OpenAI Operator：推动数字世界的新纪元</a>
+            <a class="archive-post-title" href="/blog/2025/02/12/openai-operator/">「AI」科普向 | OpenAI Operator：推动数字世界的新纪元</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">02/12</span>
-            <a class="archive-post-title" href="/2025/02/12/deepseek-vscode/">Cursor平替：把 DeepSeek 接入 VS Code</a>
+            <a class="archive-post-title" href="/blog/2025/02/12/deepseek-vscode/">Cursor平替：把 DeepSeek 接入 VS Code</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">02/07</span>
-            <a class="archive-post-title" href="/2025/02/07/deepseek-1/">DeepSeek 本地部署+web端访问 指南</a>
+            <a class="archive-post-title" href="/blog/2025/02/07/deepseek-1/">DeepSeek 本地部署+web端访问 指南</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">02/05</span>
-            <a class="archive-post-title" href="/2025/02/05/docker-log/">减少 Docker 日志大小：实用的日志管理指南</a>
+            <a class="archive-post-title" href="/blog/2025/02/05/docker-log/">减少 Docker 日志大小：实用的日志管理指南</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">01/07</span>
-            <a class="archive-post-title" href="/2025/01/07/parallelism/">并发不是并行！</a>
+            <a class="archive-post-title" href="/blog/2025/01/07/parallelism/">并发不是并行！</a>
         </li>
     
         
@@ -1252,157 +1252,157 @@
         
         <li class="archive-post-item">
             <span class="archive-post-date">12/18</span>
-            <a class="archive-post-title" href="/2024/12/18/log/">程序日志设计与存储：实践与注意事项(一)</a>
+            <a class="archive-post-title" href="/blog/2024/12/18/log/">程序日志设计与存储：实践与注意事项(一)</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">12/16</span>
-            <a class="archive-post-title" href="/2024/12/16/web-rtc/">WebRTC入门：让浏览器之间的实时通信变得简单</a>
+            <a class="archive-post-title" href="/blog/2024/12/16/web-rtc/">WebRTC入门：让浏览器之间的实时通信变得简单</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">12/11</span>
-            <a class="archive-post-title" href="/2024/12/11/k8s-helm/">Kubernetes 分享：如何使用 Helm 优化 Kubernetes 应用部署</a>
+            <a class="archive-post-title" href="/blog/2024/12/11/k8s-helm/">Kubernetes 分享：如何使用 Helm 优化 Kubernetes 应用部署</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">11/29</span>
-            <a class="archive-post-title" href="/2024/11/29/rspack/">Rspack：一个新一代的 JavaScript 打包工具</a>
+            <a class="archive-post-title" href="/blog/2024/11/29/rspack/">Rspack：一个新一代的 JavaScript 打包工具</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">11/20</span>
-            <a class="archive-post-title" href="/2024/11/20/mfa/">深入解读 MFA 和 TOTP 的实现原理与应用</a>
+            <a class="archive-post-title" href="/blog/2024/11/20/mfa/">深入解读 MFA 和 TOTP 的实现原理与应用</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">11/08</span>
-            <a class="archive-post-title" href="/2024/11/08/stream-output/">解读大型语言模型（LLM）API：了解流式输出的工作原理</a>
+            <a class="archive-post-title" href="/blog/2024/11/08/stream-output/">解读大型语言模型（LLM）API：了解流式输出的工作原理</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">11/06</span>
-            <a class="archive-post-title" href="/2024/11/06/encrypt-hash-signature/">加密、哈希与签名：基本原理与区别解析</a>
+            <a class="archive-post-title" href="/blog/2024/11/06/encrypt-hash-signature/">加密、哈希与签名：基本原理与区别解析</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">10/30</span>
-            <a class="archive-post-title" href="/2024/10/30/js-signal/">JavaScript 信号：如何将响应式功能带到普通 Web 开发中</a>
+            <a class="archive-post-title" href="/blog/2024/10/30/js-signal/">JavaScript 信号：如何将响应式功能带到普通 Web 开发中</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">08/28</span>
-            <a class="archive-post-title" href="/2024/08/28/sticky-packet/">深入探讨 TCP 粘包现象：问题、原因与解决方案</a>
+            <a class="archive-post-title" href="/blog/2024/08/28/sticky-packet/">深入探讨 TCP 粘包现象：问题、原因与解决方案</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">08/16</span>
-            <a class="archive-post-title" href="/2024/08/16/quic/">QUIC:被寄予厚望的下一代互联网传输协议</a>
+            <a class="archive-post-title" href="/blog/2024/08/16/quic/">QUIC:被寄予厚望的下一代互联网传输协议</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">08/08</span>
-            <a class="archive-post-title" href="/2024/08/08/docker-layer/">深入理解容器镜像层</a>
+            <a class="archive-post-title" href="/blog/2024/08/08/docker-layer/">深入理解容器镜像层</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">08/01</span>
-            <a class="archive-post-title" href="/2024/08/01/daemonset/">Kubernetes DaemonSet – 它是什么以及如何使用</a>
+            <a class="archive-post-title" href="/blog/2024/08/01/daemonset/">Kubernetes DaemonSet – 它是什么以及如何使用</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">07/11</span>
-            <a class="archive-post-title" href="/2024/07/11/rabbitmq-quorum/">RabbitMQ之三种队列之间的区别及如何选型</a>
+            <a class="archive-post-title" href="/blog/2024/07/11/rabbitmq-quorum/">RabbitMQ之三种队列之间的区别及如何选型</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">07/09</span>
-            <a class="archive-post-title" href="/2024/07/09/rabbitmq-basic/">深入理解 RabbitMQ 中的基础概念</a>
+            <a class="archive-post-title" href="/blog/2024/07/09/rabbitmq-basic/">深入理解 RabbitMQ 中的基础概念</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">07/08</span>
-            <a class="archive-post-title" href="/2024/07/08/docker-2/">Docker镜像构建优化</a>
+            <a class="archive-post-title" href="/blog/2024/07/08/docker-2/">Docker镜像构建优化</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">07/05</span>
-            <a class="archive-post-title" href="/2024/07/05/docker-1/">Docker隐藏在细节中的技术基础</a>
+            <a class="archive-post-title" href="/blog/2024/07/05/docker-1/">Docker隐藏在细节中的技术基础</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">06/20</span>
-            <a class="archive-post-title" href="/2024/06/20/proxy/">代理服务解析：正向代理、反向代理和透明代理</a>
+            <a class="archive-post-title" href="/blog/2024/06/20/proxy/">代理服务解析：正向代理、反向代理和透明代理</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">05/30</span>
-            <a class="archive-post-title" href="/2024/05/30/similar-image-search/">从零开始搭建自己的相似图片搜索引擎</a>
+            <a class="archive-post-title" href="/blog/2024/05/30/similar-image-search/">从零开始搭建自己的相似图片搜索引擎</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">05/30</span>
-            <a class="archive-post-title" href="/2024/05/30/TaskCompletionSource/">C# 学习笔记： TaskCompletionSource</a>
+            <a class="archive-post-title" href="/blog/2024/05/30/TaskCompletionSource/">C# 学习笔记： TaskCompletionSource</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">05/22</span>
-            <a class="archive-post-title" href="/2024/05/22/dead-message/">深入解析消息队列中的死信队列</a>
+            <a class="archive-post-title" href="/blog/2024/05/22/dead-message/">深入解析消息队列中的死信队列</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">04/28</span>
-            <a class="archive-post-title" href="/2024/04/28/dump/">Dump分析入门指南</a>
+            <a class="archive-post-title" href="/blog/2024/04/28/dump/">Dump分析入门指南</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">04/18</span>
-            <a class="archive-post-title" href="/2024/04/18/redis-interview-1/">Redis成长记 - Redis的陷阱（一）</a>
+            <a class="archive-post-title" href="/blog/2024/04/18/redis-interview-1/">Redis成长记 - Redis的陷阱（一）</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">04/11</span>
-            <a class="archive-post-title" href="/2024/04/11/https/">HTTPS的工作原理以及安装</a>
+            <a class="archive-post-title" href="/blog/2024/04/11/https/">HTTPS的工作原理以及安装</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">04/07</span>
-            <a class="archive-post-title" href="/2024/04/07/garnet/">Garnet，缓存的新选择！</a>
+            <a class="archive-post-title" href="/blog/2024/04/07/garnet/">Garnet，缓存的新选择！</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">03/28</span>
-            <a class="archive-post-title" href="/2024/03/28/organization-internal-loss/">组织发展致命杀手：内耗</a>
+            <a class="archive-post-title" href="/blog/2024/03/28/organization-internal-loss/">组织发展致命杀手：内耗</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">03/19</span>
-            <a class="archive-post-title" href="/2024/03/19/http/">深入理解 HTTP Connection 头</a>
+            <a class="archive-post-title" href="/blog/2024/03/19/http/">深入理解 HTTP Connection 头</a>
         </li>
     
     </div>
@@ -1462,12 +1462,12 @@
 
         <!-- site-meta -->
         <script>
-    var siteMetaRoot = "/"
+    var siteMetaRoot = "/blog/"
     if (siteMetaRoot === "undefined") {
         siteMetaRoot = '/'
     }
     var siteMeta = {
-        url: "https://www.itprohub.site",
+        url: "https://itprohub.github.io/blog",
         root: siteMetaRoot,
         author: "乐予吕"
     }
@@ -1478,9 +1478,9 @@
 
 
         <!-- main func -->
-        <script src="/scripts/main.js?v=20211217"></script>
+        <script src="/blog/scripts/main.js?v=20211217"></script>
         <!-- dark mode -->
-        <script src="/scripts/dark.js?v=20211217"></script>
+        <script src="/blog/scripts/dark.js?v=20211217"></script>
         <!-- fancybox -->
         <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" defer></script>
         <!-- algolia -->
@@ -1493,7 +1493,7 @@
         
         <!-- async load share.js -->
         
-            <script src="/scripts/share.js?v=20211217" async></script>
+            <script src="/blog/scripts/share.js?v=20211217" async></script>
         
         <!-- mermaid -->
         
