@@ -18,7 +18,9 @@ jobs:
           node-version: '21'  # 根据项目需要选择 Node 版本
 
       - name: 安装依赖
-        run: npm install
+        run: |
+          rm -rf node_modules package-lock.json
+          npm install
 
       - name: 清理输出目录
         run: npx hexo clean
