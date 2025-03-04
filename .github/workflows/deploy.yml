@@ -26,7 +26,7 @@ jobs:
         run: npx hexo clean
 
       - name: 构建站点
-        run: npx hexo build
+        run: npx hexo generate
 
       - name: 发布站点到 GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
