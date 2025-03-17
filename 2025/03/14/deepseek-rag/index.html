@@ -19,18 +19,27 @@
         <meta name="keywords" content="hexo,ITProHub,hexo-theme,hexo-blog">
     
     <meta name="description" content="">
-    <meta property="og:type" content="website">
-<meta property="og:title" content="Hexo">
-<meta property="og:url" content="https://itprohub.github.io/blog/page/2/index.html">
+    <meta name="description" content="在大模型应用中，如何保证答案的准确性和实时性 一直是一个难题。尽管 LLM（Large Language Models）具有强大的生成能力，但它们的知识存在 时间局限性，并且容易产生“幻觉”（hallucination）。为了解决这些问题，RAG（检索增强生成） 方案应运而生，而 DeepSeek 作为国内领先的大模型之一，在 RAG 方面也展现出强大的能力。本文将带你了解 DeepSeek 与">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DeepSeek + RAG： 让大模型更智能、更精准">
+<meta property="og:url" content="https://itprohub.github.io/blog/2025/03/14/deepseek-rag/index.html">
 <meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="在大模型应用中，如何保证答案的准确性和实时性 一直是一个难题。尽管 LLM（Large Language Models）具有强大的生成能力，但它们的知识存在 时间局限性，并且容易产生“幻觉”（hallucination）。为了解决这些问题，RAG（检索增强生成） 方案应运而生，而 DeepSeek 作为国内领先的大模型之一，在 RAG 方面也展现出强大的能力。本文将带你了解 DeepSeek 与">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://itprohub.github.io/blog/images/deepseek-rag/hallucination.png">
+<meta property="og:image" content="https://itprohub.github.io/blog/images/deepseek-rag/RAG-system-architecture.png">
+<meta property="og:image" content="https://itprohub.github.io/blog/images/deepseek-rag/raw-result.png">
+<meta property="og:image" content="https://itprohub.github.io/blog/images/deepseek-rag/rag-result.png">
+<meta property="article:published_time" content="2025-03-14T16:10:51.000Z">
+<meta property="article:modified_time" content="2025-03-17T13:07:50.773Z">
 <meta property="article:author" content="乐予吕">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://itprohub.github.io/blog/images/deepseek-rag/hallucination.png">
     <meta http-equiv="Cache-control" content="no-cache">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <link rel="icon" href="/blog/assets/favicon.ico">
     
-    <title>个人技术日常分享</title>
+    <title>DeepSeek + RAG： 让大模型更智能、更精准 · 个人技术日常分享</title>
     <!-- /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
 /* This file is meant as a standalone workflow for
 - testing support for link[rel=preload]
@@ -219,10 +228,10 @@
         }
     </script>
     
-        <body class="home-body">
+        <body class="post-body">
     
         <!-- header -->
-        <header class="header header-mobile index-header">
+        <header class="header header-mobile">
     <!-- top read progress line -->
     <div class="header-element">
         <div class="read-progress"></div>
@@ -250,10 +259,21 @@
     </div>
     <!-- toggle banner for post layout -->
     
+        
+            <div class="banner">
+        
+            <div class="blog-title header-element">
+                <a href="/blog/">个人技术日常分享</a>
+            </div>
+            <div class="post-title header-element">
+                <a href="#" class="post-name">DeepSeek + RAG： 让大模型更智能、更精准</a>
+            </div>
+        </div>
+    
 </header>
 
         <!-- fixed footer -->
-        <footer class="footer-fixed index-footer-fixed">
+        <footer class="footer-fixed">
     <!-- back to top button -->
     <div class="footer-fixed-element">
         
@@ -283,17 +303,17 @@
     <!-- 主页  -->
     
         
-    <!-- 文章页  -->
+    <!-- 404页  -->
     
     <div class="site-intro-placeholder"></div>
-    <div class="site-intro-img" style="background-image: url(/blog/intro/index-bg.jpg)"></div>
+    <div class="site-intro-img" style="background-image: url(/blog/intro/post-bg.jpg)"></div>
     <div class="site-intro-meta">
         <!-- 标题  -->
         <h1 class="intro-title">
             <!-- 主页  -->
             
-                个人技术日常分享
-            <!-- 文章页  -->
+                DeepSeek + RAG： 让大模型更智能、更精准
+            <!-- 404 -->
             
         </h1>
         <!-- 副标题 -->
@@ -301,12 +321,49 @@
             <!-- 主页副标题  -->
             
                 
-                    个人技术文章分享 日常记录 图片分享
-                
-            <!-- 文章页  -->
+            <!-- 404 -->
             
         </p>
         <!-- 文章页 meta -->
+        
+            <div class="post-intros">
+                <!-- 文章页标签  -->
+                
+                    <div class= post-intro-tags >
+    
+    
+</div>
+
+                
+                <!-- 文章字数统计 -->
+                
+                <div class="post-intro-meta">
+                    <!-- 撰写日期 -->
+                    <span class="iconfont-archer post-intro-calander">&#xe676;</span>
+                    <span class="post-intro-time">2025/03/14</span>
+                    <!-- busuanzi -->
+                    
+                        <span id="busuanzi_container_page_pv" class="busuanzi-pv">
+                            <span class="iconfont-archer post-intro-busuanzi">&#xe602;</span>
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    
+                    <!-- 文章分享 -->
+                    <span class="share-wrapper">
+                        <span class="iconfont-archer share-icon">&#xe71d;</span>
+                        <span class="share-text">Share</span>
+                        <ul class="share-list">
+                            <li class="iconfont-archer share-qr" data-type="qr">&#xe75b;
+                                <div class="share-qrcode"></div>
+                            </li>
+                            <li class="iconfont-archer" data-type="weibo">&#xe619;</li>
+                            <li class="iconfont-archer" data-type="qzone">&#xe62e;</li>
+                            <li class="iconfont-archer" data-type="twitter">&#xe634;</li>
+                            <li class="iconfont-archer" data-type="facebook">&#xe67a;</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
         
     </div>
 </div>
@@ -436,405 +493,152 @@
 
             <img class="loading" src="/blog/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
             <div class="container container-unloaded">
-                <main class="main index-page">
-    
-        
-        
-        
-        
-            
-        
-        <article class="index-post">
-            <a class="abstract-title" href="/blog/2024/12/16/web-rtc/">
-                
-                <span class="abstract-title-text">WebRTC入门：让浏览器之间的实时通信变得简单</span>
-            </a>
-            <div class="abstract-content">
-                什么是WebRTC？WebRTC（Web Real-Time Communication）是一项支持网页和移动应用程序进行实时语音、视频和数据共享的技术，允许用户直接在浏览器中进行通信，无需安装额外的插件或应用。WebRTC是一项开放标准，由W3C和IETF共同推动，广泛应用于视频会议、即时通讯、文件共享等场景。
-WebRTC的核心优势在于其低延迟、高效率和跨平台支持，使得不同设备和浏览器之间的实时通信变得简单和快速。
-WebRTC的三大核心技术WebRTC的功能依赖于三个主要的API：
+                <main class="main post-page">
+    <article class="article-entry">
+        <p>在大模型应用中，<strong>如何保证答案的准确性和实时性</strong> 一直是一个难题。尽管 LLM（Large Language Models）具有强大的生成能力，但它们的知识存在 <strong>时间局限性</strong>，并且容易产生“幻觉”（hallucination）。为了解决这些问题，<strong>RAG（检索增强生成）</strong> 方案应运而生，而 <strong>DeepSeek</strong> 作为国内领先的大模型之一，在 RAG 方面也展现出强大的能力。本文将带你了解 DeepSeek 与 RAG 的结合，并提供代码示例。</p>
+<hr>
+<h2 id="什么是-RAG（检索增强生成）？"><a href="#什么是-RAG（检索增强生成）？" class="headerlink" title="** 什么是 RAG（检索增强生成）？**"></a>** 什么是 RAG（检索增强生成）？**</h2><p><strong>RAG（Retrieval-Augmented Generation）</strong> 是一种将 <strong>信息检索（Retrieval）</strong> 与 <strong>大模型生成（Generation）</strong> 结合的技术，主要分为 <strong>两步：</strong></p>
+<ol>
+<li><strong>检索（Retrieve）</strong>: 在外部知识库（如文档数据库、向量数据库）中找到与用户问题相关的信息。</li>
+<li><strong>生成（Generate）</strong>: 将检索到的内容作为上下文输入给大模型，提高回答的准确性。</li>
+</ol>
+<p><strong>优点：</strong></p>
+<ul>
+<li>让 LLM 能够利用<strong>最新的</strong>外部知识，不再局限于训练数据。</li>
+<li>降低 LLM <strong>胡编乱造（幻觉）</strong> 的概率。</li>
+<li>提供<strong>可验证的答案来源</strong>，提高可靠性。</li>
+</ul>
+<p><img src="/blog/./images/deepseek-rag/hallucination.png" alt="hallucination"></p>
+<hr>
+<h2 id="为什么选择-DeepSeek-作为-RAG-模型？"><a href="#为什么选择-DeepSeek-作为-RAG-模型？" class="headerlink" title="** 为什么选择 DeepSeek 作为 RAG 模型？**"></a>** 为什么选择 DeepSeek 作为 RAG 模型？**</h2><p><a target="_blank" rel="noopener" href="https://deepseek.com/">DeepSeek</a> 是一个强大的国产 LLM，具备以下特点：</p>
+<ul>
+<li><strong>支持中文优化</strong>，相比 GPT-4&#x2F;Claude，在中文场景下表现更佳。</li>
+<li><strong>更开放的 API</strong>，可以免费试用，并且提供了本地部署版本。</li>
+<li><strong>模型能力强</strong>，支持 <strong>代码、数学推理、知识问答等任务</strong>，适合 RAG 场景。</li>
+</ul>
+<p>此外，DeepSeek 提供 <strong>DeepSeek-VL（视觉+文本）</strong> 以及 <strong>DeepSeek-Coder（代码生成）</strong> 版本，使其在 <strong>技术文档问答、代码辅助、金融分析等领域</strong> 表现优异。</p>
+<hr>
+<h2 id="如何实现-DeepSeek-RAG？"><a href="#如何实现-DeepSeek-RAG？" class="headerlink" title="** 如何实现 DeepSeek + RAG？**"></a>** 如何实现 DeepSeek + RAG？**</h2><p>我们可以结合 <strong>DeepSeek + Qdrant 向量数据库</strong> 来实现一个简单的 RAG 系统：</p>
+<p>前置条件：</p>
+<ul>
+<li>本地部署ollama。</li>
+<li>ollama运行DeepSeek。</li>
+<li>一个 Qdrant 实例。</li>
+</ul>
+<blockquote>
+<p>对于部署以上环境部署有疑问的老铁可以参考老夫之前的介绍</p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/EmNzMrH1L52IWcEdROWehQ">《DeepSeek 本地部署+web端访问 指南》</a></p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/vrwbpo3cUrSKN1OX9LjgOw">《Qdrant：开启高效相似性搜索的先锋》</a></p>
+</blockquote>
+<h3 id="架构"><a href="#架构" class="headerlink" title="架构"></a><strong>架构</strong></h3><ol>
+<li><strong>数据预处理</strong>：<ul>
+<li>将文档（如 PDF、网页）分割成小段，并向量化存储。</li>
+</ul>
+</li>
+<li><strong>用户输入查询</strong>：<ul>
+<li>计算输入问题的向量，并检索相似的文档片段。</li>
+</ul>
+</li>
+<li><strong>DeepSeek 生成回答</strong>：<ul>
+<li>将检索到的文档片段和用户问题一起输入 DeepSeek，生成最终答案。</li>
+</ul>
+</li>
+</ol>
+<p><img src="/blog/./images/deepseek-rag/RAG-system-architecture.png" alt="架构"></p>
+<h3 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a><strong>代码实现</strong></h3><p>这里我们使用 <code>Qdrant</code> 作为向量数据库，并结合 <code>DeepSeek</code> 进行 RAG 任务。</p>
+<h4 id="安装依赖"><a href="#安装依赖" class="headerlink" title="安装依赖"></a><strong>安装依赖</strong></h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install qdrant-client openai tiktoken</span><br></pre></td></tr></table></figure>
 
-getUserMedia API：这个API允许浏览器访问用户的媒体设备，如摄像头和麦克风，捕获音...
-            </div>
-            <!-- read more -->
-            
-            <div class="abstract-post-meta">
-                <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/03/17">
-                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2024/12/16</span>
-                </div>
-                <!-- tags -->
-                
-            </div>
-        </article>
-        <div class="index-post-divider"></div>
-    
-        
-        
-        
-        
-            
-        
-        <article class="index-post">
-            <a class="abstract-title" href="/blog/2024/12/11/k8s-helm/">
-                
-                <span class="abstract-title-text">Kubernetes 分享：如何使用 Helm 优化 Kubernetes 应用部署</span>
-            </a>
-            <div class="abstract-content">
-                在 Kubernetes 的生态中，Helm 是一个非常重要的工具，它作为 Kubernetes 的包管理器，简化了复杂应用的部署和管理过程。而 Helm Chart 是 Helm 中的核心概念，它将应用的部署定义成一种可复用的模板，能帮助我们快速地在 Kubernetes 上安装、升级和管理应用。
-今天，我们将深入探讨 Helm Chart 的概念、使用方式以及一些实用的实践技巧，帮助你更高效地管理 Kubernetes 应用。
-什么是 Helm 和 Helm Chart？
+<h4 id="1️⃣-数据预处理（文本向量化-存入-Qdrant）"><a href="#1️⃣-数据预处理（文本向量化-存入-Qdrant）" class="headerlink" title="1️⃣ 数据预处理（文本向量化 + 存入 Qdrant）"></a><strong>1️⃣ 数据预处理（文本向量化 + 存入 Qdrant）</strong></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Qdrant</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> openai <span class="keyword">import</span> OpenAI</span><br><span class="line"></span><br><span class="line"><span class="comment"># 配置参数</span></span><br><span class="line">COLLECTION_NAME = <span class="string">&quot;deepseek_rag&quot;</span></span><br><span class="line">QDRANT_URL = <span class="string">&quot;http://localhost:6333&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 连接 Qdrant</span></span><br><span class="line">client = QdrantClient(QDRANT_URL)</span><br><span class="line">ollamaClient = ollama.Client(host=<span class="string">&quot;http://127.0.0.1:11434&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 假设我们有一些文本需要存入 Qdrant</span></span><br><span class="line">docs = [</span><br><span class="line">        <span class="string">&quot;DeepSeek 是一个强大的大模型，支持代码生成和中文优化。&quot;</span>,</span><br><span class="line">        <span class="string">&quot;RAG 是结合检索与生成的技术，能够提升大模型回答的准确性。&quot;</span>,</span><br><span class="line">        <span class="string">&quot;Qdrant 是一个高效的向量数据库，适用于大规模检索。&quot;</span>,</span><br><span class="line">        <span class="string">&quot;ITProHub是一个致力于信息技术领域，为专业人士、学习者和技术爱好者提供丰富的资源、技能培训的社区交流平台。&quot;</span>,</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用 DeepSeek API 进行向量化</span></span><br><span class="line">client = OpenAI(api_key=<span class="string">&quot;your_deepseek_api_key&quot;</span>, base_url=<span class="string">&quot;https://api.deepseek.com/v1/&quot;</span>)</span><br><span class="line">doc_vectors = []</span><br><span class="line"><span class="keyword">for</span> doc <span class="keyword">in</span> docs:</span><br><span class="line">     <span class="string">&quot;&quot;&quot; 使用本地 Ollama 计算文本嵌入向量 &quot;&quot;&quot;</span></span><br><span class="line">    response = ollamaClient.embeddings(model=<span class="string">&quot;mxbai-embed-large&quot;</span>, prompt=text)</span><br><span class="line">    vector = response.embeddingresponse.data[<span class="number">0</span>].embedding</span><br><span class="line">    doc_vectors.append(vector)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 存入 Qdrant</span></span><br><span class="line">points = [</span><br><span class="line">    PointStruct(<span class="built_in">id</span>=i, vector=vectors[i], payload=&#123;<span class="string">&quot;text&quot;</span>: docs[i]&#125;)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(docs))</span><br><span class="line">]</span><br><span class="line">client.upsert(collection_name=COLLECTION_NAME, points=points)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;📥 已存入 <span class="subst">&#123;<span class="built_in">len</span>(docs)&#125;</span> 篇文档&quot;</span>)</span><br></pre></td></tr></table></figure>
 
-Helm：Helm 是 Kubernetes 的包管理工具，类似于 Linux 上的 APT 或 YUM。它允...
-            </div>
-            <!-- read more -->
-            
-            <div class="abstract-post-meta">
-                <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/03/17">
-                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2024/12/11</span>
-                </div>
-                <!-- tags -->
-                
-            </div>
-        </article>
-        <div class="index-post-divider"></div>
-    
-        
-        
-        
-        
-            
-        
-        <article class="index-post">
-            <a class="abstract-title" href="/blog/2024/11/29/rspack/">
-                
-                <span class="abstract-title-text">Rspack：一个新一代的 JavaScript 打包工具</span>
-            </a>
-            <div class="abstract-content">
-                在前端开发中，构建工具的选择一直是开发效率和性能优化的关键因素之一。Webpack 一直是前端开发中最流行的构建工具之一，但随着项目越来越复杂和构建时间的增加，开发者们开始寻找性能更强、更轻量的替代品。Rspack 就是应运而生的这样一款工具，它不仅继承了 Webpack 的思想，还通过一系列创新的优化大大提升了构建速度。
-在这篇博客中，我们将介绍 Rspack，并通过一些实际示例来展示它相对于传统构建工具的优势。
+<h4 id="2️⃣-用户查询-向量检索"><a href="#2️⃣-用户查询-向量检索" class="headerlink" title="2️⃣ 用户查询 + 向量检索"></a><strong>2️⃣ 用户查询 + 向量检索</strong></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">retrieve_similar_docs</span>(<span class="params">query, top_k=<span class="number">2</span></span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot; 从 Qdrant 中检索与查询最相似的文档 &quot;&quot;&quot;</span></span><br><span class="line">    query_vector = get_embedding(query)</span><br><span class="line">    search_result = client.search(</span><br><span class="line">        collection_name=COLLECTION_NAME, query_vector=query_vector, limit=top_k</span><br><span class="line">    )</span><br><span class="line">    <span class="keyword">return</span> [hit.payload[<span class="string">&quot;text&quot;</span>] <span class="keyword">for</span> hit <span class="keyword">in</span> search_result]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 示例查询</span></span><br><span class="line">query = <span class="string">&quot;你知道ITProHub么？&quot;</span></span><br><span class="line">retrieved_docs = retrieve_similar_docs(query)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;检索到的相关文档：&quot;</span>, retrieved_docs)</span><br></pre></td></tr></table></figure>
 
-什么是 Rspack？Rspack 是一个由 ByteDance 推出的高性能构建工具。它旨在通过使用更先进的技术栈和优化算法，解决 Webpack 在大型项目中的构建性能...
-            </div>
-            <!-- read more -->
-            
-            <div class="abstract-post-meta">
-                <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/03/17">
-                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2024/11/29</span>
-                </div>
-                <!-- tags -->
-                
-            </div>
-        </article>
-        <div class="index-post-divider"></div>
-    
-        
-        
-        
-        
-            
-        
-        <article class="index-post">
-            <a class="abstract-title" href="/blog/2024/11/20/mfa/">
-                
-                <span class="abstract-title-text">深入解读 MFA 和 TOTP 的实现原理与应用</span>
-            </a>
-            <div class="abstract-content">
-                前言前段时间发现自己的aliyun账号存在异常登录，吓的我赶紧改了密码开启了MFA多因素认证。同时，我把github等一干支持MFA的应用都开启了MFA。但是这也给我造成了困扰。每次登录都要拿出手机看看手机上的安全码，感觉有点麻烦。所以我尝试自己用TOTP来实现一个PC版的MFA，不再依赖手机。终于不用掏手机了。。。
-提到各种概念，部分老铁可能有些陌生。但是下面github的界面想必大家都比较熟悉，没错，这就是我们今天要聊的东西。
-现代数字化时代，密码泄露事件频发，传统的单一密码保护方式已无法满足安全需求。多因素认证（MFA, Multi-Factor Authentication）因其...
-            </div>
-            <!-- read more -->
-            
-            <div class="abstract-post-meta">
-                <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/03/17">
-                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2024/11/20</span>
-                </div>
-                <!-- tags -->
-                
-            </div>
-        </article>
-        <div class="index-post-divider"></div>
-    
-        
-        
-        
-        
-            
-        
-        <article class="index-post">
-            <a class="abstract-title" href="/blog/2024/11/08/stream-output/">
-                
-                <span class="abstract-title-text">解读大型语言模型（LLM）API：了解流式输出的工作原理</span>
-            </a>
-            <div class="abstract-content">
-                最近几年GPT在全球大火，相信大家在日常生活、工作中都在使用。细心的老铁们可能已经注意到，市面上的GPT在回复我们的问题的时候基本上都是采用类似对话的方式。数据在生成后立即被发送给用户，而不是等待所有数据都生成完毕后再一次性发送。
+<h4 id="3️⃣-DeepSeek-生成答案"><a href="#3️⃣-DeepSeek-生成答案" class="headerlink" title="3️⃣ DeepSeek 生成答案"></a><strong>3️⃣ DeepSeek 生成答案</strong></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">generate_answer</span>(<span class="params">query, retrieved_docs</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot; 使用 DeepSeek 结合检索内容生成答案 &quot;&quot;&quot;</span></span><br><span class="line">    context = <span class="string">&quot;\n&quot;</span>.join(retrieved_docs)</span><br><span class="line">    prompt = <span class="string">f&quot;根据以下信息回答用户问题：\n<span class="subst">&#123;context&#125;</span>\n\n用户问题：<span class="subst">&#123;query&#125;</span>&quot;</span></span><br><span class="line"></span><br><span class="line">    response = ollamaClient.chat(</span><br><span class="line">        model=<span class="string">&quot;deepseek-r1:1.5b&quot;</span>,</span><br><span class="line">        messages=[&#123;<span class="string">&quot;role&quot;</span>: <span class="string">&quot;user&quot;</span>, <span class="string">&quot;content&quot;</span>: prompt&#125;],</span><br><span class="line">    )</span><br><span class="line">    <span class="keyword">return</span> response[<span class="string">&quot;message&quot;</span>][<span class="string">&quot;content&quot;</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 生成答案</span></span><br><span class="line">final_answer = generate_answer(query, retrieved_docs)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;DeepSeek 生成的答案：&quot;</span>, final_answer)</span><br></pre></td></tr></table></figure>
 
-在本文中，我们将探讨主流的大型语言模型（LLM）提供商如何实现其流式输出的 HTTP API。我们将深入研究流式输出的工作原理，探讨其优势，并提供示例代码以帮助您理解如何在实际应用中使用流式输出。
+<h4 id="4️⃣-看看效果"><a href="#4️⃣-看看效果" class="headerlink" title="** 4️⃣ 看看效果**"></a>** 4️⃣ 看看效果**</h4><ol>
+<li>原始搜索结果<br><img src="/blog/./images/deepseek-rag/raw-result.png" alt="效果"><br>可以看到针对 <code>ITProHub</code> 这个问题，原始的模型并不知道是啥。</li>
+<li>接入RAG之后的效果<br><img src="/blog/./images/deepseek-rag/rag-result.png" alt="效果"><br>接入RAG之后，模型可以根据检索到的内容，生成更准确的答案。</li>
+</ol>
+<hr>
+<h2 id="4-典型应用场景"><a href="#4-典型应用场景" class="headerlink" title="4. 典型应用场景"></a><strong>4. 典型应用场景</strong></h2><ol>
+<li><strong>企业知识库问答</strong>（客户支持、内部文档搜索）</li>
+<li><strong>AIOps</strong>（通过 RAG，结合实时运维数据，快速定位和分析故障原因）</li>
+<li><strong>代码辅助</strong>（自动补全、代码文档解析）</li>
+<li><strong>学术研究</strong>（查询特定文献，生成摘要）</li>
+</ol>
+<hr>
+<h2 id="5-总结"><a href="#5-总结" class="headerlink" title="5. 总结"></a><strong>5. 总结</strong></h2><p>RAG 作为一种 <strong>结合外部知识和大模型的增强技术</strong>，极大提高了回答的<strong>准确性和可解释性</strong>。DeepSeek 作为国产 LLM，在 <strong>中文优化、API 兼容性、代码生成能力</strong> 方面有独特优势，适合作为 RAG 系统的核心组件。</p>
+<p><strong>未来，我们可以探索更多优化方案，比如：</strong></p>
+<ul>
+<li><strong>结合 LlamaIndex &#x2F; LangChain</strong> 进行更复杂的检索。</li>
+<li><strong>使用 Milvus &#x2F; Weaviate</strong> 等更强大的向量数据库。</li>
+<li><strong>本地化部署 DeepSeek</strong>，提升数据安全性。</li>
+</ul>
+<p>如果你对 RAG 和 DeepSeek 感兴趣，可以尝试在自己的项目中落地应用，让 AI 变得更智能、更可靠！🚀</p>
 
-什么是流式输出？流式输出（Streaming Output）是一种使后端将数据分块、逐步发送到前端的技术。通过这种方法，前端应用能够即时接收和渲染数据，不必等到...
-            </div>
-            <!-- read more -->
-            
-            <div class="abstract-post-meta">
-                <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/03/17">
-                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2024/11/08</span>
-                </div>
-                <!-- tags -->
-                
-            </div>
-        </article>
-        <div class="index-post-divider"></div>
+    </article>
+    <!-- license -->
     
-        
-        
-        
-        
+        <div class="license-wrapper">
+            <p>原文作者：<a href="https://itprohub.github.io/blog">乐予吕</a>
+            <p>原文链接：<a href="https://itprohub.github.io/blog/2025/03/14/deepseek-rag/">https://itprohub.github.io/blog/2025/03/14/deepseek-rag/</a>
+            <p>发表日期：<a href="https://itprohub.github.io/blog/2025/03/14/deepseek-rag/">March 14th 2025, 4:10:51 pm</a>
+            <p>更新日期：<a href="https://itprohub.github.io/blog/2025/03/14/deepseek-rag/">March 17th 2025, 1:07:50 pm</a>
+            <p>版权声明：本文采用<a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
+        </div>
+    
+    <!-- paginator -->
+    <ul class="post-paginator">
+        <li class="next">
             
-        
-        <article class="index-post">
-            <a class="abstract-title" href="/blog/2024/11/06/encrypt-hash-signature/">
-                
-                <span class="abstract-title-text">加密、哈希与签名：基本原理与区别解析</span>
-            </a>
-            <div class="abstract-content">
-                前几天跟公司的几个小伙子聊天，提到了加密、哈希与签名，他们的回答让我很意外。加密、哈希和签名是软件开发过程中非常重要的概念，它们在信息安全、数据保护和身份验证等领域有着广泛的应用。但是他们似乎对这几个概念很混乱，搞不清楚其中的区别。加密 和 哈希 不是一回事 ！！！
+                <div class="nextSlogan">Next Post</div>
+                <a href="/blog/2025/03/17/hello-world/" title="欢迎来到 ITProHub！">
+                    <div class="nextTitle">欢迎来到 ITProHub！</div>
+                </a>
+            
+        </li>
+        <li class="previous">
+            
+                <div class="prevSlogan">Previous Post</div>
+                <a href="/blog/2025/02/27/midscenejs/" title="AI驱动的自动化测试：探索MidScene.js的强大功能">
+                    <div class="prevTitle">AI驱动的自动化测试：探索MidScene.js的强大功能</div>
+                </a>
+            
+        </li>
+    </ul>
+    <!-- comment -->
+    
+        <div class="post-comment">
+            <!-- 来必力 City 版安装代码 -->
 
-在信息技术中，加密、哈希和数字签名是保障数据安全和隐私的核心技术。这三者在实现信息保护、身份验证和数据完整性检查中扮演着重要角色。虽然它们常常被一同提及，但它们在工作原理和应用场景上有着显著的区别。本文将带你了解加密、哈希和签名的基本原理，并探讨它们之间的区别与联系。
-1. 什么是加密？
-基本原理加密是一种将明文信息转换为...
-            </div>
-            <!-- read more -->
+
             
-            <div class="abstract-post-meta">
-                <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/03/17">
-                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2024/11/06</span>
-                </div>
-                <!-- tags -->
-                
-            </div>
-        </article>
-        <div class="index-post-divider"></div>
+
+            
+
+            
+
+            <!-- utteranc评论 -->
+
+
+            <!-- partial('_partial/comment/changyan') -->
+            <!--PC版-->
+
+
+            
+            
+
+            
+
+        </div>
     
-        
-        
-        
-        
-            
-        
-        <article class="index-post">
-            <a class="abstract-title" href="/blog/2024/10/30/js-signal/">
-                
-                <span class="abstract-title-text">JavaScript 信号：如何将响应式功能带到普通 Web 开发中</span>
-            </a>
-            <div class="abstract-content">
-                在现代前端框架中，信号（Signals）正变得越来越流行。从 Angular 到 Solid、Preact，几乎所有主流框架都在使用信号，甚至有提案将其作为语言的核心功能。如果这个提案通过，那么框架中内置信号将是时间问题，而对于普通的 Web 开发者来说，信号也不再是遥不可及的技术。
-信号是什么？信号本质上是一个可以包装值并在值发生变化时发出事件的机制。在更现代的框架中，信号通过捕捉数据的变化并以响应的方式进行操作，避免了像传统 DOM 更新那样的重绘操作，从而提高了性能和开发效率。它的最大特点是能够简洁、高效地处理响应式状态，而不需要像 React 那样频繁地重新渲染整个组件。
-举个例...
-            </div>
-            <!-- read more -->
-            
-            <div class="abstract-post-meta">
-                <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/03/17">
-                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2024/10/30</span>
-                </div>
-                <!-- tags -->
-                
-            </div>
-        </article>
-        <div class="index-post-divider"></div>
+    <!-- timeliness note -->
+    <!-- idea from: https://hexo.fluid-dev.com/posts/hexo-injector/#%E6%96%87%E7%AB%A0%E6%97%B6%E6%95%88%E6%80%A7%E6%8F%90%E7%A4%BA -->
     
-        
-        
-        
-        
-            
-        
-        <article class="index-post">
-            <a class="abstract-title" href="/blog/2024/08/28/sticky-packet/">
-                
-                <span class="abstract-title-text">深入探讨 TCP 粘包现象：问题、原因与解决方案</span>
-            </a>
-            <div class="abstract-content">
-                在网络编程中，TCP 粘包是一个常见而又令人头疼的问题。对于刚接触网络编程的开发者来说，粘包问题可能会引发数据混乱，导致程序运行异常。因此，了解 TCP 粘包现象及其解决方法，对于开发稳定可靠的网络应用至关重要。本文将详细探讨什么是 TCP 粘包、它的成因，以及如何有效解决这一问题。
-什么是 TCP 粘包？TCP 粘包指的是在 TCP 传输过程中，多个数据包被合并成一个数据包传输到接收端，使得接收端在读取数据时无法区分出单个数据包的边界。粘包现象一般会出现在 TCP 流式传输中，导致接收端解析数据时出现混淆。
-举个简单的例子，假设客户端连续发送两条消息 “Hello” 和 “World”...
-            </div>
-            <!-- read more -->
-            
-            <div class="abstract-post-meta">
-                <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/03/17">
-                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2024/08/28</span>
-                </div>
-                <!-- tags -->
-                
-            </div>
-        </article>
-        <div class="index-post-divider"></div>
-    
-        
-        
-        
-        
-            
-        
-        <article class="index-post">
-            <a class="abstract-title" href="/blog/2024/08/16/quic/">
-                
-                <span class="abstract-title-text">QUIC:被寄予厚望的下一代互联网传输协议</span>
-            </a>
-            <div class="abstract-content">
-                HTTP协议是一种应用协议，它通常运行在TCP之上。但是TCP协议存在一些限制，导致Web应用程序响应速度较慢。
-为了克服 TCP 的缺点，Google开发了一种改变游戏规则的传输协议 QUIC。QUIC（Quick UDP Internet Connections）是一种传输层网络协议，最早由Google在2012年提出，旨在改善HTTP&#x2F;2的性能，特别是在高延迟和不稳定网络条件下。QUIC的主要目标是通过基于UDP的传输来减少连接建立时间、提高传输效率，并改善整体网络性能。随着QUIC的逐渐成熟，IETF（互联网工程任务组）标准化了QUIC，并且它现在成为HTTP&#x2F...
-            </div>
-            <!-- read more -->
-            
-            <div class="abstract-post-meta">
-                <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/03/17">
-                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2024/08/16</span>
-                </div>
-                <!-- tags -->
-                
-            </div>
-        </article>
-        <div class="index-post-divider"></div>
-    
-        
-        
-        
-        
-            
-        
-        <article class="index-post">
-            <a class="abstract-title" href="/blog/2024/08/08/docker-layer/">
-                
-                <span class="abstract-title-text">深入理解容器镜像层</span>
-            </a>
-            <div class="abstract-content">
-                之前我写了一篇博客《Docker镜像构建优化》，里面讲到了Docker里面的层，但是始终觉得差了点什么。今天这篇就算是补充一下吧！
-容器非常神奇。它们允许简单的进程像虚拟机一样运行。在这种优雅的背后是一套模式和实践，最终使一切正常运转。设计的根源是层。层是存储和分发容器化文件系统内容的基本方式。这种设计既出奇的简单，又非常强大。在今天的文章中，我将解释什么是层以及它们在概念上是如何工作的。
-构建分层图像创建镜像时，通常使用 来Dockerfile定义容器的内容。它包含一系列命令，例如：
-1234FROM alpineRUN echo &quot;hello&quot; &gt; /usr...
-            </div>
-            <!-- read more -->
-            
-            <div class="abstract-post-meta">
-                <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/03/17">
-                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2024/08/08</span>
-                </div>
-                <!-- tags -->
-                
-            </div>
-        </article>
-        <div class="index-post-divider"></div>
-    
-    <!-- paginator  -->
-    
-        <nav class="page-nav">
-            <a class="extend prev" rel="prev" href="/blog/">&lt; PREV</a><a class="page-number" href="/blog/">1</a><span class="page-number current">2</span><a class="page-number" href="/blog/page/3/">3</a><a class="page-number" href="/blog/page/4/">4</a><a class="extend next" rel="next" href="/blog/page/3/">NEXT &gt;</a>
-        </nav>
+    <!-- Mathjax -->
     
 </main>
 
                 <!-- profile -->
-                
-                    <div class="profile">
-    <img class="profile-avatar" alt="avatar" src= /blog/avatar/Jason.jpg />
-    <div class="profile-name">乐予吕</div>
-    
-        <div class="profile-signature">
-            witness me
-        </div>
-    
-    
-        <div class="profile-social">
-            
-    
-        
-            
-                <a href="mailto:287678478@qq.com" class="iconfont-archer email" title=email ></a>
-            
-        
-    
-        
-            
-                <a href="//github.com/ItProHub" class="iconfont-archer github" target="_blank" title=github></a>
-            
-        
-    
-        
-            
-                <span class="iconfont-archer wechat" title=wechat>
-                    
-                    <img class="profile-qr" src="/blog/assets/wechat_qr.jpg" />
-                </span>
-            
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-            
-                <a href="//juejin.cn/user/1489196396594523" class="iconfont-archer juejin" target="_blank" title=juejin></a>
-            
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-
-
-        </div>
-    
-    
-    
-        <div class="profile-link-item">
-            <a href="/blog/about" class="about-me">
-                
-                ABOUT ME
-            </a>
-        </div>
-    
-    
-    
-</div>
-
                 
             </div>
             <footer class="footer footer-unloaded">
@@ -934,6 +738,23 @@ Helm：Helm 是 Kubernetes 的包管理工具，类似于 Linux 上的 APT 或 Y
 
         </div>
         <!-- toc -->
+        
+            <div class="toc-wrapper toc-wrapper-loding" style=
+
+
+
+
+
+
+
+    top:50vh;
+
+>
+                <div class="toc-catalog">
+                    <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
+                </div>
+                <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF-RAG%EF%BC%88%E6%A3%80%E7%B4%A2%E5%A2%9E%E5%BC%BA%E7%94%9F%E6%88%90%EF%BC%89%EF%BC%9F"><span class="toc-number">1.</span> <span class="toc-text">** 什么是 RAG（检索增强生成）？**</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%80%89%E6%8B%A9-DeepSeek-%E4%BD%9C%E4%B8%BA-RAG-%E6%A8%A1%E5%9E%8B%EF%BC%9F"><span class="toc-number">2.</span> <span class="toc-text">** 为什么选择 DeepSeek 作为 RAG 模型？**</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0-DeepSeek-RAG%EF%BC%9F"><span class="toc-number">3.</span> <span class="toc-text">** 如何实现 DeepSeek + RAG？**</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9E%B6%E6%9E%84"><span class="toc-number">3.1.</span> <span class="toc-text">架构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="toc-number">3.2.</span> <span class="toc-text">代码实现</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E4%BE%9D%E8%B5%96"><span class="toc-number">3.2.1.</span> <span class="toc-text">安装依赖</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1%EF%B8%8F%E2%83%A3-%E6%95%B0%E6%8D%AE%E9%A2%84%E5%A4%84%E7%90%86%EF%BC%88%E6%96%87%E6%9C%AC%E5%90%91%E9%87%8F%E5%8C%96-%E5%AD%98%E5%85%A5-Qdrant%EF%BC%89"><span class="toc-number">3.2.2.</span> <span class="toc-text">1️⃣ 数据预处理（文本向量化 + 存入 Qdrant）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2%EF%B8%8F%E2%83%A3-%E7%94%A8%E6%88%B7%E6%9F%A5%E8%AF%A2-%E5%90%91%E9%87%8F%E6%A3%80%E7%B4%A2"><span class="toc-number">3.2.3.</span> <span class="toc-text">2️⃣ 用户查询 + 向量检索</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3%EF%B8%8F%E2%83%A3-DeepSeek-%E7%94%9F%E6%88%90%E7%AD%94%E6%A1%88"><span class="toc-number">3.2.4.</span> <span class="toc-text">3️⃣ DeepSeek 生成答案</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4%EF%B8%8F%E2%83%A3-%E7%9C%8B%E7%9C%8B%E6%95%88%E6%9E%9C"><span class="toc-number">3.2.5.</span> <span class="toc-text">** 4️⃣ 看看效果**</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E5%85%B8%E5%9E%8B%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">4.</span> <span class="toc-text">4. 典型应用场景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E6%80%BB%E7%BB%93"><span class="toc-number">5.</span> <span class="toc-text">5. 总结</span></a></li></ol>
+            </div>
         
         <!-- sidebar -->
         <div class="sidebar sidebar-hide">
@@ -1738,6 +1559,8 @@ Helm：Helm 是 Kubernetes 的包管理工具，类似于 Linux 上的 APT 或 Y
         <!-- CNZZ -->
         
         <!-- async load share.js -->
+        
+            <script src="/blog/scripts/share.js?v=20211217" async></script>
         
         <!-- mermaid -->
         
