@@ -5,7 +5,7 @@ tags:
 ---
 
 
-在大模型应用中，**如何保证答案的准确性和实时性** 一直是一个难题。尽管 LLM（Large Language Models）具有强大的生成能力，但它们的知识存在 **时间局限性**，并且容易产生“幻觉”（hallucination）。为了解决这些问题，**RAG（检索增强生成）** 方案应运而生，而 **DeepSeek** 作为国内领先的大模型之一，在 RAG 方面也展现出强大的能力。本文将带你了解 DeepSeek 与 RAG 的结合，并提供代码示例。
+在大模型应用中，**如何保证答案的准确性和实时性** 一直是一个难题。尽管 LLM（Large Language Models）具有强大的生成能力，但它们的知识存在 **时间局限性**，并且容易产生“幻觉”（hallucination）。为了解决这些问题，**RAG（检索增强生成）** 方案应运而生，在 RAG（检索增强生成）中，检索机制负责获取相关信息，而 LLM 负责生成最终答案。**DeepSeek** 作为国内领先的大模型之一，可以在 RAG 体系中作为生成部分，为检索增强的上下文提供自然、准确的回答。本文将带你了解 DeepSeek 与 RAG 的结合，并提供代码示例。
 
 ---
 
@@ -151,11 +151,12 @@ print("DeepSeek 生成的答案：", final_answer)
 #### ** 4️⃣ 看看效果**
 
 1. 原始搜索结果
+提出问题："你知道ITProHub?" 显然在原始模型的数据里面是没有关于本公众号的任何信息的，所以你可以看到deepseek针对这个问题开始胡言乱语了
 ![效果](./images/deepseek-rag/raw-result.png)
 可以看到针对 `ITProHub` 这个问题，原始的模型并不知道是啥。
 2. 接入RAG之后的效果
-![效果](./images/deepseek-rag/rag-result.png)
 接入RAG之后，模型可以根据检索到的内容，生成更准确的答案。
+![效果](./images/deepseek-rag/rag-result.png)
 ---
 
 ## **4. 典型应用场景**
