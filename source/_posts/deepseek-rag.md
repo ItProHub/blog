@@ -32,7 +32,7 @@ tags:
 - **更开放的 API**，可以免费试用，并且提供了本地部署版本。
 - **模型能力强**，支持 **代码、数学推理、知识问答等任务**，适合 RAG 场景。
 
-此外，DeepSeek 提供 **DeepSeek-VL（视觉+文本）** 以及 **DeepSeek-Coder（代码生成）** 版本，使其在 **技术文档问答、代码辅助、金融分析等领域** 表现优异。
+此外，DeepSeek 提供 **DeepSeek-VL（视觉+文本）** 以及 **DeepSeek-Coder（代码生成）** 版本，使其在 **技术文档问答、代码辅助、金融分析等领域** 表现优异。当然最重要的一点是，DeepSeek 是 **开源** 的，这意味着你可以在本地部署它，并且可以根据自己的需求进行定制。谁能拒绝白嫖呢？![DeepSeek](./images/deepseek-rag/baipiao.jpg)
 
 ---
 
@@ -95,8 +95,7 @@ docs = [
         "ITProHub是一个致力于信息技术领域，为专业人士、学习者和技术爱好者提供丰富的资源、技能培训的社区交流平台。",
 ]
 
-# 使用 DeepSeek API 进行向量化
-client = OpenAI(api_key="your_deepseek_api_key", base_url="https://api.deepseek.com/v1/")
+# 向量化
 doc_vectors = []
 for doc in docs:
      """ 使用本地 Ollama 计算文本嵌入向量 """
@@ -178,4 +177,5 @@ RAG 作为一种 **结合外部知识和大模型的增强技术**，极大提�
 - **本地化部署 DeepSeek**，提升数据安全性。
 
 如果你对 RAG 和 DeepSeek 感兴趣，可以尝试在自己的项目中落地应用，让 AI 变得更智能、更可靠！🚀
+完整示例代码可访问老夫的[GitHub](https://github.com/ItProHub/rag)
 
