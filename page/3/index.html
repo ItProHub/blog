@@ -445,6 +445,36 @@
             
         
         <article class="index-post">
+            <a class="abstract-title" href="/blog/2024/08/08/docker-layer/">
+                
+                <span class="abstract-title-text">深入理解容器镜像层</span>
+            </a>
+            <div class="abstract-content">
+                之前我写了一篇博客《Docker镜像构建优化》，里面讲到了Docker里面的层，但是始终觉得差了点什么。今天这篇就算是补充一下吧！
+容器非常神奇。它们允许简单的进程像虚拟机一样运行。在这种优雅的背后是一套模式和实践，最终使一切正常运转。设计的根源是层。层是存储和分发容器化文件系统内容的基本方式。这种设计既出奇的简单，又非常强大。在今天的文章中，我将解释什么是层以及它们在概念上是如何工作的。
+构建分层图像创建镜像时，通常使用 来Dockerfile定义容器的内容。它包含一系列命令，例如：
+1234FROM alpineRUN echo &quot;hello&quot; &gt; /usr...
+            </div>
+            <!-- read more -->
+            
+            <div class="abstract-post-meta">
+                <!-- date -->
+                <div class="abstract-date" title="Last updated: 2025/03/25">
+                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2024/08/08</span>
+                </div>
+                <!-- tags -->
+                
+            </div>
+        </article>
+        <div class="index-post-divider"></div>
+    
+        
+        
+        
+        
+            
+        
+        <article class="index-post">
             <a class="abstract-title" href="/blog/2024/08/01/daemonset/">
                 
                 <span class="abstract-title-text">Kubernetes DaemonSet – 它是什么以及如何使用</span>
@@ -458,7 +488,7 @@ DaemonSet 是 Kubernetes 的一个控制器类型，用于确保集群中的每�
             
             <div class="abstract-post-meta">
                 <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/03/18">
+                <div class="abstract-date" title="Last updated: 2025/03/25">
                     <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2024/08/01</span>
                 </div>
                 <!-- tags -->
@@ -491,7 +521,7 @@ DaemonSet 是 Kubernetes 的一个控制器类型，用于确保集群中的每�
             
             <div class="abstract-post-meta">
                 <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/03/18">
+                <div class="abstract-date" title="Last updated: 2025/03/25">
                     <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2024/07/11</span>
                 </div>
                 <!-- tags -->
@@ -526,7 +556,7 @@ DaemonSet 是 Kubernetes 的一个控制器类型，用于确保集群中的每�
             
             <div class="abstract-post-meta">
                 <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/03/18">
+                <div class="abstract-date" title="Last updated: 2025/03/25">
                     <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2024/07/09</span>
                 </div>
                 <!-- tags -->
@@ -555,7 +585,7 @@ Dockerfile中的层定义在Dockerfile中，每一个指令（如RUN、COPY、AD
             
             <div class="abstract-post-meta">
                 <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/03/18">
+                <div class="abstract-date" title="Last updated: 2025/03/25">
                     <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2024/07/08</span>
                 </div>
                 <!-- tags -->
@@ -585,7 +615,7 @@ Dockerfile中的层定义在Dockerfile中，每一个指令（如RUN、COPY、AD
             
             <div class="abstract-post-meta">
                 <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/03/18">
+                <div class="abstract-date" title="Last updated: 2025/03/25">
                     <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2024/07/05</span>
                 </div>
                 <!-- tags -->
@@ -614,7 +644,7 @@ Dockerfile中的层定义在Dockerfile中，每一个指令（如RUN、COPY、AD
             
             <div class="abstract-post-meta">
                 <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/03/18">
+                <div class="abstract-date" title="Last updated: 2025/03/25">
                     <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2024/06/20</span>
                 </div>
                 <!-- tags -->
@@ -643,7 +673,7 @@ Dockerfile中的层定义在Dockerfile中，每一个指令（如RUN、COPY、AD
             
             <div class="abstract-post-meta">
                 <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/03/18">
+                <div class="abstract-date" title="Last updated: 2025/03/25">
                     <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2024/05/30</span>
                 </div>
                 <!-- tags -->
@@ -672,7 +702,7 @@ TaskCompletionSource是 .NET 库中用于处理任务的极其有用的工具，
             
             <div class="abstract-post-meta">
                 <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/03/18">
+                <div class="abstract-date" title="Last updated: 2025/03/25">
                     <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2024/05/30</span>
                 </div>
                 <!-- tags -->
@@ -704,48 +734,10 @@ TaskCompletionSource是 .NET 库中用于处理任务的极其有用的工具，
             
             <div class="abstract-post-meta">
                 <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/03/18">
+                <div class="abstract-date" title="Last updated: 2025/03/25">
                     <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2024/05/22</span>
                 </div>
                 <!-- tags -->
-                
-            </div>
-        </article>
-        <div class="index-post-divider"></div>
-    
-        
-        
-        
-        
-            
-        
-        <article class="index-post">
-            <a class="abstract-title" href="/blog/2024/04/28/dump/">
-                
-                <span class="abstract-title-text">Dump分析入门指南</span>
-            </a>
-            <div class="abstract-content">
-                想象一下，突然有一天部署在服务器上的应用突然挂了！没有一点点防备，也没有一丝顾虑，你就这样出现。。。挂就挂了吧，服务还没有输出任务的错误信息。这个时候有没有什么途径可以让我找到崩溃的原因呢？
-
-在软件开发和运维过程中，Dump 文件是一种非常重要的工具，可以帮助我们定位和解决各种问题，包括应用程序崩溃、性能问题、内存泄漏等。本文将介绍 Dump 文件的基本概念、常见类型以及如何进行分析和利用，帮助读者更好地理解和利用 Dump 文件进行故障排查和性能优化。
-Dump 文件是什么？Dump 文件是在应用程序发生崩溃或异常情况时生成的一种内存转储文件，记录了应用程序在崩溃时的内存状态、线程堆...
-            </div>
-            <!-- read more -->
-            
-            <div class="abstract-post-meta">
-                <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/03/18">
-                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2024/04/28</span>
-                </div>
-                <!-- tags -->
-                
-                    <div class= abstract-tags >
-    
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags="dump 性能 异常">dump 性能 异常</a>
-    
-</div>
-
                 
             </div>
         </article>
@@ -1135,7 +1127,18 @@ Dump 文件是什么？Dump 文件是在应用程序发生崩溃或异常情况�
         
         
         
+        
+        
+        
+        
+        
     
+        
+        
+        
+        
+        
+        
         
         
         
@@ -1414,7 +1417,7 @@ Dump 文件是什么？Dump 文件是在应用程序发生崩溃或异常情况�
     
     <div class="total-and-search">
         <div class="total-archive">
-        Total : 35
+        Total : 36
         </div>
         <!-- search  -->
         
@@ -1428,6 +1431,18 @@ Dump 文件是什么？Dump 文件是在应用程序发生崩溃或异常情况�
             <div class="archive-year"> 2025 </div>
             <ul class="year-list">
             
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/25</span>
+            <a class="archive-post-title" href="/blog/2025/03/25/hello-world/">欢迎来到 ITProHub！</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/18</span>
+            <a class="archive-post-title" href="/blog/2025/03/18/MCP/">MCP：AI 时代的“USB-C”，解锁模型上下文新范式</a>
+        </li>
+    
         
         <li class="archive-post-item">
             <span class="archive-post-date">03/14</span>
@@ -1613,6 +1628,12 @@ Dump 文件是什么？Dump 文件是在应用程序发生崩溃或异常情况�
     
         
         <li class="archive-post-item">
+            <span class="archive-post-date">04/18</span>
+            <a class="archive-post-title" href="/blog/2024/04/18/redis-interview-1/">Redis成长记 - Redis的陷阱（一）</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
             <span class="archive-post-date">04/11</span>
             <a class="archive-post-title" href="/blog/2024/04/11/https/">HTTPS的工作原理以及安装</a>
         </li>
@@ -1621,36 +1642,6 @@ Dump 文件是什么？Dump 文件是在应用程序发生崩溃或异常情况�
         <li class="archive-post-item">
             <span class="archive-post-date">04/07</span>
             <a class="archive-post-title" href="/blog/2024/04/07/garnet/">Garnet，缓存的新选择！</a>
-        </li>
-    
-        
-            
-            
-                
-                </ul>
-            
-            <div class="archive-year"> Invalid date </div>
-            <ul class="year-list">
-            
-        
-        <li class="archive-post-item">
-            <span class="archive-post-date">Invalid date</span>
-            <a class="archive-post-title" href="/blog/2025/03/18/hello-world/">欢迎来到 ITProHub！</a>
-        </li>
-    
-        
-            
-            
-                
-                </ul>
-            
-            <div class="archive-year"> 2024 </div>
-            <ul class="year-list">
-            
-        
-        <li class="archive-post-item">
-            <span class="archive-post-date">04/18</span>
-            <a class="archive-post-title" href="/blog/2024/04/18/redis-interview-1/">Redis成长记 - Redis的陷阱（一）</a>
         </li>
     
         
@@ -1681,14 +1672,14 @@ Dump 文件是什么？Dump 文件是在应用程序发生崩溃或异常情况�
                 Garnet 缓存 微软
             </span>
         
-            <span class="sidebar-tag-name" data-tags="https http ssl tls">
-                <span class="iconfont-archer">&#xe606;</span>
-                https http ssl tls
-            </span>
-        
             <span class="sidebar-tag-name" data-tags="http http协议 Connection">
                 <span class="iconfont-archer">&#xe606;</span>
                 http http协议 Connection
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="https http ssl tls">
+                <span class="iconfont-archer">&#xe606;</span>
+                https http ssl tls
             </span>
         
             <span class="sidebar-tag-name" data-tags="组织 内耗">
