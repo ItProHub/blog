@@ -37,6 +37,7 @@ MCP 的出现是 Prompt Engineering 发展的产物。更结构化的上下文�
 - **平台依赖性**：不同 LLM 平台的 Function Call API 实现方式各不相同，例如 OpenAI 和 Google 的调用方式不兼容，开发者在切换模型时需要重写代码，增加了适配成本。
 - **安全性**：Function Call 需要开放额外的接口，可能带来安全隐患。
 - **交互性**：在部分场景下，Function Call 的交互流程可能较为复杂，影响整体使用体验。
+![没有MCP](./images/mcp/without-mcp.png)
 
 #### MCP 如何改进？
 
@@ -44,6 +45,7 @@ MCP 的出现是 Prompt Engineering 发展的产物。更结构化的上下文�
 - **跨平台兼容性**：MCP 作为开放协议，减少了不同 LLM 平台之间的适配成本，开发者可以更轻松地切换底层模型。
 - **提升自动化水平**：MCP 允许应用程序自动从不同数据源（数据库、API、文件等）动态填充上下文，提高模型的理解能力。
 
+![有MCP](./images/mcp/with-mcp.png)
 因此，MCP 的引入为 AI 应用带来了更高效、灵活的上下文管理方式，突破了 Function Call 的局限，使得开发者能够更专注于模型能力的发挥，而非手动适配数据。
 
 ---
@@ -140,11 +142,6 @@ mcp dev server.py
 然后我们就可以通过访问Inspector的地址来查看服务器的状态和工具列表。
 ![Inspector](./images/mcp/inspector.png)
 
-```python
-from mcp_sdk import MCPClient
-
-client = MCPClient(server_url="http://mcp-server.local")
-```
 
 #### **实现客户端**
 
