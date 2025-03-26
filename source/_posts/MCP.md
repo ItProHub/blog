@@ -91,8 +91,8 @@ MCP 的架构设计清晰地划分为几个核心组件，每个组件都有明�
 
 #### ** 实现MCP Server **
 这里我只实现了两个简单的工具
-```pyhton
 
+```python
 # 创建 MCP 服务器实例
 mcp = FastMCP("DataService")
 
@@ -146,77 +146,73 @@ mcp dev server.py
 #### **实现客户端**
 
 ```python
-import asyncio
-from ollama import AsyncClient
-from mcp import ClientSession, StdioServerParameters
-from mcp.client.stdio import stdio_client
-from contextlib import AsyncExitStack
-
 class MCPClient:
     def __init__(self):
-        self.session = None
+        self.servers = []
         self.tools = []
         self.exit_stack = AsyncExitStack()
         self.ollama = AsyncClient('127.0.0.1')
 
     async def initialize(self):
-        # 配置服务器参数
-        server_params = StdioServerParameters(
-            command="uv",
-            args=["run", "--with", "mcp", "mcp", "run", "server.py"]
-        )
-
-        # 创建客户端会话
-        stdio_transport = await self.exit_stack.enter_async_context(stdio_client(server_params))
-        self.stdio, self.write = stdio_transport
-        self.session = await self.exit_stack.enter_async_context(ClientSession(self.stdio, self.write))
-        
-        await self.session.initialize()
-
+        server_config = None
+        with open("servers_config.json", "r") as f:
+            server_config = json.load(f)
         # 列出服务器提供的工具
-        toolsList = await self.session.list_tools()
-        print("可用的工具:", toolsList.tools)
+        print("可用的工具:", self.tools)
 
     async def chat_loop(self):
-        """Main chat loop"""
+        """Run an interactive chat loop"""
+        print("\nMCP Client Started!")
+        print("Type your queries or 'quit' to exit.")
+        
+        while True:
+            try:
+                response = await self.process_query(query)
+                print("\n" + response)
+                    
+            except Exception as e:
+                print(f"\nError: {str(e)}")
 
 
     async def process_query(self, query: str) -> str:
         """Process a query using Claude and available tools"""
-        messages = [
-            {
-                "role": "user",
-                "content": query
-            }
-        ]
 
-        response = await self.session.list_tools()
-        available_tools = [{}...]
-        
+        tools_description = "\n".join([tool.format_for_llm() for tool in self.tools])
 
-        response = await self.ollama.chat(
+        system_message = (
+                "You are a helpful assistant with access to these tools:\n\n"
+                f"{tools_description}\n"
+                ...
+            )
+
+        messages = [{"role": "system", "content": system_message}]
+        messages.append({"role": "user", "content": query})
+
+        llm_response = await self.ollama.chat(
             'qwen2.5:0.5b',        
-            messages=messages,
-            tools=available_tools
+            messages=messages
         )
+        
+        result = await self.process_llm_response(llm_response)
 
-        # Process response and handle tool calls
-        assistant_message_content = []
-        final_text = []
+        if result != llm_response:
+            messages.append({"role": "assistant", "content": llm_response})
+            messages.append({"role": "system", "content": result})
 
-        if response.message.tool_calls:
-            for tool in response.message.tool_calls:
+            final_response = await self.ollama.chat(
+                'qwen2.5:0.5b',        
+                messages=messages
+            )
+            final_response = final_response.message['content']
+            logging.info("\nFinal response: %s", final_response)
+            messages.append(
+                {"role": "assistant", "content": final_response}
+            )
+        else:
+            messages.append({"role": "assistant", "content": llm_response})
 
-                    # Execute tool call
-                    result = await self.session.call_tool(tool.function.name, tool.function.arguments)
 
-                    # Send tool call result back to LLM
-
-        return "\n".join(final_text)
-    
-    async def cleanup(self):
-        """Clean up resources"""
-        await self.exit_stack.aclose()
+        return final_response
 
 
 async def main():
@@ -227,9 +223,9 @@ async def main():
     finally:
         await client.cleanup()
 
-
 if __name__ == "__main__":
     asyncio.run(main())
+
 ```
 
 #### **运行效果**
@@ -241,24 +237,53 @@ if __name__ == "__main__":
 ---
 
 ##  关于 MCP 与 Function Call 机制的关系（补充说明）
+### MCP Client 如何决定调用哪个工具？
+在实际应用中，MCP 客户端判断调用哪个工具主要有两种实现方式：
 
-### 疑问：
-文中提到：“不同 LLM 平台的 Function Call API 实现方式不兼容，开发者在切换模型时需要重写代码，增加了适配成本。” 但实际上上面的代码示例使用 MCP 时，客户端仍然需要依赖 LLM 的 function call 功能来决定调用哪个工具。那么 MCP 如何降低适配成本？
+1. 利用 LLM 平台原生的 Function Call 功能
 
-### 解答：
-这个问题涉及 MCP 和 Function Call 两者的关系：
+这种方式依赖 LLM 平台自带的函数调用能力，例如 OpenAI 的 Function Call API。具体流程为：
 
-- Function Call 决定了何时调用外部工具或服务（模型意图判断）。
+- 模型识别用户意图，返回指定的函数调用请求。
 
-- MCP 则统一了具体工具调用的如何实现（数据源访问标准化）。
+- 客户端接收到函数调用指令后，通过 MCP 协议访问具体数据或服务。
 
-即：
+优点是模型能够直接识别调用意图，调用精准度较高。
+缺点是不同模型平台之间存在 API 差异，切换模型可能需要额外适配。
 
-- 模型判断是否调用工具（Function Call） → 不同模型平台可能存在差异（MCP无法避免）。
+2. 通过特定的 Prompt 结构（Prompt Engineering）来实现调用判断
 
-- 具体执行调用工具的过程（MCP） → 标准统一，无需针对不同平台进行适配。
+通过向模型提供明确、结构化的 system prompt（如下面示例），指导模型在需要调用外部工具时输出指定格式的 JSON 指令：
 
-因此，MCP 并未完全避免模型平台的 Function Call 差异，而是显著减少了具体数据调用实现层面的差异，降低了开发者的适配成本。
+```
+"You are a helpful assistant with access to these tools:\n\n"
+f"{tools_description}\n"
+"Choose the appropriate tool based on the user's question. "
+"If no tool is needed, reply directly.\n\n"
+"IMPORTANT: When you need to use a tool, you must ONLY respond with "
+"the exact JSON object format below, nothing else:\n"
+"{\n"
+'    "tool": "tool-name",\n'
+'    "arguments": {\n'
+'        "argument-name": "value"\n'
+"    }\n"
+"}\n\n"
+"After receiving a tool's response:\n"
+"1. Transform the raw data into a natural, conversational response\n"
+"2. Keep responses concise but informative\n"
+"3. Focus on the most relevant information\n"
+"4. Use appropriate context from the user's question\n"
+"5. Avoid simply repeating the raw data\n\n"
+"Please use only the tools that are explicitly defined above."
+```
+在这种方法中：
+
+- 模型无需特定的函数调用能力，而是通过 prompt engineering 来判断何时调用工具。
+
+- 客户端解析 JSON 格式指令后调用 MCP 接口访问工具。
+
+优点是对模型平台的 function call API 无依赖，适配性强。
+缺点是依赖 Prompt 结构，模型输出的稳定性可能较差，偶尔需要额外的校验和容错处理。
 
 
 ## 总结
