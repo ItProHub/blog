@@ -19,25 +19,25 @@
         <meta name="keywords" content="hexo,ITProHub,hexo-theme,hexo-blog">
     
     <meta name="description" content="">
-    <meta name="description" content="🌐 欢迎来到 ITProHub！🚀 你的信息技术专业中心 🚀在 ITProHub，我们致力于成为信息技术领域的中心枢纽，为专业人士、学习者和技术爱好者提供丰富的资源、技能培训和社区交流平台。 🔍 ITPro: 专业的信息技术支持无论你是正在寻找IT职业发展的道路，还是想提升你的专业技能，ITProHub都为你提供了全面的资源和指导。我们关注行业趋势，分享最新的技术知识，助你成为更专业的I">
+    <meta name="description" content="书接上回，作为一个从.NET转Java的开发人员，Spring框架肯定是无法绕过的。在学习 Spring 框架的过程中，我们往往只是停留在“使用”层面，而对其底层实现机制知之甚少。但我始终觉得，学习框架的过程中，理解其设计思想和实现原理是非常重要的。因此，我决定手写一个微型的Spring框架，来深入理解Spring的核心设计思想。为了加深我对 Spring 的理解，并锻炼 Java 框架设计能力，">
 <meta property="og:type" content="article">
-<meta property="og:title" content="欢迎来到 ITProHub！">
-<meta property="og:url" content="https://itprohub.github.io/blog/2025/04/07/hello-world/index.html">
+<meta property="og:title" content="手写一个微型 Spring 框架：从端口监听到依赖注入">
+<meta property="og:url" content="https://itprohub.github.io/blog/2025/04/14/spring-1/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="🌐 欢迎来到 ITProHub！🚀 你的信息技术专业中心 🚀在 ITProHub，我们致力于成为信息技术领域的中心枢纽，为专业人士、学习者和技术爱好者提供丰富的资源、技能培训和社区交流平台。 🔍 ITPro: 专业的信息技术支持无论你是正在寻找IT职业发展的道路，还是想提升你的专业技能，ITProHub都为你提供了全面的资源和指导。我们关注行业趋势，分享最新的技术知识，助你成为更专业的I">
+<meta property="og:description" content="书接上回，作为一个从.NET转Java的开发人员，Spring框架肯定是无法绕过的。在学习 Spring 框架的过程中，我们往往只是停留在“使用”层面，而对其底层实现机制知之甚少。但我始终觉得，学习框架的过程中，理解其设计思想和实现原理是非常重要的。因此，我决定手写一个微型的Spring框架，来深入理解Spring的核心设计思想。为了加深我对 Spring 的理解，并锻炼 Java 框架设计能力，">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://itprohub.github.io/blog/images/hello-bg.png">
-<meta property="og:image" content="https://myom-dev.oss-cn-hangzhou.aliyuncs.com/WechatPublicPlatformQrCode.jpg">
-<meta property="article:published_time" content="2025-04-07T06:12:37.860Z">
-<meta property="article:modified_time" content="2025-04-07T06:12:37.860Z">
+<meta property="og:image" content="https://itprohub.github.io/blog/images/spring-1/architecture.png">
+<meta property="og:image" content="https://itprohub.github.io/blog/images/spring-1/result.png">
+<meta property="article:published_time" content="2025-04-14T10:17:55.000Z">
+<meta property="article:modified_time" content="2025-04-14T09:28:02.554Z">
 <meta property="article:author" content="乐予吕">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://itprohub.github.io/blog/images/hello-bg.png">
+<meta name="twitter:image" content="https://itprohub.github.io/blog/images/spring-1/architecture.png">
     <meta http-equiv="Cache-control" content="no-cache">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <link rel="icon" href="/blog/assets/favicon.ico">
     
-    <title>欢迎来到 ITProHub！ · 个人技术日常分享</title>
+    <title>手写一个微型 Spring 框架：从端口监听到依赖注入 · 个人技术日常分享</title>
     <!-- /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
 /* This file is meant as a standalone workflow for
 - testing support for link[rel=preload]
@@ -264,7 +264,7 @@
                 <a href="/blog/">个人技术日常分享</a>
             </div>
             <div class="post-title header-element">
-                <a href="#" class="post-name">欢迎来到 ITProHub！</a>
+                <a href="#" class="post-name">手写一个微型 Spring 框架：从端口监听到依赖注入</a>
             </div>
         </div>
     
@@ -310,7 +310,7 @@
         <h1 class="intro-title">
             <!-- 主页  -->
             
-                欢迎来到 ITProHub！
+                手写一个微型 Spring 框架：从端口监听到依赖注入
             <!-- 404 -->
             
         </h1>
@@ -338,7 +338,7 @@
                 <div class="post-intro-meta">
                     <!-- 撰写日期 -->
                     <span class="iconfont-archer post-intro-calander">&#xe676;</span>
-                    <span class="post-intro-time">2025/04/07</span>
+                    <span class="post-intro-time">2025/04/14</span>
                     <!-- busuanzi -->
                     
                         <span id="busuanzi_container_page_pv" class="busuanzi-pv">
@@ -493,32 +493,177 @@
             <div class="container container-unloaded">
                 <main class="main post-page">
     <article class="article-entry">
-        <p><img src="/blog/images/hello-bg.png" alt="background"></p>
-<h1 id="🌐-欢迎来到-ITProHub！"><a href="#🌐-欢迎来到-ITProHub！" class="headerlink" title="🌐 欢迎来到 ITProHub！"></a>🌐 欢迎来到 ITProHub！</h1><h2 id="🚀-你的信息技术专业中心-🚀"><a href="#🚀-你的信息技术专业中心-🚀" class="headerlink" title="🚀 你的信息技术专业中心 🚀"></a>🚀 你的信息技术专业中心 🚀</h2><p>在 ITProHub，我们致力于成为信息技术领域的中心枢纽，为专业人士、学习者和技术爱好者提供丰富的资源、技能培训和社区交流平台。</p>
-<h3 id="🔍-ITPro-专业的信息技术支持"><a href="#🔍-ITPro-专业的信息技术支持" class="headerlink" title="🔍 ITPro: 专业的信息技术支持"></a>🔍 ITPro: 专业的信息技术支持</h3><p>无论你是正在寻找IT职业发展的道路，还是想提升你的专业技能，ITProHub都为你提供了全面的资源和指导。我们关注行业趋势，分享最新的技术知识，助你成为更专业的IT从业者。</p>
-<h3 id="💼-Hub-中心化的资源和社区"><a href="#💼-Hub-中心化的资源和社区" class="headerlink" title="💼 Hub: 中心化的资源和社区"></a>💼 Hub: 中心化的资源和社区</h3><p>ITProHub是一个汇聚各种IT资源的中心，包括职业指导、技术文章、培训课程等。在我们的社区中，你可以与其他IT专业人士建立联系，分享经验，共同成长。</p>
-<h4 id="✨-我们的特色服务和内容包括："><a href="#✨-我们的特色服务和内容包括：" class="headerlink" title="✨ 我们的特色服务和内容包括："></a>✨ 我们的特色服务和内容包括：</h4><p>🎓 专业的IT技能培训课程</p>
-<p>📰 行业趋势和技术文章分享</p>
-<p>🚀 职业发展指导和招聘信息</p>
-<p>💬 与专业人士互动的社交平台</p>
-<p>👥 加入我们的社区，你将获得：</p>
-<p>与同行专业人士的互动和交流机会</p>
-<p>获取实用的职业发展建议和技术支持</p>
-<p>参与丰富多彩的线上和线下活动</p>
-<p>无论你是刚刚踏入IT领域，还是寻求更高级别的技术挑战，ITProHub都是你信息技术之旅的理想伴侣。</p>
-<h2 id="🌐-探索无限可能，加入-ITProHub-！🌐"><a href="#🌐-探索无限可能，加入-ITProHub-！🌐" class="headerlink" title="🌐 探索无限可能，加入 ITProHub ！🌐"></a>🌐 探索无限可能，加入 ITProHub ！🌐</h2><p>公众号将不定期更新，欢迎订阅！</p>
-<p>#ITProHub #信息技术 #专业发展 #社区交流</p>
-<p>更多一手讯息，可关注公众号：<a target="_blank" rel="noopener" href="https://myom-dev.oss-cn-hangzhou.aliyuncs.com/WechatPublicPlatformQrCode.jpg">ITProHub</a></p>
-<p><img src="https://myom-dev.oss-cn-hangzhou.aliyuncs.com/WechatPublicPlatformQrCode.jpg" alt="ITProHub"></p>
+        <p>书接上回，作为一个从.NET转Java的开发人员，Spring框架肯定是无法绕过的。在学习 Spring 框架的过程中，我们往往只是停留在“使用”层面，而对其底层实现机制知之甚少。但我始终觉得，学习框架的过程中，理解其设计思想和实现原理是非常重要的。因此，我决定手写一个微型的Spring框架，来深入理解Spring的核心设计思想。为了加深我对 Spring 的理解，并锻炼 Java 框架设计能力，我决定手写一个微型的 Spring 框架 —— Javelin。</p>
+<p>这篇文章我们将实现：</p>
+<ul>
+<li>一个简单的 IoC 容器 <code>JavelinContext</code>，用于管理 Bean 实例的生命周期。</li>
+<li>支持 <code>@RestController</code>、<code>@GetMapping</code>、<code>@PostMapping</code> 等注解的自动扫描与注册。</li>
+<li>基于 <code>HttpServer</code> 的端口监听与请求路由分发。</li>
+</ul>
+<blockquote>
+<p>本文适合有 Java 或 .NET 框架开发经验的读者，特别是希望深入理解 Spring、探索其核心设计思想的人群。</p>
+</blockquote>
+<hr>
+<h2 id="为什么要手写一个-Spring-框架？"><a href="#为什么要手写一个-Spring-框架？" class="headerlink" title="为什么要手写一个 Spring 框架？"></a>为什么要手写一个 Spring 框架？</h2><p>首先Spring 是 Java 生态中最具代表性的框架之一，而作为一个搬砖多年的开发人员，CURD显然不再是我们的追求。但，学习框架的设计思想和实现原理还是非常有价值的。Sping框架核心理念在于控制反转（IoC）、面向切面编程（AOP）和基于注解的声明式编程。手写框架可以帮助我们：</p>
+<ol>
+<li><strong>理解 IoC 容器原理</strong>：Bean 是如何被发现、实例化、依赖注入的？</li>
+<li><strong>掌握路由注册机制</strong>：Spring MVC 如何基于注解将请求分发给具体的方法？</li>
+<li><strong>探索类扫描与反射机制</strong>：如何实现自动发现注解的类与方法？</li>
+<li><strong>对比 .NET</strong>：Spring 与 ASP.NET Core 的设计思路在某些地方是相通的，比如 <code>@RestController</code> 和 <code>[ApiController]</code>，但实现方式有差异。</li>
+</ol>
+<p>通过实战构建 Javelin，我们能够站在框架设计者的角度重新思考“约定优于配置”的设计哲学。</p>
+<hr>
+<h2 id="项目结构"><a href="#项目结构" class="headerlink" title="项目结构"></a>项目结构</h2><p>我们手写的框架名叫 <code>Javelin</code>，目前已经实现了三个核心模块：</p>
+<table>
+<thead>
+<tr>
+<th>模块</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>JavelinContext</code></td>
+<td>提供简化版 IoC 容器，实现基于注解的构造函数注入</td>
+</tr>
+<tr>
+<td><code>Router</code></td>
+<td>自动扫描 <code>@RestController</code>，绑定 GET&#x2F;POST 请求路径</td>
+</tr>
+<tr>
+<td><code>AppStartup</code></td>
+<td>应用启动入口，配置端口监听、类扫描路径等</td>
+</tr>
+</tbody></table>
+<p><img src="/blog/./images/spring-1/architecture.png" alt="结构"></p>
+<p>项目结构如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">javelin-core/</span><br><span class="line">├── annotations/        // 自定义注解（@RestController, @Inject 等）</span><br><span class="line">├── context/            // IoC 容器</span><br><span class="line">├── rest/               // 路由注册</span><br><span class="line">├── core/               // 类扫描器</span><br><span class="line">└── startup/            // 启动类</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="构建核心-IoC-容器-JavelinContext"><a href="#构建核心-IoC-容器-JavelinContext" class="headerlink" title="构建核心 IoC 容器 JavelinContext"></a>构建核心 IoC 容器 <code>JavelinContext</code></h2><p>我们首先需要一个容器类来负责扫描、实例化 Bean，并支持构造函数注入。代码结构如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">JavelinContext</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Map&lt;Class&lt;?&gt;, Object&gt; singletonMap = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> &lt;T&gt; T <span class="title function_">getBean</span><span class="params">(Class&lt;T&gt; clazz)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (singletonMap.containsKey(clazz)) &#123;</span><br><span class="line">            <span class="keyword">return</span> (T) singletonMap.get(clazz);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="type">T</span> <span class="variable">instance</span> <span class="operator">=</span> (T) createBean(clazz);</span><br><span class="line">        singletonMap.put(clazz, instance);</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> &lt;T&gt; T <span class="title function_">createBean</span><span class="params">(Class&lt;T&gt; clazz)</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Constructor&lt;?&gt;[] constructors = clazz.getDeclaredConstructors();</span><br><span class="line">            </span><br><span class="line">            injectConstructor = clazz.getDeclaredConstructor();</span><br><span class="line">            <span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">            <span class="keyword">return</span> (T) injectConstructor.newInstance(args.toArray());</span><br><span class="line">        &#125;  <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(<span class="string">&quot;Failed to instantiate: &quot;</span> + clazz.getName(), e); </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>这段代码的核心思路与 .NET Core 的构造函数注入类似（例如通过 <code>IServiceCollection.AddTransient()</code> 注册服务并注入）。</p>
+<hr>
+<h2 id="自动路由注册-Router"><a href="#自动路由注册-Router" class="headerlink" title="自动路由注册 Router"></a>自动路由注册 Router</h2><p>我们手动实现了基于注解的请求路由注册机制。Javelin 支持如下注解：</p>
+<p>控制器注解</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Target(ElementType.TYPE)</span></span><br><span class="line"><span class="meta">@Retention(RetentionPolicy.RUNTIME)</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> RestController &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>请求映射注解</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Target(ElementType.ANNOTATION_TYPE)</span></span><br><span class="line"><span class="meta">@Retention(RetentionPolicy.RUNTIME)</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> HttpMethodMapping &#123;</span><br><span class="line">    String <span class="title function_">method</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@HttpMethodMapping(method = &quot;POST&quot;)</span></span><br><span class="line"><span class="meta">@Target(ElementType.METHOD)</span></span><br><span class="line"><span class="meta">@Retention(RetentionPolicy.RUNTIME)</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> PostMapping &#123;</span><br><span class="line">    String <span class="title function_">value</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ...</span></span><br></pre></td></tr></table></figure>
+
+<p>而 <code>Router</code> 类的核心逻辑如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Router</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">registerRoutes</span><span class="params">(HttpServer server, Set&lt;Class&lt;?&gt;&gt; classes, JavelinContext context)</span> &#123;</span><br><span class="line">        <span class="keyword">for</span> (Class&lt;?&gt; clazz : classes) &#123;</span><br><span class="line">            <span class="keyword">if</span> (!clazz.isAnnotationPresent(RestController.class)) <span class="keyword">continue</span>;</span><br><span class="line"></span><br><span class="line">            <span class="type">Object</span> <span class="variable">controller</span> <span class="operator">=</span> context.getBean(clazz);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">for</span> (Method method : clazz.getDeclaredMethods()) &#123;</span><br><span class="line">                <span class="type">HttpMethodMapping</span> <span class="variable">mapping</span> <span class="operator">=</span> annotation.annotationType().getAnnotation(HttpMethodMapping.class);</span><br><span class="line">                <span class="keyword">if</span> (mapping != <span class="literal">null</span>) &#123;</span><br><span class="line">                       <span class="type">String</span> <span class="variable">httpMethod</span> <span class="operator">=</span> mapping.method();                       </span><br><span class="line">                       <span class="keyword">try</span>&#123;</span><br><span class="line">                           <span class="type">String</span> <span class="variable">path</span> <span class="operator">=</span> (String) annotation.annotationType().getMethod(<span class="string">&quot;value&quot;</span>).invoke(annotation);</span><br><span class="line">                           registerHandler(server, path, httpMethod, controllerInstance, method);</span><br><span class="line">                       &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                           e.printStackTrace(); </span><br><span class="line">                       &#125;</span><br><span class="line"></span><br><span class="line">                    &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">registerHandler</span><span class="params">(HttpServer server, String path, String expectedMethod, Object controllerInstance, Method method)</span> &#123;</span><br><span class="line">        server.createContext(path, exchange -&gt; &#123;</span><br><span class="line">            <span class="comment">// 判断请求的合法性</span></span><br><span class="line"></span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="comment">// 反射调用方法</span></span><br><span class="line">            &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                exchange.sendResponseHeaders(<span class="number">500</span>, <span class="number">0</span>);</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">&quot;➡️  [&quot;</span> + httpMethod + <span class="string">&quot;] &quot;</span> + path + <span class="string">&quot; → &quot;</span> + controller.getClass().getSimpleName() + <span class="string">&quot;.&quot;</span> + method.getName());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<p>.NET 中这部分功能相当于 ASP.NET Core 中的 <code>MapControllers()</code> + <code>[HttpGet(&quot;/api/foo&quot;)]</code> 等特性。</p>
+<hr>
+<h2 id="3-启动类-AppStartup"><a href="#3-启动类-AppStartup" class="headerlink" title="3. 启动类 AppStartup"></a>3. 启动类 AppStartup</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AppStartup</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">(Class&lt;?&gt; appClass, String[] args)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="type">String</span> <span class="variable">basePackage</span> <span class="operator">=</span> appClass.getPackage().getName(); <span class="comment">// 自动获取包名</span></span><br><span class="line">        Set&lt;Class&lt;?&gt;&gt; controllers = ClassScanner.scan(basePackage);</span><br><span class="line"></span><br><span class="line">        <span class="type">int</span> <span class="variable">port</span> <span class="operator">=</span> resolvePort(); <span class="comment">// ✅ 获取端口号</span></span><br><span class="line">        HttpServer server;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            server = HttpServer.create(<span class="keyword">new</span> <span class="title class_">InetSocketAddress</span>(port), <span class="number">0</span>); <span class="comment">// 默认端口8080     </span></span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(<span class="string">&quot;Failed to start HTTP server&quot;</span>, e);</span><br><span class="line">        &#125;           </span><br><span class="line"></span><br><span class="line">        <span class="type">JavelinContext</span> <span class="variable">context</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">JavelinContext</span>();</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">Router</span>().registerRoutes(server, controllers, context);</span><br><span class="line"></span><br><span class="line">        server.start();</span><br><span class="line">        System.out.println(<span class="string">&quot;🚀 Server started at http://localhost:&quot;</span> + port);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Service-注入"><a href="#Service-注入" class="headerlink" title="Service 注入"></a>Service 注入</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">HelloController</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> UserService userService;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Inject</span></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">HelloController</span><span class="params">(UserService userService)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.userService = userService; <span class="comment">// ✅ 注入UserService实例 </span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@GetMapping(&quot;/hello&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">hello</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;Hello World from &quot;</span> + userService.getUserById(<span class="number">1</span>) ;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>接下面让我们看看我们的Hello World<br><img src="/blog/./images/spring-1/result.png" alt="运行效果"></p>
+<h2 id="💡和-NET-框架的对比分析"><a href="#💡和-NET-框架的对比分析" class="headerlink" title="💡和 .NET 框架的对比分析"></a>💡和 .NET 框架的对比分析</h2><p>在开发 Javelin 的过程中，我时常联想到 .NET 的实现，尤其是 ASP.NET Core，它与 Spring 在设计理念上高度一致，但细节又有一些差异，下面进行系统性对比：</p>
+<h3 id="控制器与路由"><a href="#控制器与路由" class="headerlink" title="控制器与路由"></a>控制器与路由</h3><table>
+<thead>
+<tr>
+<th>特性</th>
+<th>Javelin (Java)</th>
+<th>ASP.NET Core (.NET)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>控制器注解&#x2F;特性</td>
+<td>@RestController</td>
+<td>[ApiController]</td>
+</tr>
+<tr>
+<td>路由声明方式</td>
+<td>@GetMapping(“&#x2F;path”)</td>
+<td>[HttpGet(“path”)]</td>
+</tr>
+<tr>
+<td>路由注册机制</td>
+<td>手动反射扫描注册</td>
+<td>中间件动态注册至 EndpointRouting</td>
+</tr>
+<tr>
+<td>请求处理</td>
+<td>HttpExchangeHandler</td>
+<td>ControllerInvoker 中间件链</td>
+</tr>
+</tbody></table>
+<h3 id="依赖注入与服务容器"><a href="#依赖注入与服务容器" class="headerlink" title="依赖注入与服务容器"></a>依赖注入与服务容器</h3><table>
+<thead>
+<tr>
+<th>特性</th>
+<th>Javelin (Java)</th>
+<th>ASP.NET Core (.NET)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>服务注册方式</td>
+<td>自动递归构造，无需注册</td>
+<td>显式调用 services.AddXyz()</td>
+</tr>
+<tr>
+<td>注入方式</td>
+<td>构造函数 + @Inject</td>
+<td>构造函数 + 内建 IoC 容器</td>
+</tr>
+<tr>
+<td>生命周期管理</td>
+<td>默认单例</td>
+<td>支持 Transient &#x2F; Scoped &#x2F; Singleton</td>
+</tr>
+<tr>
+<td>循环依赖检测</td>
+<td>暂不支持</td>
+<td>默认会在启动时检测并抛出异常</td>
+</tr>
+</tbody></table>
+<h3 id="底层运行机制"><a href="#底层运行机制" class="headerlink" title="底层运行机制"></a>底层运行机制</h3><table>
+<thead>
+<tr>
+<th>特性</th>
+<th>Javelin</th>
+<th>ASP.NET Core</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>HTTP 服务器</td>
+<td>com.sun.net.httpserver.HttpServer</td>
+<td>Kestrel 内置服务器</td>
+</tr>
+<tr>
+<td>请求派发模型</td>
+<td>映射到类方法，反射调用</td>
+<td>中间件链 + 路由匹配 + ControllerInvoker</td>
+</tr>
+</tbody></table>
+<p>可以看出，Javelin 更加简洁直观，适合做教学或理解框架底层流程，而 ASP.NET Core 更加强大和工程化，适用于复杂企业级应用。</p>
+<h2 id="总结与下步计划"><a href="#总结与下步计划" class="headerlink" title="总结与下步计划"></a>总结与下步计划</h2><p>通过上面的内容，我们已经实现了 Spring 框架的三个关键能力：</p>
+<ul>
+<li>简易 IoC 容器支持构造函数注入</li>
+<li>使用 <code>@RestController</code>&#x2F;<code>@GetMapping</code>&#x2F;<code>@PostMapping</code> 注解注册请求处理器</li>
+<li>类似 Spring Boot 的端口监听启动类</li>
+</ul>
+<p>后续我们将继续拓展：</p>
+<ul>
+<li>参数绑定（如 <code>@RequestParam</code>, <code>@RequestBody</code>）</li>
+<li>中间件机制（如拦截器）</li>
+<li>全局异常处理</li>
+<li>JSON 返回支持</li>
+<li>生命周期管理</li>
+</ul>
+<p>敬请期待下一篇：<strong>实现请求参数自动注入与 JSON 响应支持</strong>！</p>
 
     </article>
     <!-- license -->
     
         <div class="license-wrapper">
             <p>原文作者：<a href="https://itprohub.github.io/blog">乐予吕</a>
-            <p>原文链接：<a href="https://itprohub.github.io/blog/2025/04/07/hello-world/">https://itprohub.github.io/blog/2025/04/07/hello-world/</a>
-            <p>发表日期：<a href="https://itprohub.github.io/blog/2025/04/07/hello-world/">April 7th 2025, 6:12:37 am</a>
-            <p>更新日期：<a href="https://itprohub.github.io/blog/2025/04/07/hello-world/">April 7th 2025, 6:12:37 am</a>
+            <p>原文链接：<a href="https://itprohub.github.io/blog/2025/04/14/spring-1/">https://itprohub.github.io/blog/2025/04/14/spring-1/</a>
+            <p>发表日期：<a href="https://itprohub.github.io/blog/2025/04/14/spring-1/">April 14th 2025, 10:17:55 am</a>
+            <p>更新日期：<a href="https://itprohub.github.io/blog/2025/04/14/spring-1/">April 14th 2025, 9:28:02 am</a>
             <p>版权声明：本文采用<a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
         </div>
     
@@ -530,8 +675,8 @@
         <li class="previous">
             
                 <div class="prevSlogan">Previous Post</div>
-                <a href="/blog/2025/04/02/java-init/" title="👨‍💻 十年开发老兵，从.NET到Java：我为何选择重新出发？ 🚀">
-                    <div class="prevTitle">👨‍💻 十年开发老兵，从.NET到Java：我为何选择重新出发？ 🚀</div>
+                <a href="/blog/2025/04/14/hello-world/" title="欢迎来到 ITProHub！">
+                    <div class="prevTitle">欢迎来到 ITProHub！</div>
                 </a>
             
         </li>
@@ -684,7 +829,7 @@
                 <div class="toc-catalog">
                     <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
                 </div>
-                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%F0%9F%8C%90-%E6%AC%A2%E8%BF%8E%E6%9D%A5%E5%88%B0-ITProHub%EF%BC%81"><span class="toc-number">1.</span> <span class="toc-text">🌐 欢迎来到 ITProHub！</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%9A%80-%E4%BD%A0%E7%9A%84%E4%BF%A1%E6%81%AF%E6%8A%80%E6%9C%AF%E4%B8%93%E4%B8%9A%E4%B8%AD%E5%BF%83-%F0%9F%9A%80"><span class="toc-number">1.1.</span> <span class="toc-text">🚀 你的信息技术专业中心 🚀</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%F0%9F%94%8D-ITPro-%E4%B8%93%E4%B8%9A%E7%9A%84%E4%BF%A1%E6%81%AF%E6%8A%80%E6%9C%AF%E6%94%AF%E6%8C%81"><span class="toc-number">1.1.1.</span> <span class="toc-text">🔍 ITPro: 专业的信息技术支持</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%F0%9F%92%BC-Hub-%E4%B8%AD%E5%BF%83%E5%8C%96%E7%9A%84%E8%B5%84%E6%BA%90%E5%92%8C%E7%A4%BE%E5%8C%BA"><span class="toc-number">1.1.2.</span> <span class="toc-text">💼 Hub: 中心化的资源和社区</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%9C%A8-%E6%88%91%E4%BB%AC%E7%9A%84%E7%89%B9%E8%89%B2%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%86%85%E5%AE%B9%E5%8C%85%E6%8B%AC%EF%BC%9A"><span class="toc-number">1.1.2.1.</span> <span class="toc-text">✨ 我们的特色服务和内容包括：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%8C%90-%E6%8E%A2%E7%B4%A2%E6%97%A0%E9%99%90%E5%8F%AF%E8%83%BD%EF%BC%8C%E5%8A%A0%E5%85%A5-ITProHub-%EF%BC%81%F0%9F%8C%90"><span class="toc-number">1.2.</span> <span class="toc-text">🌐 探索无限可能，加入 ITProHub ！🌐</span></a></li></ol></li></ol>
+                <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E6%89%8B%E5%86%99%E4%B8%80%E4%B8%AA-Spring-%E6%A1%86%E6%9E%B6%EF%BC%9F"><span class="toc-number">1.</span> <span class="toc-text">为什么要手写一个 Spring 框架？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A1%B9%E7%9B%AE%E7%BB%93%E6%9E%84"><span class="toc-number">2.</span> <span class="toc-text">项目结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9E%84%E5%BB%BA%E6%A0%B8%E5%BF%83-IoC-%E5%AE%B9%E5%99%A8-JavelinContext"><span class="toc-number">3.</span> <span class="toc-text">构建核心 IoC 容器 JavelinContext</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%87%AA%E5%8A%A8%E8%B7%AF%E7%94%B1%E6%B3%A8%E5%86%8C-Router"><span class="toc-number">4.</span> <span class="toc-text">自动路由注册 Router</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E5%90%AF%E5%8A%A8%E7%B1%BB-AppStartup"><span class="toc-number">5.</span> <span class="toc-text">3. 启动类 AppStartup</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Service-%E6%B3%A8%E5%85%A5"><span class="toc-number">6.</span> <span class="toc-text">Service 注入</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%92%A1%E5%92%8C-NET-%E6%A1%86%E6%9E%B6%E7%9A%84%E5%AF%B9%E6%AF%94%E5%88%86%E6%9E%90"><span class="toc-number">7.</span> <span class="toc-text">💡和 .NET 框架的对比分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8E%A7%E5%88%B6%E5%99%A8%E4%B8%8E%E8%B7%AF%E7%94%B1"><span class="toc-number">7.1.</span> <span class="toc-text">控制器与路由</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%E4%B8%8E%E6%9C%8D%E5%8A%A1%E5%AE%B9%E5%99%A8"><span class="toc-number">7.2.</span> <span class="toc-text">依赖注入与服务容器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BA%95%E5%B1%82%E8%BF%90%E8%A1%8C%E6%9C%BA%E5%88%B6"><span class="toc-number">7.3.</span> <span class="toc-text">底层运行机制</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93%E4%B8%8E%E4%B8%8B%E6%AD%A5%E8%AE%A1%E5%88%92"><span class="toc-number">8.</span> <span class="toc-text">总结与下步计划</span></a></li></ol>
             </div>
         
         <!-- sidebar -->
@@ -888,7 +1033,30 @@
         
         
         
+        
+        
+        
+        
+        
     
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         
         
         
@@ -1195,7 +1363,7 @@
     
     <div class="total-and-search">
         <div class="total-archive">
-        Total : 38
+        Total : 39
         </div>
         <!-- search  -->
         
@@ -1209,6 +1377,18 @@
             <div class="archive-year"> 2025 </div>
             <ul class="year-list">
             
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/14</span>
+            <a class="archive-post-title" href="/blog/2025/04/14/spring-1/">手写一个微型 Spring 框架：从端口监听到依赖注入</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/14</span>
+            <a class="archive-post-title" href="/blog/2025/04/14/hello-world/">欢迎来到 ITProHub！</a>
+        </li>
+    
         
         <li class="archive-post-item">
             <span class="archive-post-date">04/02</span>
@@ -1412,36 +1592,6 @@
     
         
         <li class="archive-post-item">
-            <span class="archive-post-date">04/07</span>
-            <a class="archive-post-title" href="/blog/2024/04/07/garnet/">Garnet，缓存的新选择！</a>
-        </li>
-    
-        
-            
-            
-                
-                </ul>
-            
-            <div class="archive-year"> Invalid date </div>
-            <ul class="year-list">
-            
-        
-        <li class="archive-post-item">
-            <span class="archive-post-date">Invalid date</span>
-            <a class="archive-post-title" href="/blog/2025/04/07/hello-world/">欢迎来到 ITProHub！</a>
-        </li>
-    
-        
-            
-            
-                
-                </ul>
-            
-            <div class="archive-year"> 2024 </div>
-            <ul class="year-list">
-            
-        
-        <li class="archive-post-item">
             <span class="archive-post-date">04/18</span>
             <a class="archive-post-title" href="/blog/2024/04/18/redis-interview-1/">Redis成长记 - Redis的陷阱（一）</a>
         </li>
@@ -1450,6 +1600,12 @@
         <li class="archive-post-item">
             <span class="archive-post-date">04/11</span>
             <a class="archive-post-title" href="/blog/2024/04/11/https/">HTTPS的工作原理以及安装</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/07</span>
+            <a class="archive-post-title" href="/blog/2024/04/07/garnet/">Garnet，缓存的新选择！</a>
         </li>
     
         
