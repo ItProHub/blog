@@ -169,7 +169,7 @@ public class Router {
 
 ---
 
-## 3. 启动类 AppStartup
+## 启动类 AppStartup
 
 ```java
 public class AppStartup {
@@ -262,3 +262,5 @@ public class HelloController {
 - 生命周期管理
 
 敬请期待下一篇：**实现请求参数自动注入与 JSON 响应支持**！
+
+由于篇幅原因，示例中的代码仅展示了部分关键实现细节，完整代码请参考[GitHub](https://github.com/ItProHub/Javelin)仓库。
