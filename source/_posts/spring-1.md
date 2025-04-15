@@ -215,6 +215,8 @@ public class HelloController {
 ```
 接下面让我们看看我们的Hello World
 ![运行效果](./images/spring-1/result.png)
+当我们用get方式访问post时，会报405错误。
+![运行效果](./images/spring-1/fail.png)
 
 
 ## 💡和 .NET 框架的对比分析
