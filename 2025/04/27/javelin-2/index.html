@@ -1,0 +1,1691 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <!-- title -->
+
+
+    
+
+<!-- keywords -->
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="author" content="乐予吕">
+    <meta name="renderer" content="webkit">
+    <meta name="copyright" content="乐予吕">
+    
+        <meta name="keywords" content="hexo,ITProHub,hexo-theme,hexo-blog">
+    
+    <meta name="description" content="">
+    <meta name="description" content="书接上回，在上一篇文章中，我们展示了如何构建一个简单的微型 Spring 框架，涵盖了端口监听、路由动态注册和依赖注入（IoC）。本篇将进一步扩展我们的框架，涵盖 参数绑定、中间件机制、全局异常处理、JSON 返回支持 以及 生命周期管理。 这些功能将使我们的微型框架更加完整，能够处理更多的应用场景。让我们开始深入探讨这些新增功能。 参数绑定在上一篇文章里面虽然我们已经能够通过访问接口来获取返回值">
+<meta property="og:type" content="article">
+<meta property="og:title" content="手写一个微型 Spring 框架（二）:从路由到生命周期管理">
+<meta property="og:url" content="https://itprohub.github.io/blog/2025/04/27/javelin-2/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="书接上回，在上一篇文章中，我们展示了如何构建一个简单的微型 Spring 框架，涵盖了端口监听、路由动态注册和依赖注入（IoC）。本篇将进一步扩展我们的框架，涵盖 参数绑定、中间件机制、全局异常处理、JSON 返回支持 以及 生命周期管理。 这些功能将使我们的微型框架更加完整，能够处理更多的应用场景。让我们开始深入探讨这些新增功能。 参数绑定在上一篇文章里面虽然我们已经能够通过访问接口来获取返回值">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://itprohub.github.io/blog/images/javelin-2/query-params.png">
+<meta property="og:image" content="https://itprohub.github.io/blog/images/javelin-2/post-params.png">
+<meta property="og:image" content="https://itprohub.github.io/blog/images/javelin-2/route-params.png">
+<meta property="og:image" content="https://itprohub.github.io/blog/images/javelin-2/json.png">
+<meta property="og:image" content="https://itprohub.github.io/blog/images/javelin-2/pipeline.png">
+<meta property="og:image" content="https://itprohub.github.io/blog/images/javelin-2/authorize.png">
+<meta property="og:image" content="https://itprohub.github.io/blog/images/javelin-2/error.png">
+<meta property="og:image" content="https://itprohub.github.io/blog/images/javelin-2/log.png">
+<meta property="og:image" content="https://itprohub.github.io/blog/images/javelin-2/life-cycle.png">
+<meta property="article:published_time" content="2025-04-27T15:42:39.000Z">
+<meta property="article:modified_time" content="2025-04-29T09:36:12.754Z">
+<meta property="article:author" content="乐予吕">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://itprohub.github.io/blog/images/javelin-2/query-params.png">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="icon" href="/blog/assets/favicon.ico">
+    
+    <title>手写一个微型 Spring 框架（二）:从路由到生命周期管理 · 个人技术日常分享</title>
+    <!-- /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+/* This file is meant as a standalone workflow for
+- testing support for link[rel=preload]
+- enabling async CSS loading in browsers that do not support rel=preload
+- applying rel preload css once loaded, whether supported or not.
+*/ -->
+<script>
+    (function (w) {
+        'use strict'
+        // rel=preload support test
+        if (!w.loadCSS) {
+            w.loadCSS = function () {}
+        }
+        // define on the loadCSS obj
+        var rp = (loadCSS.relpreload = {})
+        // rel=preload feature support test
+        // runs once and returns a function for compat purposes
+        rp.support = (function () {
+            var ret
+            try {
+                ret = w.document.createElement('link').relList.supports('preload')
+            } catch (e) {
+                ret = false
+            }
+            return function () {
+                return ret
+            }
+        })()
+
+        // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+        // then change that media back to its intended value on load
+        rp.bindMediaToggle = function (link) {
+            // remember existing media attr for ultimate state, or default to 'all'
+            var finalMedia = link.media || 'all'
+
+            function enableStylesheet() {
+                link.media = finalMedia
+            }
+
+            // bind load handlers to enable media
+            if (link.addEventListener) {
+                link.addEventListener('load', enableStylesheet)
+            } else if (link.attachEvent) {
+                link.attachEvent('onload', enableStylesheet)
+            }
+
+            // Set rel and non-applicable media type to start an async request
+            // note: timeout allows this to happen async to let rendering continue in IE
+            setTimeout(function () {
+                link.rel = 'stylesheet'
+                link.media = 'only x'
+            })
+            // also enable media after 3 seconds,
+            // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+            setTimeout(enableStylesheet, 3000)
+        }
+
+        // loop through link elements in DOM
+        rp.poly = function () {
+            // double check this to prevent external calls from running
+            if (rp.support()) {
+                return
+            }
+            var links = w.document.getElementsByTagName('link')
+            for (var i = 0; i < links.length; i++) {
+                var link = links[i]
+                // qualify links to those with rel=preload and as=style attrs
+                if (
+                    link.rel === 'preload' &&
+                    link.getAttribute('as') === 'style' &&
+                    !link.getAttribute('data-loadcss')
+                ) {
+                    // prevent rerunning on link
+                    link.setAttribute('data-loadcss', true)
+                    // bind listeners to toggle media back
+                    rp.bindMediaToggle(link)
+                }
+            }
+        }
+
+        // if unsupported, run the polyfill
+        if (!rp.support()) {
+            // run once at least
+            rp.poly()
+
+            // rerun poly on an interval until onload
+            var run = w.setInterval(rp.poly, 500)
+            if (w.addEventListener) {
+                w.addEventListener('load', function () {
+                    rp.poly()
+                    w.clearInterval(run)
+                })
+            } else if (w.attachEvent) {
+                w.attachEvent('onload', function () {
+                    rp.poly()
+                    w.clearInterval(run)
+                })
+            }
+        }
+
+        // commonjs
+        if (typeof exports !== 'undefined') {
+            exports.loadCSS = loadCSS
+        } else {
+            w.loadCSS = loadCSS
+        }
+    })(typeof global !== 'undefined' ? global : this)
+</script>
+
+    <style type="text/css">
+    @font-face {
+        font-family: 'Oswald-Regular';
+        src: url("/blog/font/Oswald-Regular.ttf");
+    }
+
+    body {
+        margin: 0;
+    }
+
+    header,
+    footer,
+    .back-top,
+    .sidebar,
+    .container,
+    .site-intro-meta,
+    .toc-wrapper {
+        display: none;
+    }
+
+    .site-intro {
+        position: relative;
+        z-index: 3;
+        width: 100%;
+        /* height: 50vh; */
+        overflow: hidden;
+    }
+
+    .site-intro-placeholder {
+        position: absolute;
+        z-index: -2;
+        top: 0;
+        left: 0;
+        width: calc(100% + 300px);
+        height: 100%;
+        background: repeating-linear-gradient(-45deg, #444 0, #444 80px, #333 80px, #333 160px);
+        background-position: center center;
+        transform: translate3d(-226px, 0, 0);
+        animation: gradient-move 2.5s ease-out 0s infinite;
+    }
+
+    @keyframes gradient-move {
+        0% {
+            transform: translate3d(-226px, 0, 0);
+        }
+        100% {
+            transform: translate3d(0, 0, 0);
+        }
+    }
+</style>
+
+    <link rel="preload" href="/blog/css/style.css?v=20211217" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="/blog/css/dark.css?v=20211217" as="style">
+    <link rel="stylesheet" href="/blog/css/dark.css">
+    <link rel="stylesheet" href="/blog/css/mobile.css?v=20211217" media="(max-width: 960px)">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" as="script">
+    <link rel="preload" href="/blog/scripts/main.js?v=20211217" as="script">
+    <link rel="preload" href="/blog/scripts/dark.js?v=20211217" as="script">
+    <link rel="preload" href="/blog/font/Oswald-Regular.ttf" as="font" crossorigin>
+    <link rel="preload" href="https://at.alicdn.com/t/font_327081_1dta1rlogw17zaor.woff" as="font" crossorigin>
+    <!-- algolia -->
+    
+    <!-- 百度统计  -->
+    
+    <!-- Google tag (gtag.js) -->
+    
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6058253486086884"
+    crossorigin="anonymous"></script>
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>    
+    <script type="text/javascript">
+        if (typeof window.$ == undefined) {
+            console.warn('jquery load from jsdelivr failed, will load local script')
+            document.write('<script src="/blog/lib/jquery.min.js" />')
+        }
+    </script>
+    
+        <body class="post-body">
+    
+        <!-- header -->
+        <header class="header header-mobile">
+    <!-- top read progress line -->
+    <div class="header-element">
+        <div class="read-progress"></div>
+    </div>
+    <!-- sidebar menu button -->
+    <div class="header-element">
+        
+            <div class="header-sidebar-menu">
+        
+            
+                <div style="padding-left: 1px;">&#xe775;</div>
+            
+        </div>
+    </div>
+    <!-- header actions -->
+    <div class="header-actions">
+        <!-- theme mode switch button -->
+        <span class="header-theme-btn header-element">
+            <i class="fas fa-adjust"></i>
+        </span>
+        <!-- back to home page text -->
+        <span class="home-link header-element">
+            <a href=/blog/>个人技术日常分享</a>
+        </span>
+    </div>
+    <!-- toggle banner for post layout -->
+    
+        
+            <div class="banner">
+        
+            <div class="blog-title header-element">
+                <a href="/blog/">个人技术日常分享</a>
+            </div>
+            <div class="post-title header-element">
+                <a href="#" class="post-name">手写一个微型 Spring 框架（二）:从路由到生命周期管理</a>
+            </div>
+        </div>
+    
+</header>
+
+        <!-- fixed footer -->
+        <footer class="footer-fixed">
+    <!-- back to top button -->
+    <div class="footer-fixed-element">
+        
+            <div class="back-top back-top-hidden">
+        
+        
+            <div>&#xe639;</div>
+        
+        </div>
+    </div>
+</footer>
+
+        <!-- wrapper -->
+        <div class="wrapper">
+            <div class="site-intro" style="
+
+
+
+
+
+
+
+    height:50vh;
+
+">
+    
+    <!-- 主页  -->
+    
+        
+    <!-- 404页  -->
+    
+    <div class="site-intro-placeholder"></div>
+    <div class="site-intro-img" style="background-image: url(/blog/intro/post-bg.jpg)"></div>
+    <div class="site-intro-meta">
+        <!-- 标题  -->
+        <h1 class="intro-title">
+            <!-- 主页  -->
+            
+                手写一个微型 Spring 框架（二）:从路由到生命周期管理
+            <!-- 404 -->
+            
+        </h1>
+        <!-- 副标题 -->
+        <p class="intro-subtitle">
+            <!-- 主页副标题  -->
+            
+                
+            <!-- 404 -->
+            
+        </p>
+        <!-- 文章页 meta -->
+        
+            <div class="post-intros">
+                <!-- 文章页标签  -->
+                
+                    <div class= post-intro-tags >
+    
+    
+</div>
+
+                
+                <!-- 文章字数统计 -->
+                
+                <div class="post-intro-meta">
+                    <!-- 撰写日期 -->
+                    <span class="iconfont-archer post-intro-calander">&#xe676;</span>
+                    <span class="post-intro-time">2025/04/27</span>
+                    <!-- busuanzi -->
+                    
+                        <span id="busuanzi_container_page_pv" class="busuanzi-pv">
+                            <span class="iconfont-archer post-intro-busuanzi">&#xe602;</span>
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    
+                    <!-- 文章分享 -->
+                    <span class="share-wrapper">
+                        <span class="iconfont-archer share-icon">&#xe71d;</span>
+                        <span class="share-text">Share</span>
+                        <ul class="share-list">
+                            <li class="iconfont-archer share-qr" data-type="qr">&#xe75b;
+                                <div class="share-qrcode"></div>
+                            </li>
+                            <li class="iconfont-archer" data-type="weibo">&#xe619;</li>
+                            <li class="iconfont-archer" data-type="qzone">&#xe62e;</li>
+                            <li class="iconfont-archer" data-type="twitter">&#xe634;</li>
+                            <li class="iconfont-archer" data-type="facebook">&#xe67a;</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
+        
+    </div>
+</div>
+
+            <script>
+  // get user agent
+  function getBrowserVersions() {
+    var u = window.navigator.userAgent
+    return {
+      userAgent: u,
+      trident: u.indexOf('Trident') > -1, //IE内核
+      presto: u.indexOf('Presto') > -1, //opera内核
+      webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+      gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
+      mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
+      ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+      android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器
+      iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者安卓QQ浏览器
+      iPad: u.indexOf('iPad') > -1, //是否为iPad
+      webApp: u.indexOf('Safari') == -1, //是否为web应用程序，没有头部与底部
+      weixin: u.indexOf('MicroMessenger') == -1, //是否为微信浏览器
+      uc: u.indexOf('UCBrowser') > -1, //是否为android下的UC浏览器
+    }
+  }
+  var browser = {
+    versions: getBrowserVersions(),
+  }
+  console.log('userAgent: ' + browser.versions.userAgent)
+
+  // callback
+  function fontLoaded() {
+    console.log('font loaded')
+    if (document.getElementsByClassName('site-intro-meta')) {
+      document
+        .getElementsByClassName('intro-title')[0]
+        .classList.add('intro-fade-in')
+      document
+        .getElementsByClassName('intro-subtitle')[0]
+        .classList.add('intro-fade-in')
+      var postIntros = document.getElementsByClassName('post-intros')[0]
+      if (postIntros) {
+        postIntros.classList.add('post-fade-in')
+      }
+    }
+  }
+
+  // UC不支持跨域，所以直接显示
+  function asyncCb() {
+    if (browser.versions.uc) {
+      console.log('UCBrowser')
+      fontLoaded()
+    } else {
+      WebFont.load({
+        custom: {
+          families: ['Oswald-Regular'],
+        },
+        loading: function () {
+          // 所有字体开始加载
+          // console.log('font loading');
+        },
+        active: function () {
+          // 所有字体已渲染
+          fontLoaded()
+        },
+        inactive: function () {
+          // 字体预加载失败，无效字体或浏览器不支持加载
+          console.log('inactive: timeout')
+          fontLoaded()
+        },
+        timeout: 5000, // Set the timeout to two seconds
+      })
+    }
+  }
+
+  function asyncErr() {
+    console.warn('script load from CDN failed, will load local script')
+  }
+
+  // load webfont-loader async, and add callback function
+  function async(u, cb, err) {
+    var d = document,
+      t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0]
+    o.src = u
+    if (cb) {
+      o.addEventListener(
+        'load',
+        function (e) {
+          cb(null, e)
+        },
+        false
+      )
+    }
+    if (err) {
+      o.addEventListener(
+        'error',
+        function (e) {
+          err(null, e)
+        },
+        false
+      )
+    }
+    s.parentNode.insertBefore(o, s)
+  }
+
+  var asyncLoadWithFallBack = function (arr, success, reject) {
+    var currReject = function () {
+      reject()
+      arr.shift()
+      if (arr.length) async(arr[0], success, currReject)
+    }
+
+    async(arr[0], success, currReject)
+  }
+
+  asyncLoadWithFallBack(
+    [
+      'https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js',
+      'https://cdn.bootcss.com/webfont/1.6.28/webfontloader.js',
+      "/blog/lib/webfontloader.min.js",
+    ],
+    asyncCb,
+    asyncErr
+  )
+</script>
+
+            <img class="loading" src="/blog/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
+            <div class="container container-unloaded">
+                <main class="main post-page">
+    <article class="article-entry">
+        <p>书接上回，在上一篇文章中，我们展示了如何构建一个简单的微型 Spring 框架，涵盖了端口监听、路由动态注册和依赖注入（IoC）。本篇将进一步扩展我们的框架，涵盖 参数绑定、中间件机制、全局异常处理、JSON 返回支持 以及 生命周期管理。</p>
+<p>这些功能将使我们的微型框架更加完整，能够处理更多的应用场景。让我们开始深入探讨这些新增功能。</p>
+<h1 id="参数绑定"><a href="#参数绑定" class="headerlink" title="参数绑定"></a>参数绑定</h1><p>在上一篇文章里面虽然我们已经能够通过访问接口来获取返回值。但是请求的参数是如何绑定到方法的参数上的呢？这就是参数绑定的作用。<br>在 Web 开发中，参数绑定是一个非常重要的特性，通常用于从请求中提取参数并绑定到方法的参数上。在 Spring 框架中，我们通过注解如 @RequestParam 和 @RequestBody 来实现这一功能， 这里我们也直接参照实现。</p>
+<h2 id="目标："><a href="#目标：" class="headerlink" title="目标："></a>目标：</h2><ol>
+<li>使用 @FromQuery 注解实现 URL 查询参数的绑定。</li>
+<li>使用 @FromBody 注解将请求体中的 JSON 数据绑定为 Java 对象。</li>
+<li>使用 @FromRoute 注解将路径变量绑定到方法参数。</li>
+</ol>
+<h2 id="实现方法："><a href="#实现方法：" class="headerlink" title="实现方法："></a>实现方法：</h2><h3 id="动态路由"><a href="#动态路由" class="headerlink" title="动态路由"></a>动态路由</h3><p>在之前的路由注册过程中，我们已经将路径和对应的处理方法进行了映射。为了实现路径参数（&#x2F;user&#x2F;{id}）绑定，我们需要实现动态路由，即根据请求的 URL 路径来动态确定要调用的处理方法。只有这样我们才能过滤出请求的参数。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 之前的路由注册</span></span><br><span class="line"><span class="comment">//  server.createContext(path, exchange -&gt; &#123;</span></span><br><span class="line"><span class="comment">//      // 这里我们需要根据请求的 URL 路径来确定要调用的处理方法</span></span><br><span class="line"><span class="comment">//  &#125;);</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 现在我们需要实现动态路由（在程序启动的时候扫描所有controller、action，然后缓存起来）</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> List&lt;RouteDefinition&gt; dynamicRoutes = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line"> <span class="keyword">for</span> (Class&lt;?&gt; clazz : classes) &#123;</span><br><span class="line">    <span class="keyword">for</span> (Method method : clazz.getDeclaredMethods()) &#123;</span><br><span class="line">        dynamicRoutes.add(<span class="keyword">new</span> <span class="title class_">RouteDefinition</span>(httpMethod, path, pathPattern, pathVaribleNames, controllerInstance, method));</span><br><span class="line">    &#125;</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line">server.createContext(<span class="string">&quot;/&quot;</span>, exchange -&gt; &#123;</span><br><span class="line">    <span class="type">String</span> <span class="variable">requestPath</span> <span class="operator">=</span> exchange.getRequestURI().getPath();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 根据请求路径找到对应的处理方法</span></span><br><span class="line">    <span class="type">RouteDefinition</span> <span class="variable">matchedRoute</span> <span class="operator">=</span> findMatchRoute(requestPath);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 执行具体的处理方法</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="解析参数"><a href="#解析参数" class="headerlink" title="解析参数"></a>解析参数</h3><p>这里注解的实现就不多说了，我们主要看看参数绑定的实现。<br>我们在框架中通过反射机制来解析方法参数，根据注解从请求中提取相应的参数。以下是参数绑定的代码示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> Object[] resolveMethodParameters(HttpExchange exchange, RouteDefinition route, Map&lt;String, String&gt; pathVariables) <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">    Parameter[] parameters = route.handlerMethod.getParameters();</span><br><span class="line">    Object[] args = <span class="keyword">new</span> <span class="title class_">Object</span>[parameters.length];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; parameters.length; i++) &#123;</span><br><span class="line">        <span class="type">Parameter</span> <span class="variable">parameter</span> <span class="operator">=</span> parameters[i];</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (parameter.isAnnotationPresent(FromQuery.class)) &#123;</span><br><span class="line">            <span class="comment">// 从 URL 查询参数中提取</span></span><br><span class="line">            Map&lt;String, String&gt; queryParams = UrlExtensions.parseQueryParams(exchange.getRequestURI().getRawQuery());</span><br><span class="line">            args[i] = StringExtensions.convertTo(queryParams.get(parameter.getName()), parameter.getType());</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (parameter.isAnnotationPresent(FromBody.class)) &#123;</span><br><span class="line">            <span class="comment">// 从请求体中提取 JSON 数据并绑定</span></span><br><span class="line">            <span class="type">String</span> <span class="variable">bodyString</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">String</span>(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);</span><br><span class="line">            args[i] = <span class="keyword">new</span> <span class="title class_">Gson</span>().fromJson(bodyString, parameter.getType());</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (parameter.isAnnotationPresent(FromRoute.class)) &#123;</span><br><span class="line">            <span class="comment">// 从路径变量中提取</span></span><br><span class="line">            args[i] = StringExtensions.convertTo(pathVariables.get(parameter.getName()), parameter.getType());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> args;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>此方法确保可以将查询参数、请求体和路径变量自动绑定到控制器方法的参数上。</p>
+<p>我们来一起看看效果</p>
+<ol>
+<li>get参数<br><img src="/blog/./images/javelin-2/query-params.png" alt="post"></li>
+<li>post参数<br><img src="/blog/./images/javelin-2/post-params.png" alt="post"></li>
+<li>路径参数<br><img src="/blog/./images/javelin-2/route-params.png" alt="post"></li>
+</ol>
+<h1 id="JSON-返回支持"><a href="#JSON-返回支持" class="headerlink" title="JSON 返回支持"></a>JSON 返回支持</h1><p>在此之前我们返回接口返回的都是String类型，现在我们来实现JSON返回支持。同时我们希望可以根据返回值的类型自动判断是否需要转换为 JSON 格式。</p>
+<h2 id="目标：-1"><a href="#目标：-1" class="headerlink" title="目标："></a>目标：</h2><p>支持返回 String 类型或自定义对象类型。</p>
+<p>如果返回的是对象，则自动将其转换为 JSON 格式。</p>
+<h2 id="实现方式："><a href="#实现方式：" class="headerlink" title="实现方式："></a>实现方式：</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 获取返回值的类型</span></span><br><span class="line">Class&lt;?&gt; returnType = route.action.getReturnType();</span><br><span class="line"></span><br><span class="line">String responseBody;</span><br><span class="line"><span class="keyword">if</span>(returnType == String.class || returnType == <span class="keyword">void</span>.class || returnType == <span class="type">int</span>.class) &#123;</span><br><span class="line">    responseBody = (String) result;</span><br><span class="line">    exchange.getResponseHeaders().set(<span class="string">&quot;Content-Type&quot;</span>, <span class="string">&quot;text/plain; charset=UTF-8&quot;</span>);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    responseBody = gson.toJson(result);</span><br><span class="line">    exchange.getResponseHeaders().set(<span class="string">&quot;Content-Type&quot;</span>, <span class="string">&quot;application/json; charset=UTF-8&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>此逻辑将根据返回类型自动决定响应类型。对于 Java 对象，将使用 Gson 转换为 JSON 格式返回。</p>
+<h2 id="实现效果"><a href="#实现效果" class="headerlink" title="实现效果"></a>实现效果</h2><p><img src="/blog/./images/javelin-2/json.png" alt="json"></p>
+<h1 id="中间件机制"><a href="#中间件机制" class="headerlink" title="中间件机制"></a>中间件机制</h1><p>中间件（Middleware）是框架中一个非常强大的特性，它允许你在请求处理流程的各个阶段插入额外的处理逻辑。比如，我们可以在请求到达控制器之前，进行权限验证、日志记录等操作。 这里有一个需要关注的地方，我并没有使用现在比较流行的委托链式的中间件，而是参考类似asp.net 的HTTP 管道的方式实现的。</p>
+<p>之所以有这样的选择是因为委托链式的中间件在处理过程中会有一些问题，比如：</p>
+<ol>
+<li>中间件的执行顺序难以控制，可能会导致请求处理流程出现问题。</li>
+<li>一旦出现异常，中间件的异常处理逻辑可能会变得复杂， 异常链非常的深。</li>
+</ol>
+<p>所以我选择了类似asp.net 的HTTP 管道的方式实现的中间件，这样可以更加清晰的控制中间件的执行顺序，并且异常处理也更加方便。<br><img src="/blog/./images/javelin-2/pipeline.png" alt="管道"></p>
+<h2 id="实现目标："><a href="#实现目标：" class="headerlink" title="实现目标："></a>实现目标：</h2><ol>
+<li>在请求处理流程中添加拦截器，允许在方法调用之前或之后执行特定操作。</li>
+<li>可以添加多个中间件。</li>
+<li>支持定义中间件的执行顺序。</li>
+</ol>
+<h2 id="实现方式：-1"><a href="#实现方式：-1" class="headerlink" title="实现方式："></a>实现方式：</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 框架初始化的时候注册中间件</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">loadModules</span><span class="params">()</span> &#123;</span><br><span class="line">    NHttpModuleFactory.registerModule(OprLogModule.class);</span><br><span class="line"></span><br><span class="line">    NHttpModuleFactory.registerModule(AuthenticateModule.class);</span><br><span class="line">    NHttpModuleFactory.registerModule(AuthorizeModule.class);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在路由处理程序中，我们执行中间件链：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">execute</span><span class="params">(NHttpContext context)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">    <span class="type">NHttpApplication</span> <span class="variable">app</span> <span class="operator">=</span> NHttpApplication.INSTANCE;</span><br><span class="line"></span><br><span class="line">    preHandle(context);</span><br><span class="line">    <span class="keyword">try</span>&#123;</span><br><span class="line">        app.beginRequest(context);</span><br><span class="line">        app.authenticateRequest(context);</span><br><span class="line">        app.postAuthenticateRequest(context);</span><br><span class="line">        app.resolveRequestCache(context);</span><br><span class="line"></span><br><span class="line">        handlerRequest(context);</span><br><span class="line">    &#125; <span class="keyword">catch</span> ( AbortRequestException e) &#123;</span><br><span class="line">        <span class="comment">// 提前结束请求，啥也不干了</span></span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        context.pipelineContext.setException(e);</span><br><span class="line">        app.onError(context);</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        app.endRequest(context);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过这种方式，我们能够在请求处理过程中插入不同的功能，增加灵活性和可扩展性。</p>
+<h2 id="实现效果-1"><a href="#实现效果-1" class="headerlink" title="实现效果"></a>实现效果</h2><p>这里我们新增了一个权限验证的中间件，在请求到达控制器之前进行验证。<br><img src="/blog/./images/javelin-2/authorize.png" alt="权限"></p>
+<h1 id="全局日志处理"><a href="#全局日志处理" class="headerlink" title="全局日志处理"></a>全局日志处理</h1><p>在我们的框架中，我们可以通过中间件机制来实现全局日志处理。这样，我们就可以在请求处理的各个阶段记录日志，方便调试和监控。</p>
+<h2 id="目标：-2"><a href="#目标：-2" class="headerlink" title="目标："></a>目标：</h2><ol>
+<li>在请求到达控制器之前记录请求信息。</li>
+<li>在请求处理完成后记录响应信息。</li>
+<li>捕获所有未处理的异常。</li>
+<li>返回适当的错误响应。</li>
+</ol>
+<h2 id="实现方式：-2"><a href="#实现方式：-2" class="headerlink" title="实现方式："></a>实现方式：</h2><p>我们可以创建一个日志中间件，在请求到达控制器之前和处理完成后记录日志：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">OprLogModule</span> <span class="keyword">extends</span> <span class="title class_">NHttpModule</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">beginRequest</span><span class="params">(NHttpContext httpContext)</span> &#123;</span><br><span class="line">        <span class="comment">// 请求到达之前记录请求信息</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">endRequest</span><span class="params">(NHttpContext httpContext)</span> &#123;</span><br><span class="line">        <span class="comment">// 请求处理完成后记录响应信息</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onError</span><span class="params">(NHttpContext httpContext)</span> &#123;</span><br><span class="line">        <span class="comment">// 请求发生异常的时候记录异常信息</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过统一的异常处理，可以确保系统稳定性和一致的错误响应。</p>
+<h2 id="实现效果-2"><a href="#实现效果-2" class="headerlink" title="实现效果"></a>实现效果</h2><p>为了测试，我们直接在控制器中抛出一个异常：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">@GetMapping(&quot;/error&quot;)</span></span><br><span class="line"><span class="meta">@AllowAnonymous</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">error</span><span class="params">()</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">Exception</span>(<span class="string">&quot;测试异常&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="/blog/./images/javelin-2/error.png" alt="日志"><br>最后我们来看看日志的记录结果，这是初版的日志，直接记录在文件里面。<br>这里记录一个TODO，后期需要优化日志记录。（日志异步上报， ELK等等）<br><img src="/blog/./images/javelin-2/log.png" alt="日志"></p>
+<h1 id="生命周期管理"><a href="#生命周期管理" class="headerlink" title="生命周期管理"></a>生命周期管理</h1><p>生命周期管理是一个框架的重要组成部分。在 Spring 中，我们有 @PostConstruct 和 @PreDestroy 等注解来管理对象的生命周期。在我们的微型框架中，我们可以模拟类似的生命周期管理。</p>
+<h2 id="目标：-3"><a href="#目标：-3" class="headerlink" title="目标："></a>目标：</h2><ol>
+<li>在创建控制器实例时进行初始化。</li>
+<li>在销毁时执行清理操作。</li>
+</ol>
+<h2 id="实现方式：-3"><a href="#实现方式：-3" class="headerlink" title="实现方式："></a>实现方式：</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">JavelinContext</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Map&lt;Class&lt;?&gt;, Object&gt; singletonMap = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> &lt;T&gt; T <span class="title function_">getBean</span><span class="params">(Class&lt;T&gt; clazz)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (!singletonMap.containsKey(clazz)) &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="type">T</span> <span class="variable">instance</span> <span class="operator">=</span> createBean(clazz);</span><br><span class="line">                singletonMap.put(clazz, instance);</span><br><span class="line">                <span class="keyword">return</span> instance;</span><br><span class="line">            &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(<span class="string">&quot;Failed to create bean: &quot;</span> + clazz.getName(), e);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> (T) singletonMap.get(clazz);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> &lt;T&gt; T <span class="title function_">createBean</span><span class="params">(Class&lt;T&gt; clazz)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        <span class="comment">// 创建实例并调用初始化方法</span></span><br><span class="line">        <span class="type">T</span> <span class="variable">instance</span> <span class="operator">=</span> (T) injectConstructor.newInstance(args.toArray());</span><br><span class="line">        callPostConstruct(instance);</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">callPostConstruct</span><span class="params">(Object instance)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        <span class="comment">// 调用初始化方法</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">callPreDestroy</span><span class="params">(Object instance)</span> &#123;</span><br><span class="line">        <span class="comment">// 调用销毁方法</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过这种方式，框架在创建实例时调用 @PostConstruct 注解的方法, 请求处理完成之后调用 @PreDestroy 注解的方法。帮助我们在对象生命周期中插入初始化逻辑。</p>
+<h2 id="实现效果-3"><a href="#实现效果-3" class="headerlink" title="实现效果"></a>实现效果</h2><p><img src="/blog/./images/javelin-2/life-cycle.png" alt="生命周期"></p>
+<h1 id="总结与下步计划"><a href="#总结与下步计划" class="headerlink" title="总结与下步计划"></a>总结与下步计划</h1><p>在本篇文章中，我们深入探讨了如何将更多实用的功能添加到我们自定义的微型 Spring 框架中，包括参数绑定、中间件机制、全局异常处理、JSON 返回支持以及生命周期管理。这些功能的实现使得框架的功能更加完善，能够更好地应对复杂的 Web 应用需求。</p>
+<ul>
+<li><p>参数绑定：我们通过 @FromQuery, @FromBody, 和 @FromRoute 注解来实现请求参数与方法参数的自动绑定。这一机制可以让控制器方法直接接收 URL 查询参数、请求体数据和路径变量，提高了开发效率。</p>
+</li>
+<li><p>中间件机制：我们参考了 ASP.NET 的 HTTP 管道模式，实现了一个可扩展的中间件机制。通过中间件，可以在请求处理过程中插入额外的逻辑，如权限验证、日志记录等，极大提升了框架的灵活性和可维护性。</p>
+</li>
+<li><p>全局异常处理：通过中间件，框架能够统一处理请求过程中可能出现的异常，确保系统的稳定性，并能够返回一致的错误响应，便于调试和监控。</p>
+</li>
+<li><p>JSON 返回支持：我们实现了自动判断返回值的类型并根据类型转换为 JSON 格式。这使得框架能够支持更加复杂的数据返回类型，便于处理 JSON 响应。</p>
+</li>
+<li><p>生命周期管理：模拟了 Spring 的 @PostConstruct 和 @PreDestroy 注解功能，确保在对象生命周期中能够执行初始化和销毁操作，为框架的管理提供了更多控制。</p>
+</li>
+</ul>
+<p>通过实现这些功能，我们不仅提升了框架的可用性，也使其更加完善，能够更好地适应复杂的业务场景。在接下来的文章中，我们将继续扩展更多功能，进一步增强框架的灵活性和实用性。</p>
+<p>后续我们将继续拓展：</p>
+<ul>
+<li>权限与角色管理</li>
+<li>支持定时任务与后台任务</li>
+<li>支持数据库操作</li>
+</ul>
+<p>如果你对框架有更多的扩展需求，或者希望了解其他细节，请继续关注我们的后续文章！</p>
+<p>由于篇幅原因，示例中的代码仅展示了部分关键实现细节，完整代码请参考<a target="_blank" rel="noopener" href="https://github.com/ItProHub/Javelin">GitHub</a>仓库。</p>
+
+    </article>
+    <!-- license -->
+    
+        <div class="license-wrapper">
+            <p>原文作者：<a href="https://itprohub.github.io/blog">乐予吕</a>
+            <p>原文链接：<a href="https://itprohub.github.io/blog/2025/04/27/javelin-2/">https://itprohub.github.io/blog/2025/04/27/javelin-2/</a>
+            <p>发表日期：<a href="https://itprohub.github.io/blog/2025/04/27/javelin-2/">April 27th 2025, 3:42:39 pm</a>
+            <p>更新日期：<a href="https://itprohub.github.io/blog/2025/04/27/javelin-2/">April 29th 2025, 9:36:12 am</a>
+            <p>版权声明：本文采用<a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
+        </div>
+    
+    <!-- paginator -->
+    <ul class="post-paginator">
+        <li class="next">
+            
+                <div class="nextSlogan">Next Post</div>
+                <a href="/blog/2025/04/29/hello-world/" title="欢迎来到 ITProHub！">
+                    <div class="nextTitle">欢迎来到 ITProHub！</div>
+                </a>
+            
+        </li>
+        <li class="previous">
+            
+                <div class="prevSlogan">Previous Post</div>
+                <a href="/blog/2025/04/14/javelin-1/" title="手写一个微型 Spring 框架：从端口监听到依赖注入">
+                    <div class="prevTitle">手写一个微型 Spring 框架：从端口监听到依赖注入</div>
+                </a>
+            
+        </li>
+    </ul>
+    <!-- comment -->
+    
+        <div class="post-comment">
+            <!-- 来必力 City 版安装代码 -->
+
+
+            
+
+            
+
+            
+
+            <!-- utteranc评论 -->
+
+
+            <!-- partial('_partial/comment/changyan') -->
+            <!--PC版-->
+
+
+            
+            
+
+            
+
+        </div>
+    
+    <!-- timeliness note -->
+    <!-- idea from: https://hexo.fluid-dev.com/posts/hexo-injector/#%E6%96%87%E7%AB%A0%E6%97%B6%E6%95%88%E6%80%A7%E6%8F%90%E7%A4%BA -->
+    
+    <!-- Mathjax -->
+    
+</main>
+
+                <!-- profile -->
+                
+            </div>
+            <footer class="footer footer-unloaded">
+    <!-- social  -->
+    
+        <div class="social">
+            
+    
+        
+            
+                <a href="mailto:287678478@qq.com" class="iconfont-archer email" title=email ></a>
+            
+        
+    
+        
+            
+                <a href="//github.com/ItProHub" class="iconfont-archer github" target="_blank" title=github></a>
+            
+        
+    
+        
+            
+                <span class="iconfont-archer wechat" title=wechat>
+                    
+                    <img class="profile-qr" src="/blog/assets/wechat_qr.jpg" />
+                </span>
+            
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+            
+                <a href="//juejin.cn/user/1489196396594523" class="iconfont-archer juejin" target="_blank" title=juejin></a>
+            
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+
+        </div>
+    
+    <!-- powered by Hexo  -->
+    <div class="copyright">
+        <span id="hexo-power">Powered by <a href="https://www.itprohub.site/" target="_blank">ITProHub</a></span><span class="iconfont-archer power">&#xe635;</span><span id="theme-info">theme <a href="https://github.com/fi3ework/hexo-theme-archer" target="_blank">Archer</a></span>
+    </div>
+    <!-- website approve for Chinese user -->
+    
+        <div class="website-approve">
+            
+                <span id="icp-approve" class="icp-approve">
+                    <a href="https://beian.miit.gov.cn/" target="_blank">备案号：鄂ICP备2024045313号</a>
+                </span>
+            
+            
+        </div>
+    
+    <!-- 不蒜子  -->
+    
+        <div class="busuanzi-container">
+            
+            
+                <span id="busuanzi_container_site_pv">PV: <span id="busuanzi_value_site_pv"></span> :)</span>
+            
+        </div>
+    
+</footer>
+
+        </div>
+        <!-- toc -->
+        
+            <div class="toc-wrapper toc-wrapper-loding" style=
+
+
+
+
+
+
+
+    top:50vh;
+
+>
+                <div class="toc-catalog">
+                    <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
+                </div>
+                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%82%E6%95%B0%E7%BB%91%E5%AE%9A"><span class="toc-number">1.</span> <span class="toc-text">参数绑定</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%AE%E6%A0%87%EF%BC%9A"><span class="toc-number">1.1.</span> <span class="toc-text">目标：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%B3%95%EF%BC%9A"><span class="toc-number">1.2.</span> <span class="toc-text">实现方法：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%A8%E6%80%81%E8%B7%AF%E7%94%B1"><span class="toc-number">1.2.1.</span> <span class="toc-text">动态路由</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E6%9E%90%E5%8F%82%E6%95%B0"><span class="toc-number">1.2.2.</span> <span class="toc-text">解析参数</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#JSON-%E8%BF%94%E5%9B%9E%E6%94%AF%E6%8C%81"><span class="toc-number">2.</span> <span class="toc-text">JSON 返回支持</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%AE%E6%A0%87%EF%BC%9A-1"><span class="toc-number">2.1.</span> <span class="toc-text">目标：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F%EF%BC%9A"><span class="toc-number">2.2.</span> <span class="toc-text">实现方式：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E6%95%88%E6%9E%9C"><span class="toc-number">2.3.</span> <span class="toc-text">实现效果</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%AD%E9%97%B4%E4%BB%B6%E6%9C%BA%E5%88%B6"><span class="toc-number">3.</span> <span class="toc-text">中间件机制</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E7%9B%AE%E6%A0%87%EF%BC%9A"><span class="toc-number">3.1.</span> <span class="toc-text">实现目标：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F%EF%BC%9A-1"><span class="toc-number">3.2.</span> <span class="toc-text">实现方式：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E6%95%88%E6%9E%9C-1"><span class="toc-number">3.3.</span> <span class="toc-text">实现效果</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%85%A8%E5%B1%80%E6%97%A5%E5%BF%97%E5%A4%84%E7%90%86"><span class="toc-number">4.</span> <span class="toc-text">全局日志处理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%AE%E6%A0%87%EF%BC%9A-2"><span class="toc-number">4.1.</span> <span class="toc-text">目标：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F%EF%BC%9A-2"><span class="toc-number">4.2.</span> <span class="toc-text">实现方式：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E6%95%88%E6%9E%9C-2"><span class="toc-number">4.3.</span> <span class="toc-text">实现效果</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E7%AE%A1%E7%90%86"><span class="toc-number">5.</span> <span class="toc-text">生命周期管理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%AE%E6%A0%87%EF%BC%9A-3"><span class="toc-number">5.1.</span> <span class="toc-text">目标：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F%EF%BC%9A-3"><span class="toc-number">5.2.</span> <span class="toc-text">实现方式：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E6%95%88%E6%9E%9C-3"><span class="toc-number">5.3.</span> <span class="toc-text">实现效果</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93%E4%B8%8E%E4%B8%8B%E6%AD%A5%E8%AE%A1%E5%88%92"><span class="toc-number">6.</span> <span class="toc-text">总结与下步计划</span></a></li></ol>
+            </div>
+        
+        <!-- sidebar -->
+        <div class="sidebar sidebar-hide">
+    <ul class="sidebar-tabs sidebar-tabs-active-0">
+        <li class="sidebar-tab-archives"><span class="iconfont-archer">&#xe67d;</span><span class="tab-name">Archive</span></li>
+        <li class="sidebar-tab-tags"><span class="iconfont-archer">&#xe61b;</span><span class="tab-name">Tag</span></li>
+        <li class="sidebar-tab-categories"><span class="iconfont-archer">&#xe666;</span><span class="tab-name">Cate</span></li>
+    </ul>
+    <div class="sidebar-content sidebar-content-show-archive">
+        <div class="sidebar-panel-archives">
+    <!-- 在 ejs 中将 archive 按照时间排序 -->
+    
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    
+    
+    
+    
+    <div class="total-and-search">
+        <div class="total-archive">
+        Total : 40
+        </div>
+        <!-- search  -->
+        
+    </div>
+    
+    <div class="post-archive">
+    
+        
+            
+            
+            <div class="archive-year"> 2025 </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/27</span>
+            <a class="archive-post-title" href="/blog/2025/04/27/javelin-2/">手写一个微型 Spring 框架（二）:从路由到生命周期管理</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/14</span>
+            <a class="archive-post-title" href="/blog/2025/04/14/javelin-1/">手写一个微型 Spring 框架：从端口监听到依赖注入</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/02</span>
+            <a class="archive-post-title" href="/blog/2025/04/02/java-init/">👨‍💻 十年开发老兵，从.NET到Java：我为何选择重新出发？ 🚀</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/28</span>
+            <a class="archive-post-title" href="/blog/2025/03/28/js-monitoring/">从入门到实战：一文搞定JS无埋点监控方案</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/18</span>
+            <a class="archive-post-title" href="/blog/2025/03/18/MCP/">MCP：AI 时代的“USB-C”，解锁模型上下文新范式</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/14</span>
+            <a class="archive-post-title" href="/blog/2025/03/14/deepseek-rag/">DeepSeek + RAG： 让大模型更智能、更精准</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/27</span>
+            <a class="archive-post-title" href="/blog/2025/02/27/midscenejs/">AI驱动的自动化测试：探索MidScene.js的强大功能</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/21</span>
+            <a class="archive-post-title" href="/blog/2025/02/21/function-calling/">让AI模型不再只是“说话”——探索AI模型的函数调用</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/12</span>
+            <a class="archive-post-title" href="/blog/2025/02/12/openai-operator/">「AI」科普向 | OpenAI Operator：推动数字世界的新纪元</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/12</span>
+            <a class="archive-post-title" href="/blog/2025/02/12/deepseek-vscode/">Cursor平替：把 DeepSeek 接入 VS Code</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/07</span>
+            <a class="archive-post-title" href="/blog/2025/02/07/deepseek-1/">DeepSeek 本地部署+web端访问 指南</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/05</span>
+            <a class="archive-post-title" href="/blog/2025/02/05/docker-log/">减少 Docker 日志大小：实用的日志管理指南</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">01/07</span>
+            <a class="archive-post-title" href="/blog/2025/01/07/parallelism/">并发不是并行！</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> 2024 </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/18</span>
+            <a class="archive-post-title" href="/blog/2024/12/18/log/">程序日志设计与存储：实践与注意事项(一)</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/16</span>
+            <a class="archive-post-title" href="/blog/2024/12/16/web-rtc/">WebRTC入门：让浏览器之间的实时通信变得简单</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/11</span>
+            <a class="archive-post-title" href="/blog/2024/12/11/k8s-helm/">Kubernetes 分享：如何使用 Helm 优化 Kubernetes 应用部署</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/29</span>
+            <a class="archive-post-title" href="/blog/2024/11/29/rspack/">Rspack：一个新一代的 JavaScript 打包工具</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/20</span>
+            <a class="archive-post-title" href="/blog/2024/11/20/mfa/">深入解读 MFA 和 TOTP 的实现原理与应用</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/08</span>
+            <a class="archive-post-title" href="/blog/2024/11/08/stream-output/">解读大型语言模型（LLM）API：了解流式输出的工作原理</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/06</span>
+            <a class="archive-post-title" href="/blog/2024/11/06/encrypt-hash-signature/">加密、哈希与签名：基本原理与区别解析</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/30</span>
+            <a class="archive-post-title" href="/blog/2024/10/30/js-signal/">JavaScript 信号：如何将响应式功能带到普通 Web 开发中</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/28</span>
+            <a class="archive-post-title" href="/blog/2024/08/28/sticky-packet/">深入探讨 TCP 粘包现象：问题、原因与解决方案</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/16</span>
+            <a class="archive-post-title" href="/blog/2024/08/16/quic/">QUIC:被寄予厚望的下一代互联网传输协议</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/08</span>
+            <a class="archive-post-title" href="/blog/2024/08/08/docker-layer/">深入理解容器镜像层</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/01</span>
+            <a class="archive-post-title" href="/blog/2024/08/01/daemonset/">Kubernetes DaemonSet – 它是什么以及如何使用</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/11</span>
+            <a class="archive-post-title" href="/blog/2024/07/11/rabbitmq-quorum/">RabbitMQ之三种队列之间的区别及如何选型</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/09</span>
+            <a class="archive-post-title" href="/blog/2024/07/09/rabbitmq-basic/">深入理解 RabbitMQ 中的基础概念</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/08</span>
+            <a class="archive-post-title" href="/blog/2024/07/08/docker-2/">Docker镜像构建优化</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/05</span>
+            <a class="archive-post-title" href="/blog/2024/07/05/docker-1/">Docker隐藏在细节中的技术基础</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">06/20</span>
+            <a class="archive-post-title" href="/blog/2024/06/20/proxy/">代理服务解析：正向代理、反向代理和透明代理</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/30</span>
+            <a class="archive-post-title" href="/blog/2024/05/30/similar-image-search/">从零开始搭建自己的相似图片搜索引擎</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/30</span>
+            <a class="archive-post-title" href="/blog/2024/05/30/TaskCompletionSource/">C# 学习笔记： TaskCompletionSource</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/22</span>
+            <a class="archive-post-title" href="/blog/2024/05/22/dead-message/">深入解析消息队列中的死信队列</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/28</span>
+            <a class="archive-post-title" href="/blog/2024/04/28/dump/">Dump分析入门指南</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/07</span>
+            <a class="archive-post-title" href="/blog/2024/04/07/garnet/">Garnet，缓存的新选择！</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> Invalid date </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span>
+            <a class="archive-post-title" href="/blog/2025/04/29/hello-world/">欢迎来到 ITProHub！</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> 2024 </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/18</span>
+            <a class="archive-post-title" href="/blog/2024/04/18/redis-interview-1/">Redis成长记 - Redis的陷阱（一）</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/11</span>
+            <a class="archive-post-title" href="/blog/2024/04/11/https/">HTTPS的工作原理以及安装</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/28</span>
+            <a class="archive-post-title" href="/blog/2024/03/28/organization-internal-loss/">组织发展致命杀手：内耗</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/19</span>
+            <a class="archive-post-title" href="/blog/2024/03/19/http/">深入理解 HTTP Connection 头</a>
+        </li>
+    
+    </div>
+</div>
+
+        <div class="sidebar-panel-tags">
+    <div class="sidebar-tags-name">
+        
+            <span class="sidebar-tag-name" data-tags="dump 性能 异常">
+                <span class="iconfont-archer">&#xe606;</span>
+                dump 性能 异常
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="Garnet 缓存 微软">
+                <span class="iconfont-archer">&#xe606;</span>
+                Garnet 缓存 微软
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="http http协议 Connection">
+                <span class="iconfont-archer">&#xe606;</span>
+                http http协议 Connection
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="https http ssl tls">
+                <span class="iconfont-archer">&#xe606;</span>
+                https http ssl tls
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="前端监控 JavaScript Ajax">
+                <span class="iconfont-archer">&#xe606;</span>
+                前端监控 JavaScript Ajax
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="组织 内耗">
+                <span class="iconfont-archer">&#xe606;</span>
+                组织 内耗
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="redis 面试 求职">
+                <span class="iconfont-archer">&#xe606;</span>
+                redis 面试 求职
+            </span>
+        
+    </div>
+    <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
+    <div class="tag-load-fail" style="display: none; color: #ccc; font-size: 0.6rem;">
+        缺失模块，请参考主题文档进行安装配置：https://github.com/fi3ework/hexo-theme-archer#%E5%AE%89%E8%A3%85%E4%B8%BB%E9%A2%98
+    </div> 
+    <div class="sidebar-tags-list"></div>
+</div>
+
+        <div class="sidebar-panel-categories">
+    <div class="sidebar-categories-name">
+    
+    </div>
+    <div class="iconfont-archer sidebar-categories-empty">&#xe678;</div>
+    <div class="sidebar-categories-list"></div>
+</div>
+
+    </div>
+</div>
+
+        <!-- site-meta -->
+        <script>
+    var siteMetaRoot = "/blog/"
+    if (siteMetaRoot === "undefined") {
+        siteMetaRoot = '/'
+    }
+    var siteMeta = {
+        url: "https://itprohub.github.io/blog",
+        root: siteMetaRoot,
+        author: "乐予吕"
+    }
+</script>
+
+        <!-- import experimental options here -->
+        <!-- Custom Font -->
+
+
+        <!-- main func -->
+        <script src="/blog/scripts/main.js?v=20211217"></script>
+        <!-- dark mode -->
+        <script src="/blog/scripts/dark.js?v=20211217"></script>
+        <!-- fancybox -->
+        <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" defer></script>
+        <!-- algolia -->
+        
+        <!-- busuanzi -->
+        
+            <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+        
+        <!-- CNZZ -->
+        
+        <!-- async load share.js -->
+        
+            <script src="/blog/scripts/share.js?v=20211217" async></script>
+        
+        <!-- mermaid -->
+        
+    </body>
+</html>
