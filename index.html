@@ -450,7 +450,7 @@
                 <span class="abstract-title-text">手写一个微型Spring框架（三）：NHttpContext的详解</span>
             </a>
             <div class="abstract-content">
-                在Javelin框架中，NHttpContext类在HTTP请求处理流水线中扮演着至关重要的角色。它是一个封装了请求-响应生命周期各个方面的对象，管理着HTTP请求的各个环节。下面我们将深入探讨NHttpContext的功能、组成部分及其使用方法。
+                在Javelin框架中，NHttpContext类在HTTP请求处理流水线中扮演着至关重要的角色。它是一个封装了请求-响应生命周期各个方面的对象，管理着HTTP请求的各个环节。下面我们将深入探讨NHttpContext的功能、组成部分及其设计思路。
 
 NHttpContext概述NHttpContext是一个容器，保存了处理HTTP请求所需的所有必要元素。它不仅代表当前HTTP交换的状态，还管理流水线上下文、日志记录、错误处理等内容。其设计使其成为HTTP请求生命周期中的主要上下文对象，提供了一种有组织的方式来管理请求和响应。
 以下是NHttpContext中主要属性的介绍：
@@ -1503,8 +1503,6 @@ JS错误和Promise异常
         
         
         
-        
-        
     
     
     
@@ -1796,14 +1794,14 @@ JS错误和Promise异常
                 Garnet 缓存 微软
             </span>
         
-            <span class="sidebar-tag-name" data-tags="https http ssl tls">
-                <span class="iconfont-archer">&#xe606;</span>
-                https http ssl tls
-            </span>
-        
             <span class="sidebar-tag-name" data-tags="http http协议 Connection">
                 <span class="iconfont-archer">&#xe606;</span>
                 http http协议 Connection
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="https http ssl tls">
+                <span class="iconfont-archer">&#xe606;</span>
+                https http ssl tls
             </span>
         
             <span class="sidebar-tag-name" data-tags="前端监控 JavaScript Ajax">
