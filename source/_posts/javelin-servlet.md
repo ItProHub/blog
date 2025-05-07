@@ -242,6 +242,7 @@ public class JavelinStarter {
 * ✅ 替换 HttpServer 为 Servlet 容器
 * ✅ 手动注册 DispatcherServlet
 * ✅ 支持包名动态传入，实现灵活控制器扫描
+* ✅ 封装 ServletHttpContext
 
 下一篇我们将实现：
 
