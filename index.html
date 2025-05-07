@@ -445,24 +445,22 @@
             
         
         <article class="index-post">
-            <a class="abstract-title" href="/blog/2025/04/30/javelin-nhttpcontext/">
+            <a class="abstract-title" href="/blog/2025/05/07/hello-world/">
                 
-                <span class="abstract-title-text">手写一个微型Spring框架（三）：NHttpContext的详解</span>
+                <span class="abstract-title-text">欢迎来到 ITProHub！</span>
             </a>
             <div class="abstract-content">
-                在Javelin框架中，NHttpContext类在HTTP请求处理流水线中扮演着至关重要的角色。它是一个封装了请求-响应生命周期各个方面的对象，管理着HTTP请求的各个环节。下面我们将深入探讨NHttpContext的功能、组成部分及其设计思路。
-
-NHttpContext概述NHttpContext是一个容器，保存了处理HTTP请求所需的所有必要元素。它不仅代表当前HTTP交换的状态，还管理流水线上下文、日志记录、错误处理等内容。其设计使其成为HTTP请求生命周期中的主要上下文对象，提供了一种有组织的方式来管理请求和响应。
-以下是NHttpContext中主要属性的介绍：
-
-Http...
+                
+🌐 欢迎来到 ITProHub！🚀 你的信息技术专业中心 🚀在 ITProHub，我们致力于成为信息技术领域的中心枢纽，为专业人士、学习者和技术爱好者提供丰富的资源、技能培训和社区交流平台。
+🔍 ITPro: 专业的信息技术支持无论你是正在寻找IT职业发展的道路，还是想提升你的专业技能，ITProHub都为你提供了全面的资源和指导。我们关注行业趋势，分享最新的技术知识，助你成为更专业的IT从业者。
+💼 Hub: 中心化的资源和社区ITProHub是一个汇聚各种IT资源的中心，包括职业指导、技术文章、培训课程等。在我们的社区中，你可以与其他IT专业人士建立联系，分享经验，共同成...
             </div>
             <!-- read more -->
             
             <div class="abstract-post-meta">
                 <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/04/30">
-                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2025/04/30</span>
+                <div class="abstract-date" title="Last updated: 2025/05/07">
+                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2025/05/07</span>
                 </div>
                 <!-- tags -->
                 
@@ -477,21 +475,61 @@ Http...
             
         
         <article class="index-post">
-            <a class="abstract-title" href="/blog/2025/04/30/hello-world/">
+            <a class="abstract-title" href="/blog/2025/05/06/javelin-servlet/">
                 
-                <span class="abstract-title-text">欢迎来到 ITProHub！</span>
+                <span class="abstract-title-text">构建自己的微型 Spring 框架（三）：接入内嵌 Tomcat 与 Servlet</span>
             </a>
             <div class="abstract-content">
-                
-🌐 欢迎来到 ITProHub！🚀 你的信息技术专业中心 🚀在 ITProHub，我们致力于成为信息技术领域的中心枢纽，为专业人士、学习者和技术爱好者提供丰富的资源、技能培训和社区交流平台。
-🔍 ITPro: 专业的信息技术支持无论你是正在寻找IT职业发展的道路，还是想提升你的专业技能，ITProHub都为你提供了全面的资源和指导。我们关注行业趋势，分享最新的技术知识，助你成为更专业的IT从业者。
-💼 Hub: 中心化的资源和社区ITProHub是一个汇聚各种IT资源的中心，包括职业指导、技术文章、培训课程等。在我们的社区中，你可以与其他IT专业人士建立联系，分享经验，共同成...
+                在前两篇中，我们已经实现了一个具备依赖注入、路由注册、参数绑定、中间件、JSON 返回、异常处理的微型 Web 框架 —— Javelin，它基于 JDK 自带的 HttpServer 实现了最小运行闭环。
+曾几何时，我一度以为HttpServer就是我的最终目标，直到我被告知它存在一定的局限性，不适合生产使用。显然我们的目标不仅仅是一个简单的最小闭环，而是一个完整的、可扩展的、强壮的 Web 框架。本篇将带你将 Javelin 接入内嵌 Tomcat，并运行在标准 Servlet 容器之上，向真正的工程化迈进一步。
+
+为什么 HttpServer 不适合生产环境？
+
+
+项目
+说明
+
+
+...
             </div>
             <!-- read more -->
             
             <div class="abstract-post-meta">
                 <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/04/30">
+                <div class="abstract-date" title="Last updated: 2025/05/07">
+                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2025/05/06</span>
+                </div>
+                <!-- tags -->
+                
+            </div>
+        </article>
+        <div class="index-post-divider"></div>
+    
+        
+        
+        
+        
+            
+        
+        <article class="index-post">
+            <a class="abstract-title" href="/blog/2025/04/30/javelin-nhttpcontext/">
+                
+                <span class="abstract-title-text">手写一个微型Spring框架（三）：NHttpContext的详解</span>
+            </a>
+            <div class="abstract-content">
+                在Javelin框架中，NHttpContext类在HTTP请求处理流水线中扮演着至关重要的角色。它是一个封装了请求-响应生命周期各个方面的对象，管理着HTTP请求的各个环节。下面我们将深入探讨NHttpContext的功能、组成部分及其设计思路。
+
+NHttpContext概述NHttpContext是一个容器，保存了处理HTTP请求所需的所有必要元素。它不仅代表当前HTTP交换的状态，还管理流水线上下文、日志记录、错误处理等内容。其设计使其成为HTTP请求生命周期中的主要上下文对象，提供了一种有组织的方式来管理请求和响应。
+
+以下是NHttpContext中主要属性的介绍：
+
+Htt...
+            </div>
+            <!-- read more -->
+            
+            <div class="abstract-post-meta">
+                <!-- date -->
+                <div class="abstract-date" title="Last updated: 2025/05/07">
                     <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2025/04/30</span>
                 </div>
                 <!-- tags -->
@@ -520,7 +558,7 @@ Http...
             
             <div class="abstract-post-meta">
                 <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/04/30">
+                <div class="abstract-date" title="Last updated: 2025/05/07">
                     <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2025/04/27</span>
                 </div>
                 <!-- tags -->
@@ -551,7 +589,7 @@ Http...
             
             <div class="abstract-post-meta">
                 <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/04/30">
+                <div class="abstract-date" title="Last updated: 2025/05/07">
                     <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2025/04/14</span>
                 </div>
                 <!-- tags -->
@@ -581,7 +619,7 @@ Http...
             
             <div class="abstract-post-meta">
                 <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/04/30">
+                <div class="abstract-date" title="Last updated: 2025/05/07">
                     <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2025/04/02</span>
                 </div>
                 <!-- tags -->
@@ -621,7 +659,7 @@ JS错误和Promise异常
             
             <div class="abstract-post-meta">
                 <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/04/30">
+                <div class="abstract-date" title="Last updated: 2025/05/07">
                     <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2025/03/28</span>
                 </div>
                 <!-- tags -->
@@ -657,7 +695,7 @@ JS错误和Promise异常
             
             <div class="abstract-post-meta">
                 <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/04/30">
+                <div class="abstract-date" title="Last updated: 2025/05/07">
                     <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2025/03/18</span>
                 </div>
                 <!-- tags -->
@@ -686,7 +724,7 @@ JS错误和Promise异常
             
             <div class="abstract-post-meta">
                 <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/04/30">
+                <div class="abstract-date" title="Last updated: 2025/05/07">
                     <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2025/03/14</span>
                 </div>
                 <!-- tags -->
@@ -714,39 +752,8 @@ JS错误和Promise异常
             
             <div class="abstract-post-meta">
                 <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/04/30">
+                <div class="abstract-date" title="Last updated: 2025/05/07">
                     <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2025/02/27</span>
-                </div>
-                <!-- tags -->
-                
-            </div>
-        </article>
-        <div class="index-post-divider"></div>
-    
-        
-        
-        
-        
-            
-        
-        <article class="index-post">
-            <a class="abstract-title" href="/blog/2025/02/21/function-calling/">
-                
-                <span class="abstract-title-text">让AI模型不再只是“说话”——探索AI模型的函数调用</span>
-            </a>
-            <div class="abstract-content">
-                引入在当今数字化时代，人工智能（AI）技术已经成为我们生活中不可或缺的一部分。从语音助手到智能客服，AI模型已经成为我们日常生活中不可或缺的一部分。然而，随着AI技术的不断发展，我们面临了一个新的挑战：如何让AI模型真正“做事”？
-
-在过去，AI模型主要被训练为生成文字，回答问题，或者提供信息。然而，随着AI模型的不断发展，我们开始看到它能够执行更复杂的任务，如自动化任务、数据处理、决策支持等。这一趋势的一个关键驱动力是函数调用的引入。
-如果现在的你还只会使用AI模型来生成文字，那么作为一个开发人员，你已经OUT了！
-生成式人工智能的一个显著优点是它能够使用自然语言与用户进行互动。然而，...
-            </div>
-            <!-- read more -->
-            
-            <div class="abstract-post-meta">
-                <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/04/30">
-                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2025/02/21</span>
                 </div>
                 <!-- tags -->
                 
@@ -1168,7 +1175,32 @@ JS错误和Promise异常
         
         
         
+        
+        
+        
+        
+        
     
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         
         
         
@@ -1509,7 +1541,7 @@ JS错误和Promise异常
     
     <div class="total-and-search">
         <div class="total-archive">
-        Total : 41
+        Total : 42
         </div>
         <!-- search  -->
         
@@ -1525,14 +1557,20 @@ JS错误和Promise异常
             
         
         <li class="archive-post-item">
-            <span class="archive-post-date">04/30</span>
-            <a class="archive-post-title" href="/blog/2025/04/30/javelin-nhttpcontext/">手写一个微型Spring框架（三）：NHttpContext的详解</a>
+            <span class="archive-post-date">05/07</span>
+            <a class="archive-post-title" href="/blog/2025/05/07/hello-world/">欢迎来到 ITProHub！</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/06</span>
+            <a class="archive-post-title" href="/blog/2025/05/06/javelin-servlet/">构建自己的微型 Spring 框架（三）：接入内嵌 Tomcat 与 Servlet</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">04/30</span>
-            <a class="archive-post-title" href="/blog/2025/04/30/hello-world/">欢迎来到 ITProHub！</a>
+            <a class="archive-post-title" href="/blog/2025/04/30/javelin-nhttpcontext/">手写一个微型Spring框架（三）：NHttpContext的详解</a>
         </li>
     
         

@@ -430,6 +430,35 @@
             
         
         <article class="index-post">
+            <a class="abstract-title" href="/blog/2024/07/08/docker-2/">
+                
+                <span class="abstract-title-text">Docker镜像构建优化</span>
+            </a>
+            <div class="abstract-content">
+                引言在构建Docker镜像时，Dockerfile的层数对镜像的性能和大小有显著影响。本文将深入探讨Dockerfile中的层定义、层数多带来的问题，以及如何通过优化Dockerfile来减少层数，提高构建效率和运行性能。
+Dockerfile中的层定义在Dockerfile中，每一个指令（如RUN、COPY、ADD等）都会创建一个新的层。Docker采用联合文件系统（UnionFS），每一层都是只读的，只有最顶层是可写的。
+123456# 每一条指令都会创建一个新层FROM python:3.8-slimWORKDIR /appCOPY . .RUN pip install -r re...
+            </div>
+            <!-- read more -->
+            
+            <div class="abstract-post-meta">
+                <!-- date -->
+                <div class="abstract-date" title="Last updated: 2025/05/07">
+                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2024/07/08</span>
+                </div>
+                <!-- tags -->
+                
+            </div>
+        </article>
+        <div class="index-post-divider"></div>
+    
+        
+        
+        
+        
+            
+        
+        <article class="index-post">
             <a class="abstract-title" href="/blog/2024/07/05/docker-1/">
                 
                 <span class="abstract-title-text">Docker隐藏在细节中的技术基础</span>
@@ -444,7 +473,7 @@
             
             <div class="abstract-post-meta">
                 <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/04/30">
+                <div class="abstract-date" title="Last updated: 2025/05/07">
                     <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2024/07/05</span>
                 </div>
                 <!-- tags -->
@@ -473,7 +502,7 @@
             
             <div class="abstract-post-meta">
                 <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/04/30">
+                <div class="abstract-date" title="Last updated: 2025/05/07">
                     <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2024/06/20</span>
                 </div>
                 <!-- tags -->
@@ -502,7 +531,7 @@
             
             <div class="abstract-post-meta">
                 <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/04/30">
+                <div class="abstract-date" title="Last updated: 2025/05/07">
                     <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2024/05/30</span>
                 </div>
                 <!-- tags -->
@@ -531,7 +560,7 @@ TaskCompletionSource是 .NET 库中用于处理任务的极其有用的工具，
             
             <div class="abstract-post-meta">
                 <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/04/30">
+                <div class="abstract-date" title="Last updated: 2025/05/07">
                     <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2024/05/30</span>
                 </div>
                 <!-- tags -->
@@ -563,7 +592,7 @@ TaskCompletionSource是 .NET 库中用于处理任务的极其有用的工具，
             
             <div class="abstract-post-meta">
                 <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/04/30">
+                <div class="abstract-date" title="Last updated: 2025/05/07">
                     <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2024/05/22</span>
                 </div>
                 <!-- tags -->
@@ -593,7 +622,7 @@ Dump 文件是什么？Dump 文件是在应用程序发生崩溃或异常情况�
             
             <div class="abstract-post-meta">
                 <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/04/30">
+                <div class="abstract-date" title="Last updated: 2025/05/07">
                     <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2024/04/28</span>
                 </div>
                 <!-- tags -->
@@ -633,7 +662,7 @@ Dump 文件是什么？Dump 文件是在应用程序发生崩溃或异常情况�
             
             <div class="abstract-post-meta">
                 <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/04/30">
+                <div class="abstract-date" title="Last updated: 2025/05/07">
                     <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2024/04/18</span>
                 </div>
                 <!-- tags -->
@@ -675,7 +704,7 @@ HTTPS 使我们能够实现三个目标：
             
             <div class="abstract-post-meta">
                 <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/04/30">
+                <div class="abstract-date" title="Last updated: 2025/05/07">
                     <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2024/04/11</span>
                 </div>
                 <!-- tags -->
@@ -724,7 +753,7 @@ redis不再“开源”；
             
             <div class="abstract-post-meta">
                 <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/04/30">
+                <div class="abstract-date" title="Last updated: 2025/05/07">
                     <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2024/04/07</span>
                 </div>
                 <!-- tags -->
@@ -733,46 +762,6 @@ redis不再“开源”；
     
     
         <a class="post-tag" href="javascript:void(0);" data-tags="Garnet 缓存 微软">Garnet 缓存 微软</a>
-    
-</div>
-
-                
-            </div>
-        </article>
-        <div class="index-post-divider"></div>
-    
-        
-        
-        
-        
-            
-        
-        <article class="index-post">
-            <a class="abstract-title" href="/blog/2024/03/28/organization-internal-loss/">
-                
-                <span class="abstract-title-text">组织发展致命杀手：内耗</span>
-            </a>
-            <div class="abstract-content">
-                前段时间发表的都是技术相关的文章，今天换换口味，谈一谈最近关于组织工作上的一些思考。当然也是找个地方发发牢骚。。。可能就是想到哪里写到哪里
-相信大家在此之前也常常听过一个说法“在组织管理中，人就是全部，人才之痛，是最大的痛点。”
-一家企业在增长的过程中，很多问题都会被隐藏或者说是忽略。但是一旦不增长或者负增长了，所有问题都会暴露出来，甚至是成倍的爆发。
-毫不夸张的说，组织内耗 就是毁掉一家企业最快的方式。
-组织内耗的表现以下是我想到的比较重要的几个点，排名分先后！更可怕的是，这些表现一般不会单独出现，都是抱团出现的。
-1. 内卷（不健康的竞争） 在团队内部，组织内耗一个重要的表现形式：内...
-            </div>
-            <!-- read more -->
-            
-            <div class="abstract-post-meta">
-                <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/04/30">
-                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2024/03/28</span>
-                </div>
-                <!-- tags -->
-                
-                    <div class= abstract-tags >
-    
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags="组织 内耗">组织 内耗</a>
     
 </div>
 
@@ -1106,7 +1095,32 @@ redis不再“开源”；
         
         
         
+        
+        
+        
+        
+        
     
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         
         
         
@@ -1447,7 +1461,7 @@ redis不再“开源”；
     
     <div class="total-and-search">
         <div class="total-archive">
-        Total : 41
+        Total : 42
         </div>
         <!-- search  -->
         
@@ -1463,14 +1477,20 @@ redis不再“开源”；
             
         
         <li class="archive-post-item">
-            <span class="archive-post-date">04/30</span>
-            <a class="archive-post-title" href="/blog/2025/04/30/javelin-nhttpcontext/">手写一个微型Spring框架（三）：NHttpContext的详解</a>
+            <span class="archive-post-date">05/07</span>
+            <a class="archive-post-title" href="/blog/2025/05/07/hello-world/">欢迎来到 ITProHub！</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/06</span>
+            <a class="archive-post-title" href="/blog/2025/05/06/javelin-servlet/">构建自己的微型 Spring 框架（三）：接入内嵌 Tomcat 与 Servlet</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">04/30</span>
-            <a class="archive-post-title" href="/blog/2025/04/30/hello-world/">欢迎来到 ITProHub！</a>
+            <a class="archive-post-title" href="/blog/2025/04/30/javelin-nhttpcontext/">手写一个微型Spring框架（三）：NHttpContext的详解</a>
         </li>
     
         
