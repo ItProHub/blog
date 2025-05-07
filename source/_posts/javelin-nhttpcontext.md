@@ -12,6 +12,8 @@ tags:
 
 `NHttpContext`是一个容器，保存了处理HTTP请求所需的所有必要元素。它不仅代表当前HTTP交换的状态，还管理流水线上下文、日志记录、错误处理等内容。其设计使其成为HTTP请求生命周期中的主要上下文对象，提供了一种有组织的方式来管理请求和响应。
 
+![NHttpContext](./images/javelin-3/uml.png)
+
 以下是`NHttpContext`中主要属性的介绍：
 
 1. **HttpExchange exchange**：  
@@ -263,3 +265,6 @@ public void authenticateRequest(NHttpContext httpContext) throws Exception {
 `NHttpContext`类是Javelin框架中处理HTTP请求的关键组件之一。它帮助封装了请求-响应管理的核心元素，提供了一个有组织的方式来处理HTTP交换，包括认证、日志记录、异常处理和响应生成。
 
 通过理解并使用`NHttpContext`，开发者可以更好地管理和定制HTTP请求的处理行为，确保应用保持模块化、可维护且高效。当然目前这个类还有很多缺点，后续我会在过程中继续完善。中间很多的细节没有展开，大家可以自行查看源码。
+
+
+由于篇幅原因，示例中的代码仅展示了部分关键实现细节，完整代码请参考[GitHub](https://github.com/ItProHub/Javelin)仓库。
