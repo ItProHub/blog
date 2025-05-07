@@ -151,9 +151,50 @@ public class JavelinDispatcherServlet extends HttpServlet {
 
 此 Servlet 会在初始化时扫描注解控制器，并注册到 Javelin 的路由表中。
 
-后续我们将引入 `ServletHttpContext` 封装 HttpServletRequest，以继续复用中间件链、参数绑定、异常处理等机制。
-
 ---
+
+
+# ServletHttpContext 的设计与实现
+
+为了实现框架对 Servlet 请求的无缝支持，Javelin 提供了 `ServletHttpContext` 类作为 `NHttpContext` 的具体实现之一。
+
+其设计目标是将标准的 `HttpServletRequest` 与 `HttpServletResponse` 封装为统一的上下文对象，供框架内部使用。
+
+该类的实现如下：
+
+```java
+public class ServletHttpContext extends NHttpContext {    
+
+    public ServletHttpContext(HttpServletRequest request, HttpServletResponse response) {
+        super();
+        this.request = request;
+        this.response = response;
+    }
+
+    // 提供 getHeader, getMethod, getPath, getBodyStream 等
+    public String getHeader(String name) { 
+        return request.getHeader(name); 
+    }
+
+    public String getMethod() { 
+        return request.getMethod(); 
+    }
+
+    public String getPath() { 
+        return request.getRequestURI(); 
+    }
+}
+```
+
+## 设计说明：
+
+* 该类继承自 `NHttpContext`，复用其中间件链、异常捕获、属性容器等机制；
+* 构造函数中注入标准 Servlet 对象并保存；
+* 对外暴露统一接口，如 `getHeader()`、`getPath()`、`getMethod()` 等，屏蔽底层实现差异；
+* 可以与 `HttpServerHttpContext` 等其他协议上下文实现共享处理逻辑。
+
+这种抽象方式实现了协议无关性，使得中间件、控制器、异常处理器等逻辑无需关心底层运行环境，是实现跨容器兼容性的基础。
+
 
 # 运行效果
 
@@ -204,7 +245,6 @@ public class JavelinStarter {
 
 下一篇我们将实现：
 
-* 🔄 封装 `ServletHttpContext`
 * 🔁 抽象 `IHttpContext` 接口，兼容多种后端
 * 🌐 支持静态资源、session、filter 等 Servlet 功能
 
