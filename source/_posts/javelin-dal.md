@@ -285,7 +285,7 @@ public class EmployeeService {
 ```
 ---
 
-# 6. 总结与展望
+# 总结与展望
 
 通过本篇文章，我们构建了一个结构清晰、职责明确、支持类 LINQ 查询与原生 SQL 混用的微型 ORM 模块，涵盖：
 
