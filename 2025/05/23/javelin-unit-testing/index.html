@@ -19,36 +19,26 @@
         <meta name="keywords" content="hexo,ITProHub,hexo-theme,hexo-blog">
     
     <meta name="description" content="">
-    <meta name="description" content="去年了解到DeepSeek的时候，它在大模型排行榜上已经是第7名了，而且它还是前10名里面唯一一个开源的。想不到经过一个春节，DeepSeek更是火出了天际。‌DeepSeek在美国苹果应用商店和中国苹果应用商店的免费应用排行榜上均排名第一‌。DeepSeek在1月27日赶超OpenAI的ChatGPT，在美国苹果应用商店免费应用排行榜上排名第一。在中国苹果应用商店，DeepSeek同样排名第一‌">
+    <meta name="description" content="前面我们马不停蹄地实现了 Javelin 框架的许多基础功能。从 HTTP 路由、IoC 容器、注解扫描到数据库访问层，像是在快速奔跑、不断构建着新的地基。但到了某个时刻，或许我们更需要像赵雷在《静下来》中唱的那样：  我想应该静下来走一段路 我想应该静下来看一本书 我只想静下来做这些事 … 我只想静下来去反省自己   当我在 IDE 中一行行堆砌代码的时候，突然哼起这首歌，意识到，是时候慢下来—">
 <meta property="og:type" content="article">
-<meta property="og:title" content="DeepSeek 本地部署+web端访问 指南">
-<meta property="og:url" content="https://itprohub.github.io/blog/2025/02/07/deepseek-1/index.html">
+<meta property="og:title" content="手写一个微型 Spring 框架（五）：单元测试实践">
+<meta property="og:url" content="https://itprohub.github.io/blog/2025/05/23/javelin-unit-testing/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="去年了解到DeepSeek的时候，它在大模型排行榜上已经是第7名了，而且它还是前10名里面唯一一个开源的。想不到经过一个春节，DeepSeek更是火出了天际。‌DeepSeek在美国苹果应用商店和中国苹果应用商店的免费应用排行榜上均排名第一‌。DeepSeek在1月27日赶超OpenAI的ChatGPT，在美国苹果应用商店免费应用排行榜上排名第一。在中国苹果应用商店，DeepSeek同样排名第一‌">
+<meta property="og:description" content="前面我们马不停蹄地实现了 Javelin 框架的许多基础功能。从 HTTP 路由、IoC 容器、注解扫描到数据库访问层，像是在快速奔跑、不断构建着新的地基。但到了某个时刻，或许我们更需要像赵雷在《静下来》中唱的那样：  我想应该静下来走一段路 我想应该静下来看一本书 我只想静下来做这些事 … 我只想静下来去反省自己   当我在 IDE 中一行行堆砌代码的时候，突然哼起这首歌，意识到，是时候慢下来—">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://itprohub.github.io/blog/images/deepseek-1/late.jpg">
-<meta property="og:image" content="https://itprohub.github.io/blog/images/deepseek-1/download.png">
-<meta property="og:image" content="https://itprohub.github.io/blog/images/deepseek-1/environment.png">
-<meta property="og:image" content="https://itprohub.github.io/blog/images/deepseek-1/models.png">
-<meta property="og:image" content="https://itprohub.github.io/blog/images/deepseek-1/deepseek-models.png">
-<meta property="og:image" content="https://itprohub.github.io/blog/images/deepseek-1/success.png">
-<meta property="og:image" content="https://itprohub.github.io/blog/images/deepseek-1/speed.gif">
-<meta property="og:image" content="https://itprohub.github.io/blog/images/deepseek-1/resource.png">
-<meta property="og:image" content="https://itprohub.github.io/blog/images/deepseek-1/cmd-effect.png">
-<meta property="og:image" content="https://itprohub.github.io/blog/images/deepseek-1/env_var.png">
-<meta property="og:image" content="https://itprohub.github.io/blog/images/deepseek-1/chatboxai.png">
-<meta property="og:image" content="https://itprohub.github.io/blog/images/deepseek-1/chatbox-setting3.png">
-<meta property="og:image" content="https://itprohub.github.io/blog/images/deepseek-1/chatbox-answer.png">
-<meta property="article:published_time" content="2025-02-07T09:33:25.000Z">
-<meta property="article:modified_time" content="2025-05-27T09:13:12.455Z">
+<meta property="og:image" content="https://itprohub.github.io/blog/images/javelin-unit-testing/zhaolei.png">
+<meta property="og:image" content="https://itprohub.github.io/blog/images/javelin-unit-testing/jacoco.png">
+<meta property="og:image" content="https://itprohub.github.io/blog/images/javelin-unit-testing/tdd.jpg">
+<meta property="article:published_time" content="2025-05-23T16:14:04.000Z">
+<meta property="article:modified_time" content="2025-05-27T09:13:12.456Z">
 <meta property="article:author" content="乐予吕">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://itprohub.github.io/blog/images/deepseek-1/late.jpg">
+<meta name="twitter:image" content="https://itprohub.github.io/blog/images/javelin-unit-testing/zhaolei.png">
     <meta http-equiv="Cache-control" content="no-cache">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <link rel="icon" href="/blog/assets/favicon.ico">
     
-    <title>DeepSeek 本地部署+web端访问 指南 · 个人技术日常分享</title>
+    <title>手写一个微型 Spring 框架（五）：单元测试实践 · 个人技术日常分享</title>
     <!-- /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
 /* This file is meant as a standalone workflow for
 - testing support for link[rel=preload]
@@ -275,7 +265,7 @@
                 <a href="/blog/">个人技术日常分享</a>
             </div>
             <div class="post-title header-element">
-                <a href="#" class="post-name">DeepSeek 本地部署+web端访问 指南</a>
+                <a href="#" class="post-name">手写一个微型 Spring 框架（五）：单元测试实践</a>
             </div>
         </div>
     
@@ -321,7 +311,7 @@
         <h1 class="intro-title">
             <!-- 主页  -->
             
-                DeepSeek 本地部署+web端访问 指南
+                手写一个微型 Spring 框架（五）：单元测试实践
             <!-- 404 -->
             
         </h1>
@@ -349,7 +339,7 @@
                 <div class="post-intro-meta">
                     <!-- 撰写日期 -->
                     <span class="iconfont-archer post-intro-calander">&#xe676;</span>
-                    <span class="post-intro-time">2025/02/07</span>
+                    <span class="post-intro-time">2025/05/23</span>
                     <!-- busuanzi -->
                     
                         <span id="busuanzi_container_page_pv" class="busuanzi-pv">
@@ -504,59 +494,105 @@
             <div class="container container-unloaded">
                 <main class="main post-page">
     <article class="article-entry">
-        <p>去年了解到DeepSeek的时候，它在大模型排行榜上已经是第7名了，而且它还是前10名里面唯一一个开源的。想不到经过一个春节，DeepSeek更是火出了天际。‌DeepSeek在美国苹果应用商店和中国苹果应用商店的免费应用排行榜上均排名第一‌。DeepSeek在1月27日赶超OpenAI的ChatGPT，在美国苹果应用商店免费应用排行榜上排名第一。在中国苹果应用商店，DeepSeek同样排名第一‌。</p>
-<p>这不，老夫也算是起了个大早，赶了个晚集。<br>这两天才有时间把前段时间部署DeepSeek的文档整理出来，做一个简单的分享。<br><img src="/blog/./images/deepseek-1/late.jpg" alt="迟到"></p>
-<p>在本篇博客中，我将分享如何在本地部署和使用DeepSeek模型，并结合Chatbox网页端进行交互，以提升使用体验。以下是部署的详细步骤。</p>
-<h1 id="本地部署DeepSeek"><a href="#本地部署DeepSeek" class="headerlink" title="本地部署DeepSeek"></a>本地部署DeepSeek</h1><h2 id="下载并安装Ollama"><a href="#下载并安装Ollama" class="headerlink" title="下载并安装Ollama"></a>下载并安装Ollama</h2><p>首先，我们需要安装Ollama，这是一个支持多种AI模型的本地化部署工具。Ollama支持Windows、macOS和Linux系统，选择适合你操作系统的版本。</p>
-<p>Windows&#x2F;macOS用户：可以直接访问Ollama官网，下载适合操作系统的安装包并进行安装。</p>
-<p><img src="/blog/./images/deepseek-1/download.png" alt="下载"></p>
-<p>Linux用户：需要通过命令行执行以下命令来安装：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -fsSL https://ollama.com/install.sh | sh</span><br></pre></td></tr></table></figure>
-
-<p>以下是我的电脑的配置，后面所有的安装都是基于以下配置完成的</p>
-<p><img src="/blog/./images/deepseek-1/environment.png" alt="下载"></p>
-<p><font color="#dd0000">建议看到这里的小伙子们，先去下载Ollama, 然后回来继续看下去。因为Ollama下载真的慢。</font></p>
-<h2 id="选择DeepSeek模型"><a href="#选择DeepSeek模型" class="headerlink" title="选择DeepSeek模型"></a>选择DeepSeek模型</h2><p>安装完成后，打开Ollama应用程序，点击界面上的“Models”选项。你会看到“deepseek-r1”模型列表，可以选择不同版本的模型，具体选择哪个版本，取决于你硬件设备的配置。</p>
-<p><img src="/blog/./images/deepseek-1/models.png" alt="模型"></p>
-<p>7B版本：命令为 ollama run deepseek-r1:7b<br>1.5B版本：命令为 ollama run deepseek-r1:1.5b</p>
-<p><img src="/blog/./images/deepseek-1/deepseek-models.png" alt="deepseek模型"></p>
-<p>这里，我选择了1.5B版本，因为其配置适合普通的电脑。需要注意的是，参数量越大的模型通常更强大，但也需要更多计算资源。如果你的硬件设备较为强大，可以选择更大的版本。</p>
-<h2 id="运行命令"><a href="#运行命令" class="headerlink" title="运行命令"></a>运行命令</h2><p>选择完合适的模型后，输入相应的命令来启动DeepSeek模型。系统会显示“success”表示安装成功。</p>
-<h2 id="效果测试"><a href="#效果测试" class="headerlink" title="效果测试"></a>效果测试</h2><p>一旦安装成功，你可以开始与DeepSeek进行交互。例如，输入“Hello World!”模型将返回相应的答案。如果一切正常，说明安装成功。</p>
-<p><img src="/blog/./images/deepseek-1/success.png" alt="安装完成"></p>
-<p>最后我们再用一个稍微复杂点的问题简单试试本地DeepSeek的速度和资源占用情况。</p>
+        <p>前面我们马不停蹄地实现了 Javelin 框架的许多基础功能。从 HTTP 路由、IoC 容器、注解扫描到数据库访问层，像是在快速奔跑、不断构建着新的地基。但到了某个时刻，或许我们更需要像赵雷在《静下来》中唱的那样：</p>
 <blockquote>
-<p>”10克铅头钩和5克铅头钩挂相同的T尾软饵，软饵是塑料材质长度9cm重3克，近似于圆柱体外形，它们在同一片平静水域中下沉的速度有多大差别？<br>请按物理学定理或公式给出推理过程以及计算结果。“</p>
+<p>我想应该静下来走一段路</p>
+<p>我想应该静下来看一本书</p>
+<p>我只想静下来做这些事</p>
+<p>…</p>
+<p>我只想静下来去反省自己</p>
 </blockquote>
-<p><img src="/blog/./images/deepseek-1/speed.gif" alt="回答速度"><br>可以看到，DeepSeek的回答速度还算让人满意。</p>
-<p>不过在回答稍微复杂问题的时候感觉明显主机开始烧开水了。<br><img src="/blog/./images/deepseek-1/resource.png" alt="资源使用情况"></p>
-<h1 id="使用Chatbox进行网页端访问"><a href="#使用Chatbox进行网页端访问" class="headerlink" title="使用Chatbox进行网页端访问"></a>使用Chatbox进行网页端访问</h1><p>命令行界面虽然可以使用，但相对不够直观, 很多格式都没办法正常展示出来。如果你希望更方便地与DeepSeek进行交互，可以使用Chatbox来通过网页端访问模型。</p>
-<p><img src="/blog/./images/deepseek-1/cmd-effect.png" alt="安装完成"><br>通过上图可以看到，浮力公式和很多markdown格式都没有正常渲染出来。</p>
-<h2 id="环境变量配置"><a href="#环境变量配置" class="headerlink" title="环境变量配置"></a>环境变量配置</h2><p>默认情况下，Ollama服务仅在本地运行，不对外提供服务。为了让Ollama能够对外提供服务，需要设置以下环境变量：</p>
+<p><img src="/blog/./images/javelin-unit-testing/zhaolei.png" alt="赵雷"></p>
+<p>当我在 IDE 中一行行堆砌代码的时候，突然哼起这首歌，意识到，是时候慢下来——看看自己已经写了什么，有哪些内容真正被验证过，哪些又仅停留在“自信”层面。这篇文章正是在这种状态下写出来的，它或许谈不上多全面的反思，但却记录了我作为框架开发者，在某个时刻静下心来去梳理测试体系的过程。它更像是一份实践记录，一份对“测试意识”的回归笔记。</p>
+<p>我们为什么要做单元测试？在这个自建的 Java 框架中，又该如何落地？</p>
+<hr>
+<h1 id="为什么要做单元测试？"><a href="#为什么要做单元测试？" class="headerlink" title="为什么要做单元测试？"></a>为什么要做单元测试？</h1><p>单元测试是保障代码质量和持续演进能力的基石。尤其对于框架类项目来说，没有测试就没有安全地“改动”。Javelin 在不断完善功能的同时，如果没有测试作为护栏，每一次功能迭代都可能带来雪崩式风险。</p>
+<h2 id="📌-原因-1：防止回归"><a href="#📌-原因-1：防止回归" class="headerlink" title="📌 原因 1：防止回归"></a>📌 原因 1：防止回归</h2><p>当你的框架被多个业务模块引用，任何一次调整都可能像蝴蝶效应一样影响下游模块。单元测试就像是自动化的“防线”：一旦行为偏离预期，立即发出警报。</p>
+<h2 id="📌-原因-2：确保逻辑一致性"><a href="#📌-原因-2：确保逻辑一致性" class="headerlink" title="📌 原因 2：确保逻辑一致性"></a>📌 原因 2：确保逻辑一致性</h2><p>你写的每一个公共方法、每一个输入输出契约，是否在各种边界条件下都表现正确？手动验证只能覆盖有限场景，而单元测试可以系统、可重复地校验行为。</p>
+<h2 id="📌-原因-3：促进架构解耦"><a href="#📌-原因-3：促进架构解耦" class="headerlink" title="📌 原因 3：促进架构解耦"></a>📌 原因 3：促进架构解耦</h2><p>一个类如果很难被测试，往往意味着它耦合过重。测试驱动设计反过来可以推动我们写出更清晰、更模块化的代码。</p>
+<h2 id="📌-原因-4：文档即测试"><a href="#📌-原因-4：文档即测试" class="headerlink" title="📌 原因 4：文档即测试"></a>📌 原因 4：文档即测试</h2><p>单元测试本质上也是“代码的使用说明书”。别人阅读你的测试用例，比阅读文档更能快速理解接口怎么用、预期行为是什么。</p>
+<h2 id="📌-原因-5：提高开发信心和效率"><a href="#📌-原因-5：提高开发信心和效率" class="headerlink" title="📌 原因 5：提高开发信心和效率"></a>📌 原因 5：提高开发信心和效率</h2><p>当你在一个已有完善单元测试的项目上工作时，每次修改代码都能立即获得验证反馈。你不需要担心“我改了这个会不会影响那个”，只要测试全绿，就可以安心发布。</p>
+<hr>
+<h1 id="基本原则和规范"><a href="#基本原则和规范" class="headerlink" title="基本原则和规范"></a>基本原则和规范</h1><p>为了让测试既有效又具备长期维护性，我们在编写 Javelin 的测试时遵循了以下几个核心原则：</p>
+<h2 id="✅-原则-1：快速执行"><a href="#✅-原则-1：快速执行" class="headerlink" title="✅ 原则 1：快速执行"></a>✅ 原则 1：快速执行</h2><p>测试应该运行快速，控制在毫秒或秒级，避免依赖真实网络或数据库等慢资源。</p>
+<h2 id="✅-原则-2：完全自动化"><a href="#✅-原则-2：完全自动化" class="headerlink" title="✅ 原则 2：完全自动化"></a>✅ 原则 2：完全自动化</h2><p>测试应该一键运行，不依赖人工介入或配置切换，可用于 CI&#x2F;CD 持续集成场景。</p>
+<h2 id="✅-原则-3：只测试单一功能"><a href="#✅-原则-3：只测试单一功能" class="headerlink" title="✅ 原则 3：只测试单一功能"></a>✅ 原则 3：只测试单一功能</h2><p>一个测试用例应聚焦一个功能点，确保测试失败时能快速定位问题源头，避免“一炸炸全家”。</p>
+<h2 id="✅-原则-4：避免测试间互相依赖"><a href="#✅-原则-4：避免测试间互相依赖" class="headerlink" title="✅ 原则 4：避免测试间互相依赖"></a>✅ 原则 4：避免测试间互相依赖</h2><p>每个测试都应具备“自给自足性”，不会依赖其他测试先运行成功。</p>
+<h2 id="✅-原则-5：断言清晰明确"><a href="#✅-原则-5：断言清晰明确" class="headerlink" title="✅ 原则 5：断言清晰明确"></a>✅ 原则 5：断言清晰明确</h2><p>使用 <code>assertEquals</code>、<code>assertThrows</code> 等断言 API 明确表达预期行为，减少测试意图歧义。</p>
+<h2 id="✅-原则-6：Mock-外部依赖"><a href="#✅-原则-6：Mock-外部依赖" class="headerlink" title="✅ 原则 6：Mock 外部依赖"></a>✅ 原则 6：Mock 外部依赖</h2><p>凡是框架外部（如数据库、文件系统、网络请求）一律 mock 掉，测试只聚焦本类的业务逻辑。</p>
+<h2 id="✅-原则-7：保持可读性"><a href="#✅-原则-7：保持可读性" class="headerlink" title="✅ 原则 7：保持可读性"></a>✅ 原则 7：保持可读性</h2><p>测试代码应像示例代码一样易读，变量命名清晰，测试结构一致，可作为“使用手册”供参考。</p>
+<p>通过遵循这些原则，我们能确保测试本身具备可维护性、可演进性，并成为代码质量的重要护栏。</p>
+<hr>
+<h1 id="如何在-Javelin-中做单元测试？"><a href="#如何在-Javelin-中做单元测试？" class="headerlink" title="如何在 Javelin 中做单元测试？"></a>如何在 Javelin 中做单元测试？</h1><p>Javelin 涉及很多对外依赖，例如 JDBC、连接池、数据源管理、ORM 映射等，因此测试方式需要结合 Mock 技术、代理机制、覆盖率工具来系统搭建。由于对 Java 生态的不熟悉，技术选型基本上只能通过网络上各种文章的对比与社区经验总结，逐步探索出一套适合自己项目的测试组合方式。</p>
+<h2 id="✅-使用-JUnit-5-Mockito"><a href="#✅-使用-JUnit-5-Mockito" class="headerlink" title="✅ 使用 JUnit 5 + Mockito"></a>✅ 使用 JUnit 5 + Mockito</h2><p>我们选择了现代 Java 测试组合：</p>
 <ul>
-<li>OLLAMA_HOST：设置为 0.0.0.0</li>
-<li>OLLAMA_ORIGINS：设置为 *</li>
+<li><strong>JUnit 5</strong>：模块化、注解丰富、支持 Lambda、兼容 Gradle</li>
+<li><strong>Mockito</strong>：业界主流 Mock 框架，能轻松隔离外部依赖</li>
 </ul>
-<p>在Windows系统上，你需要先退出Ollama应用程序，然后配置环境变量。</p>
-<p><img src="/blog/./images/deepseek-1/env_var.png" alt="deepseek模型"></p>
-<p>保存设置后，从Windows开始菜单启动Ollama。</p>
-<h2 id="配置Chatbox"><a href="#配置Chatbox" class="headerlink" title="配置Chatbox"></a>配置Chatbox</h2><p>完成环境变量配置后，接下来配置Chatbox以访问本地的Ollama模型。</p>
-<p>打开<a target="_blank" rel="noopener" href="https://web.chatboxai.app/">Chatbox</a>官网，并选择启动网页版。<br><img src="/blog/./images/deepseek-1/chatboxai.png" alt="ChatBox"><br>选择“本地模型”，如果没有找到本地模型，点击左侧的设置按钮。<br>在设置中选择Ollama API。</p>
-<p>选择你已经安装并运行的模型，Chatbox会自动识别到本地运行的模型，直接选择即可。<br>点击“DISPLAY”选项，选择简体中文，并点击保存按钮。</p>
-<p><img src="/blog/./images/deepseek-1/chatbox-setting3.png" alt="deepseek模型"></p>
-<p>完成配置后，可以在聊天窗口输入问题进行测试，体验与DeepSeek的交互。</p>
-<p>这个时候，我们可以看到之前在命令行无法正常显示的格式都可以正常显示了。<br><img src="/blog/./images/deepseek-1/chatbox-answer.png" alt="deepseek模型"></p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>通过上述步骤，你可以成功在本地部署DeepSeek，并使用Chatbox网页端进行交互。无论是命令行还是网页端，Ollama和DeepSeek都能提供强大的AI模型支持，帮助你完成各种任务。使用Chatbox作为前端应用，可以使与模型的交互更加直观和友好。</p>
-<p>希望这篇部署分享对你有所帮助，祝你在使用DeepSeek时能够获得愉快的体验！</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">plugins &#123;</span><br><span class="line">    id <span class="string">&#x27;java-library&#x27;</span></span><br><span class="line">    id <span class="string">&#x27;jacoco&#x27;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">dependencies &#123;</span><br><span class="line">    testImplementation <span class="string">&#x27;org.junit.jupiter:junit-jupiter-api:5.10.0&#x27;</span></span><br><span class="line">    testRuntimeOnly <span class="string">&#x27;org.junit.jupiter:junit-jupiter-engine:5.10.0&#x27;</span></span><br><span class="line">    testImplementation <span class="string">&#x27;org.mockito:mockito-core:5.10.0&#x27;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="✅-对静态依赖使用-Proxy-技术隔离"><a href="#✅-对静态依赖使用-Proxy-技术隔离" class="headerlink" title="✅ 对静态依赖使用 Proxy 技术隔离"></a>✅ 对静态依赖使用 Proxy 技术隔离</h2><p>例如 <code>DbConfigProvider.getAppDbConfig(...)</code> 这类静态方法无法直接被 mock。我们通过引入 <code>DbConnManagerProxy</code> 类，将原始逻辑包装，并注入 mock 结果，以达到“替身测试”的目的。这种方式兼顾不修改生产代码又能可测的平衡。</p>
+<h2 id="✅-Mock-掉数据库相关依赖"><a href="#✅-Mock-掉数据库相关依赖" class="headerlink" title="✅ Mock 掉数据库相关依赖"></a>✅ Mock 掉数据库相关依赖</h2><p>我们通过 Mockito 模拟 <code>Connection</code>、<code>DataSource</code>、<code>DbConfig</code> 等对象，避免测试中实际连数据库，同时可以验证连接是否被正确获取、是否按期望关闭。</p>
+<h2 id="✅-集成-JaCoCo-生成覆盖率报告"><a href="#✅-集成-JaCoCo-生成覆盖率报告" class="headerlink" title="✅ 集成 JaCoCo 生成覆盖率报告"></a>✅ 集成 JaCoCo 生成覆盖率报告</h2><p>我们使用 Gradle 的 <code>jacoco</code> 插件自动生成测试覆盖率报告：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">jacocoTestReport &#123;</span><br><span class="line">    dependsOn test</span><br><span class="line">    reports &#123;</span><br><span class="line">        html.required.set(<span class="literal">true</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行 <code>./gradlew test jacocoTestReport</code> 后，打开：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">build/reports/jacoco/test/html/index.html</span><br></pre></td></tr></table></figure>
+
+<p>即可看到每个类、每个方法的覆盖率信息。<br><img src="/blog/./images/javelin-unit-testing/jacoco.png" alt="jacoco"></p>
+<p>JaCoCo 还能输出 XML 报告供 SonarQube 或 GitHub Actions 使用，后续我们也将集成 CI 中的覆盖率检查。</p>
+<hr>
+<h2 id="实践案例：测试-DbContext"><a href="#实践案例：测试-DbContext" class="headerlink" title="实践案例：测试 DbContext"></a>实践案例：测试 DbContext</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">void</span> <span class="title function_">testClose_shouldCloseConnection</span><span class="params">()</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">    <span class="type">Connection</span> <span class="variable">mockConnection</span> <span class="operator">=</span> mock(Connection.class);</span><br><span class="line">    <span class="type">DataSource</span> <span class="variable">mockDataSource</span> <span class="operator">=</span> mock(DataSource.class);</span><br><span class="line">    <span class="keyword">when</span>(mockDataSource.getConnection()).thenReturn(mockConnection);</span><br><span class="line"></span><br><span class="line">    <span class="type">DbContext</span> <span class="variable">dbContext</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">DbContext</span>(mockDataSource);</span><br><span class="line">    dbContext.openConnection();</span><br><span class="line">    dbContext.close();</span><br><span class="line"></span><br><span class="line">    verify(mockConnection).close();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>该测试用例验证 <code>DbContext</code> 是否在 <code>.close()</code> 时能如期关闭连接。</p>
+<p>你也可以进一步测试连接未初始化时的行为，或反复打开关闭是否存在连接泄露风险。</p>
+<p>我们还可以测试 <code>.getConnection()</code> 是否懒加载、是否缓存连接、是否线程安全等高级特性。</p>
+<hr>
+<h1 id="进一步的测试实践"><a href="#进一步的测试实践" class="headerlink" title="进一步的测试实践"></a>进一步的测试实践</h1><p>Javelin 中的测试不仅仅覆盖正向路径，还包括：</p>
+<ul>
+<li><strong>异常分支</strong>：例如数据库连接失败时是否能抛出自定义异常？</li>
+<li><strong>缓存逻辑</strong>：配置缓存是否命中？配置变更是否生效？</li>
+<li><strong>事务机制</strong>：未来加入事务后，我们将通过 ThreadLocal 控制多操作是否共享连接，并断言事务是否提交&#x2F;回滚。</li>
+<li><strong>映射行为</strong>：<code>BeanPropertyRowMapper</code> 是否能正确映射字段与 JavaBean 属性？是否支持 null 值？字段名大小写不一致是否能处理？</li>
+<li><strong>链式查询 DSL</strong>：测试 where&#x2F;andWhere&#x2F;orderBy 等语法是否能正确拼接 SQL，是否支持参数绑定和分页功能。</li>
+</ul>
+<hr>
+<h1 id="拓展：TDD"><a href="#拓展：TDD" class="headerlink" title="拓展：TDD"></a>拓展：TDD</h1><p>在实践中我们发现，要写出一个高质量、边界明确、断言清晰、可维护的测试用例，往往比直接实现某个功能要花费更多精力。例如，为了验证一个 SQL 构造器能正确拼接分页语句，我们要写出 mock 数据源、预期参数、模拟连接返回、构造 ResultSet 的行为等大量前置条件。这也正是许多团队虽然强调测试，但却往往难以落地的原因之一。</p>
+<p>TDD（Test-Driven Development，测试驱动开发）是一种以测试为设计导向的软件开发方法论。它的核心思想是：<strong>先写测试，再写实现，最后重构</strong>。</p>
+<p>TDD 并不仅仅是一种测试方式，它更是一种编程思维。提前设计好测试的各种场景，再进行真是业务代码的实现。让我们在编写代码时，更关注如何让测试通过，而不是在实现功能后考虑如何测试。TDD 给我们的回报是长远的：它让我们思考“我真正要实现的是什么”，让代码变得更可用、更易测、更稳定。虽然覆盖率数字本身并不能代表一切，但它背后的那份“可验证的信心”，才是 TDD 真正想传达的价值。</p>
+<p><img src="/blog/./images/javelin-unit-testing/tdd.jpg" alt="TDD"></p>
+<p>在 Javelin 的开发过程中，我们逐渐尝试引入 TDD 的流程：</p>
+<ol>
+<li><p><strong>写一个失败的测试</strong>：思考我们想要实现的功能是什么，先写一个对应的测试用例（它一定会失败，因为实现还不存在）。</p>
+</li>
+<li><p><strong>快速实现使测试通过</strong>：只实现刚好能让测试通过的最小逻辑。</p>
+</li>
+<li><p><strong>重构代码结构</strong>：在不改变测试结果的前提下重构代码，让其更简洁、更可维护。</p>
+</li>
+</ol>
+<p>通过 TDD，我们获得了几个关键收益：</p>
+<ul>
+<li>代码设计更聚焦目标；</li>
+<li>测试用例成为开发文档；</li>
+<li>实现不偏离预期，测试成为开发的“驱动轮”。</li>
+</ul>
+<p>例如在实现 <code>CPQuery.toList()</code> 方法时，我们先写出期望的查询行为和数据结构，然后再去补上内部的 SQL 执行和 Bean 映射，整个开发过程始终围绕“测试先行”展开。</p>
+<p>虽然 TDD 并不适用于所有模块（例如复杂初始化流程或与外部服务强耦合的部分），但在 Javelin 中，TDD 非常适合用来实现数据访问、实体映射、查询构造器等核心功能。</p>
+<hr>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>在构建微型框架的过程中，Javelin 没有忽视测试体系的建立。通过合理使用 Mock 技术、代理替换、覆盖率报告、JDK Proxy 等机制，我们在功能演进的同时，也保证了框架的稳定性和可维护性。</p>
+<p>我们不仅要把功能“做出来”，更要保证它“跑得稳、用得住”。测试不是累赘，而是一种安全感的来源。</p>
+<p>单元测试就像是写代码的人留给“未来自己”的礼物，也像是给使用者的承诺：我测试过，我负责。</p>
+<p>我们将在后续继续测试更多组件，比如分页查询、事务回滚、实体自动识别、异常处理等，完善每一个关键模块，持续打磨出一个优雅、可测、可维护的 Java 微型框架。</p>
+<p>静下来，不只是为了放慢脚步，更是为了走得更远。</p>
 
     </article>
     <!-- license -->
     
         <div class="license-wrapper">
             <p>原文作者：<a href="https://itprohub.github.io/blog">乐予吕</a>
-            <p>原文链接：<a href="https://itprohub.github.io/blog/2025/02/07/deepseek-1/">https://itprohub.github.io/blog/2025/02/07/deepseek-1/</a>
-            <p>发表日期：<a href="https://itprohub.github.io/blog/2025/02/07/deepseek-1/">February 7th 2025, 9:33:25 am</a>
-            <p>更新日期：<a href="https://itprohub.github.io/blog/2025/02/07/deepseek-1/">May 27th 2025, 9:13:12 am</a>
+            <p>原文链接：<a href="https://itprohub.github.io/blog/2025/05/23/javelin-unit-testing/">https://itprohub.github.io/blog/2025/05/23/javelin-unit-testing/</a>
+            <p>发表日期：<a href="https://itprohub.github.io/blog/2025/05/23/javelin-unit-testing/">May 23rd 2025, 4:14:04 pm</a>
+            <p>更新日期：<a href="https://itprohub.github.io/blog/2025/05/23/javelin-unit-testing/">May 27th 2025, 9:13:12 am</a>
             <p>版权声明：本文采用<a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
         </div>
     
@@ -565,16 +601,16 @@
         <li class="next">
             
                 <div class="nextSlogan">Next Post</div>
-                <a href="/blog/2025/02/12/deepseek-vscode/" title="Cursor平替：把 DeepSeek 接入 VS Code">
-                    <div class="nextTitle">Cursor平替：把 DeepSeek 接入 VS Code</div>
+                <a href="/blog/2025/05/27/hello-world/" title="欢迎来到 ITProHub！">
+                    <div class="nextTitle">欢迎来到 ITProHub！</div>
                 </a>
             
         </li>
         <li class="previous">
             
                 <div class="prevSlogan">Previous Post</div>
-                <a href="/blog/2025/02/05/docker-log/" title="减少 Docker 日志大小：实用的日志管理指南">
-                    <div class="prevTitle">减少 Docker 日志大小：实用的日志管理指南</div>
+                <a href="/blog/2025/05/12/javelin-dal/" title="手写一个微型 Spring 框架（四）：数据访问层设计实战">
+                    <div class="prevTitle">手写一个微型 Spring 框架（四）：数据访问层设计实战</div>
                 </a>
             
         </li>
@@ -727,7 +763,7 @@
                 <div class="toc-catalog">
                     <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
                 </div>
-                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9C%AC%E5%9C%B0%E9%83%A8%E7%BD%B2DeepSeek"><span class="toc-number">1.</span> <span class="toc-text">本地部署DeepSeek</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%8B%E8%BD%BD%E5%B9%B6%E5%AE%89%E8%A3%85Ollama"><span class="toc-number">1.1.</span> <span class="toc-text">下载并安装Ollama</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%89%E6%8B%A9DeepSeek%E6%A8%A1%E5%9E%8B"><span class="toc-number">1.2.</span> <span class="toc-text">选择DeepSeek模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%90%E8%A1%8C%E5%91%BD%E4%BB%A4"><span class="toc-number">1.3.</span> <span class="toc-text">运行命令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%88%E6%9E%9C%E6%B5%8B%E8%AF%95"><span class="toc-number">1.4.</span> <span class="toc-text">效果测试</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8Chatbox%E8%BF%9B%E8%A1%8C%E7%BD%91%E9%A1%B5%E7%AB%AF%E8%AE%BF%E9%97%AE"><span class="toc-number">2.</span> <span class="toc-text">使用Chatbox进行网页端访问</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F%E9%85%8D%E7%BD%AE"><span class="toc-number">2.1.</span> <span class="toc-text">环境变量配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%85%8D%E7%BD%AEChatbox"><span class="toc-number">2.2.</span> <span class="toc-text">配置Chatbox</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">3.</span> <span class="toc-text">总结</span></a></li></ol>
+                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%81%9A%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%EF%BC%9F"><span class="toc-number">1.</span> <span class="toc-text">为什么要做单元测试？</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%93%8C-%E5%8E%9F%E5%9B%A0-1%EF%BC%9A%E9%98%B2%E6%AD%A2%E5%9B%9E%E5%BD%92"><span class="toc-number">1.1.</span> <span class="toc-text">📌 原因 1：防止回归</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%93%8C-%E5%8E%9F%E5%9B%A0-2%EF%BC%9A%E7%A1%AE%E4%BF%9D%E9%80%BB%E8%BE%91%E4%B8%80%E8%87%B4%E6%80%A7"><span class="toc-number">1.2.</span> <span class="toc-text">📌 原因 2：确保逻辑一致性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%93%8C-%E5%8E%9F%E5%9B%A0-3%EF%BC%9A%E4%BF%83%E8%BF%9B%E6%9E%B6%E6%9E%84%E8%A7%A3%E8%80%A6"><span class="toc-number">1.3.</span> <span class="toc-text">📌 原因 3：促进架构解耦</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%93%8C-%E5%8E%9F%E5%9B%A0-4%EF%BC%9A%E6%96%87%E6%A1%A3%E5%8D%B3%E6%B5%8B%E8%AF%95"><span class="toc-number">1.4.</span> <span class="toc-text">📌 原因 4：文档即测试</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%93%8C-%E5%8E%9F%E5%9B%A0-5%EF%BC%9A%E6%8F%90%E9%AB%98%E5%BC%80%E5%8F%91%E4%BF%A1%E5%BF%83%E5%92%8C%E6%95%88%E7%8E%87"><span class="toc-number">1.5.</span> <span class="toc-text">📌 原因 5：提高开发信心和效率</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E5%8E%9F%E5%88%99%E5%92%8C%E8%A7%84%E8%8C%83"><span class="toc-number">2.</span> <span class="toc-text">基本原则和规范</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E2%9C%85-%E5%8E%9F%E5%88%99-1%EF%BC%9A%E5%BF%AB%E9%80%9F%E6%89%A7%E8%A1%8C"><span class="toc-number">2.1.</span> <span class="toc-text">✅ 原则 1：快速执行</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E2%9C%85-%E5%8E%9F%E5%88%99-2%EF%BC%9A%E5%AE%8C%E5%85%A8%E8%87%AA%E5%8A%A8%E5%8C%96"><span class="toc-number">2.2.</span> <span class="toc-text">✅ 原则 2：完全自动化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E2%9C%85-%E5%8E%9F%E5%88%99-3%EF%BC%9A%E5%8F%AA%E6%B5%8B%E8%AF%95%E5%8D%95%E4%B8%80%E5%8A%9F%E8%83%BD"><span class="toc-number">2.3.</span> <span class="toc-text">✅ 原则 3：只测试单一功能</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E2%9C%85-%E5%8E%9F%E5%88%99-4%EF%BC%9A%E9%81%BF%E5%85%8D%E6%B5%8B%E8%AF%95%E9%97%B4%E4%BA%92%E7%9B%B8%E4%BE%9D%E8%B5%96"><span class="toc-number">2.4.</span> <span class="toc-text">✅ 原则 4：避免测试间互相依赖</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E2%9C%85-%E5%8E%9F%E5%88%99-5%EF%BC%9A%E6%96%AD%E8%A8%80%E6%B8%85%E6%99%B0%E6%98%8E%E7%A1%AE"><span class="toc-number">2.5.</span> <span class="toc-text">✅ 原则 5：断言清晰明确</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E2%9C%85-%E5%8E%9F%E5%88%99-6%EF%BC%9AMock-%E5%A4%96%E9%83%A8%E4%BE%9D%E8%B5%96"><span class="toc-number">2.6.</span> <span class="toc-text">✅ 原则 6：Mock 外部依赖</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E2%9C%85-%E5%8E%9F%E5%88%99-7%EF%BC%9A%E4%BF%9D%E6%8C%81%E5%8F%AF%E8%AF%BB%E6%80%A7"><span class="toc-number">2.7.</span> <span class="toc-text">✅ 原则 7：保持可读性</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E5%9C%A8-Javelin-%E4%B8%AD%E5%81%9A%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%EF%BC%9F"><span class="toc-number">3.</span> <span class="toc-text">如何在 Javelin 中做单元测试？</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E2%9C%85-%E4%BD%BF%E7%94%A8-JUnit-5-Mockito"><span class="toc-number">3.1.</span> <span class="toc-text">✅ 使用 JUnit 5 + Mockito</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E2%9C%85-%E5%AF%B9%E9%9D%99%E6%80%81%E4%BE%9D%E8%B5%96%E4%BD%BF%E7%94%A8-Proxy-%E6%8A%80%E6%9C%AF%E9%9A%94%E7%A6%BB"><span class="toc-number">3.2.</span> <span class="toc-text">✅ 对静态依赖使用 Proxy 技术隔离</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E2%9C%85-Mock-%E6%8E%89%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9B%B8%E5%85%B3%E4%BE%9D%E8%B5%96"><span class="toc-number">3.3.</span> <span class="toc-text">✅ Mock 掉数据库相关依赖</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E2%9C%85-%E9%9B%86%E6%88%90-JaCoCo-%E7%94%9F%E6%88%90%E8%A6%86%E7%9B%96%E7%8E%87%E6%8A%A5%E5%91%8A"><span class="toc-number">3.4.</span> <span class="toc-text">✅ 集成 JaCoCo 生成覆盖率报告</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B5%E6%A1%88%E4%BE%8B%EF%BC%9A%E6%B5%8B%E8%AF%95-DbContext"><span class="toc-number">3.5.</span> <span class="toc-text">实践案例：测试 DbContext</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%BF%9B%E4%B8%80%E6%AD%A5%E7%9A%84%E6%B5%8B%E8%AF%95%E5%AE%9E%E8%B7%B5"><span class="toc-number">4.</span> <span class="toc-text">进一步的测试实践</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%8B%93%E5%B1%95%EF%BC%9ATDD"><span class="toc-number">5.</span> <span class="toc-text">拓展：TDD</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">6.</span> <span class="toc-text">总结</span></a></li></ol>
             </div>
         
         <!-- sidebar -->
