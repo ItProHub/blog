@@ -261,6 +261,8 @@ function isPending(status) {
 
 我们可以根据以下几个问题，快速判断使用哪种函数写法更合适：
 
+![流程](./images/js-arrow-function/choose.png)
+
 1. **是否需要使用 `yield`？** → 用 `function*`
 2. **是否使用 `this`？** → 用普通函数（method or function expression）
 3. **是否希望提前调用该函数？** → 用函数声明（`function name() {}`）
