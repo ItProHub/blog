@@ -19,25 +19,24 @@
         <meta name="keywords" content="hexo,ITProHub,hexo-theme,hexo-blog">
     
     <meta name="description" content="">
-    <meta name="description" content="🌐 欢迎来到 ITProHub！🚀 你的信息技术专业中心 🚀在 ITProHub，我们致力于成为信息技术领域的中心枢纽，为专业人士、学习者和技术爱好者提供丰富的资源、技能培训和社区交流平台。 🔍 ITPro: 专业的信息技术支持无论你是正在寻找IT职业发展的道路，还是想提升你的专业技能，ITProHub都为你提供了全面的资源和指导。我们关注行业趋势，分享最新的技术知识，助你成为更专业的I">
+    <meta name="description" content="在 JavaScript 中，我们有多种方式来定义函数。最常见的两种就是普通函数（使用 function 关键字）和箭头函数（&#x3D;&gt;）。虽然它们看起来有些相似，但实际上它们之间有不少微妙的区别，尤其是在 this、new、yield 等语义上的差异。如果你也常常纠结“我该用哪种写法更合适？”，那本文或许能帮你厘清思路。  三种创建函数的方式1. 函数声明（Function Declaratio">
 <meta property="og:type" content="article">
-<meta property="og:title" content="欢迎来到 ITProHub！">
-<meta property="og:url" content="https://itprohub.github.io/blog/2025/08/01/hello-world/index.html">
+<meta property="og:title" content="别再乱用箭头函数了！JavaScript 三种函数写法的终极指南">
+<meta property="og:url" content="https://itprohub.github.io/blog/2025/08/06/js-arrow-function/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="🌐 欢迎来到 ITProHub！🚀 你的信息技术专业中心 🚀在 ITProHub，我们致力于成为信息技术领域的中心枢纽，为专业人士、学习者和技术爱好者提供丰富的资源、技能培训和社区交流平台。 🔍 ITPro: 专业的信息技术支持无论你是正在寻找IT职业发展的道路，还是想提升你的专业技能，ITProHub都为你提供了全面的资源和指导。我们关注行业趋势，分享最新的技术知识，助你成为更专业的I">
+<meta property="og:description" content="在 JavaScript 中，我们有多种方式来定义函数。最常见的两种就是普通函数（使用 function 关键字）和箭头函数（&#x3D;&gt;）。虽然它们看起来有些相似，但实际上它们之间有不少微妙的区别，尤其是在 this、new、yield 等语义上的差异。如果你也常常纠结“我该用哪种写法更合适？”，那本文或许能帮你厘清思路。  三种创建函数的方式1. 函数声明（Function Declaratio">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://itprohub.github.io/blog/images/hello-bg.png">
-<meta property="og:image" content="https://myom-dev.oss-cn-hangzhou.aliyuncs.com/WechatPublicPlatformQrCode.jpg">
-<meta property="article:published_time" content="2025-08-01T03:27:15.634Z">
-<meta property="article:modified_time" content="2025-08-01T03:27:15.634Z">
+<meta property="og:image" content="https://itprohub.github.io/blog/images/js-arrow-function/stack.png">
+<meta property="article:published_time" content="2025-08-06T15:36:41.000Z">
+<meta property="article:modified_time" content="2025-08-08T02:33:56.645Z">
 <meta property="article:author" content="乐予吕">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://itprohub.github.io/blog/images/hello-bg.png">
+<meta name="twitter:image" content="https://itprohub.github.io/blog/images/js-arrow-function/stack.png">
     <meta http-equiv="Cache-control" content="no-cache">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <link rel="icon" href="/blog/assets/favicon.ico">
     
-    <title>欢迎来到 ITProHub！ · 个人技术日常分享</title>
+    <title>别再乱用箭头函数了！JavaScript 三种函数写法的终极指南 · 个人技术日常分享</title>
     <!-- /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
 /* This file is meant as a standalone workflow for
 - testing support for link[rel=preload]
@@ -264,7 +263,7 @@
                 <a href="/blog/">个人技术日常分享</a>
             </div>
             <div class="post-title header-element">
-                <a href="#" class="post-name">欢迎来到 ITProHub！</a>
+                <a href="#" class="post-name">别再乱用箭头函数了！JavaScript 三种函数写法的终极指南</a>
             </div>
         </div>
     
@@ -310,7 +309,7 @@
         <h1 class="intro-title">
             <!-- 主页  -->
             
-                欢迎来到 ITProHub！
+                别再乱用箭头函数了！JavaScript 三种函数写法的终极指南
             <!-- 404 -->
             
         </h1>
@@ -338,7 +337,7 @@
                 <div class="post-intro-meta">
                     <!-- 撰写日期 -->
                     <span class="iconfont-archer post-intro-calander">&#xe676;</span>
-                    <span class="post-intro-time">2025/08/01</span>
+                    <span class="post-intro-time">2025/08/06</span>
                     <!-- busuanzi -->
                     
                         <span id="busuanzi_container_page_pv" class="busuanzi-pv">
@@ -493,32 +492,121 @@
             <div class="container container-unloaded">
                 <main class="main post-page">
     <article class="article-entry">
-        <p><img src="/blog/images/hello-bg.png" alt="background"></p>
-<h1 id="🌐-欢迎来到-ITProHub！"><a href="#🌐-欢迎来到-ITProHub！" class="headerlink" title="🌐 欢迎来到 ITProHub！"></a>🌐 欢迎来到 ITProHub！</h1><h2 id="🚀-你的信息技术专业中心-🚀"><a href="#🚀-你的信息技术专业中心-🚀" class="headerlink" title="🚀 你的信息技术专业中心 🚀"></a>🚀 你的信息技术专业中心 🚀</h2><p>在 ITProHub，我们致力于成为信息技术领域的中心枢纽，为专业人士、学习者和技术爱好者提供丰富的资源、技能培训和社区交流平台。</p>
-<h3 id="🔍-ITPro-专业的信息技术支持"><a href="#🔍-ITPro-专业的信息技术支持" class="headerlink" title="🔍 ITPro: 专业的信息技术支持"></a>🔍 ITPro: 专业的信息技术支持</h3><p>无论你是正在寻找IT职业发展的道路，还是想提升你的专业技能，ITProHub都为你提供了全面的资源和指导。我们关注行业趋势，分享最新的技术知识，助你成为更专业的IT从业者。</p>
-<h3 id="💼-Hub-中心化的资源和社区"><a href="#💼-Hub-中心化的资源和社区" class="headerlink" title="💼 Hub: 中心化的资源和社区"></a>💼 Hub: 中心化的资源和社区</h3><p>ITProHub是一个汇聚各种IT资源的中心，包括职业指导、技术文章、培训课程等。在我们的社区中，你可以与其他IT专业人士建立联系，分享经验，共同成长。</p>
-<h4 id="✨-我们的特色服务和内容包括："><a href="#✨-我们的特色服务和内容包括：" class="headerlink" title="✨ 我们的特色服务和内容包括："></a>✨ 我们的特色服务和内容包括：</h4><p>🎓 专业的IT技能培训课程</p>
-<p>📰 行业趋势和技术文章分享</p>
-<p>🚀 职业发展指导和招聘信息</p>
-<p>💬 与专业人士互动的社交平台</p>
-<p>👥 加入我们的社区，你将获得：</p>
-<p>与同行专业人士的互动和交流机会</p>
-<p>获取实用的职业发展建议和技术支持</p>
-<p>参与丰富多彩的线上和线下活动</p>
-<p>无论你是刚刚踏入IT领域，还是寻求更高级别的技术挑战，ITProHub都是你信息技术之旅的理想伴侣。</p>
-<h2 id="🌐-探索无限可能，加入-ITProHub-！🌐"><a href="#🌐-探索无限可能，加入-ITProHub-！🌐" class="headerlink" title="🌐 探索无限可能，加入 ITProHub ！🌐"></a>🌐 探索无限可能，加入 ITProHub ！🌐</h2><p>公众号将不定期更新，欢迎订阅！</p>
-<p>#ITProHub #信息技术 #专业发展 #社区交流</p>
-<p>更多一手讯息，可关注公众号：<a target="_blank" rel="noopener" href="https://myom-dev.oss-cn-hangzhou.aliyuncs.com/WechatPublicPlatformQrCode.jpg">ITProHub</a></p>
-<p><img src="https://myom-dev.oss-cn-hangzhou.aliyuncs.com/WechatPublicPlatformQrCode.jpg" alt="ITProHub"></p>
+        <p>在 JavaScript 中，我们有多种方式来定义函数。最常见的两种就是普通函数（使用 <code>function</code> 关键字）和箭头函数（<code>=&gt;</code>）。虽然它们看起来有些相似，但实际上它们之间有不少微妙的区别，尤其是在 <code>this</code>、<code>new</code>、<code>yield</code> 等语义上的差异。如果你也常常纠结“我该用哪种写法更合适？”，那本文或许能帮你厘清思路。</p>
+<hr>
+<h1 id="三种创建函数的方式"><a href="#三种创建函数的方式" class="headerlink" title="三种创建函数的方式"></a>三种创建函数的方式</h1><h2 id="1-函数声明（Function-Declaration）"><a href="#1-函数声明（Function-Declaration）" class="headerlink" title="1. 函数声明（Function Declaration）"></a>1. 函数声明（Function Declaration）</h2><p>最传统的方式是使用 <code>function</code> 关键字直接声明函数：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">helloWorld</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;Hello, world!&#x27;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这种方式是<strong>函数声明语句</strong>，在作用域中具有名称绑定，并且最重要的一点是，它会被<strong>提升（hoisting）</strong>到当前作用域的顶部。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;script type=<span class="string">&quot;text/javascript&quot;</span>&gt;</span><br><span class="line"><span class="title function_">sayHello</span>(); <span class="comment">// ✅ 可以提前调用，输出：Hello, world!</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">sayHello</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;Hello, world!&#x27;</span>);</span><br><span class="line">&#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="🔍-为什么这样不会报错？"><a href="#🔍-为什么这样不会报错？" class="headerlink" title="🔍 为什么这样不会报错？"></a>🔍 为什么这样不会报错？</h3><p>这是因为 函数声明 会在代码运行前被 JavaScript 引擎“提升”到当前作用域的顶部。也就是说，在你执行 sayHello() 的时候，这个函数其实已经“存在”了。</p>
+<hr>
+<h2 id="2-函数表达式（Function-Expression）"><a href="#2-函数表达式（Function-Expression）" class="headerlink" title="2. 函数表达式（Function Expression）"></a>2. 函数表达式（Function Expression）</h2><p>你也可以将匿名函数赋值给变量：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> sayHi = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;Hi!&#x27;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">sayHi</span>(); <span class="comment">// ✅ 可以调用，输出：Hi!</span></span><br></pre></td></tr></table></figure>
+
+<p>这种写法称为函数表达式，它不像声明那样会被提升，必须在使用前先定义。</p>
+<h3 id="1️⃣-函数声明会被完整提升，而函数表达式不会"><a href="#1️⃣-函数声明会被完整提升，而函数表达式不会" class="headerlink" title="1️⃣ 函数声明会被完整提升，而函数表达式不会"></a>1️⃣ 函数声明会被完整提升，而函数表达式不会</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">sayHi</span>(); <span class="comment">// ❌ TypeError: sayHi is not a function</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> sayHi = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;Hi!&#x27;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>虽然变量 sayHi 被提升了，但它的值（即函数体）并没有被赋值。在 sayHi() 执行时，变量的值是 undefined，调用它会报错。</p>
+<h3 id="2️⃣-匿名函数表达式在调试堆栈中可能丢失函数名"><a href="#2️⃣-匿名函数表达式在调试堆栈中可能丢失函数名" class="headerlink" title="2️⃣ 匿名函数表达式在调试堆栈中可能丢失函数名"></a>2️⃣ 匿名函数表达式在调试堆栈中可能丢失函数名</h3><p>很多时候我们写函数表达式时是匿名的，比如：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> handler = <span class="keyword">function</span>(<span class="params">a, b</span>) &#123;</span><br><span class="line">  <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">Error</span>(<span class="string">&#x27;Oops!&#x27;</span>);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>虽然你赋值给了变量 <code>handler</code>，但 JavaScript 引擎不一定能在调试堆栈中正确还原这个名称，特别是在打包压缩或 V8 优化场景中。</p>
+<p>有趣的是，我们还可以给函数表达式命名：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> throwError = <span class="keyword">function</span> <span class="title function_">error</span>(<span class="params">predicate, arr</span>) &#123;</span><br><span class="line">  <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">Error</span>(<span class="string">&#x27;Oops&#x27;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>虽然我们无法直接通过 <code>error()</code> 调用它，但如果出错，错误堆栈中会显示这个名称，有利于调试。</p>
+<p><img src="/blog/./images/js-arrow-function/stack.png" alt="堆栈"></p>
+<p><strong>注意：</strong> 使用 <code>let</code> 或 <code>const</code> 声明函数表达式时，甚至连变量提升都不会发生，会抛出 <code>ReferenceError</code>：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">sayHello</span>(); <span class="comment">// ❌ ReferenceError: Cannot access &#x27;sayHello&#x27; before initialization</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> sayHello = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;Hello&#x27;</span>);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="3-箭头函数（Arrow-Function）"><a href="#3-箭头函数（Arrow-Function）" class="headerlink" title="3. 箭头函数（Arrow Function）"></a>3. 箭头函数（Arrow Function）</h2><p>箭头函数是 ES6 引入的语法，语法更短，也更现代：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">double</span>(<span class="number">2</span>); <span class="comment">// ❌ TypeError: greet is not a function</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">double</span> = (<span class="params">x</span>) =&gt; &#123;</span><br><span class="line">  <span class="keyword">return</span> x * <span class="number">2</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>如果函数体只有一行返回语句，还可以进一步简化：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="title function_">double</span> = (<span class="params">x</span>) =&gt; x * <span class="number">2</span>;</span><br></pre></td></tr></table></figure>
+
+<p>如果参数只有一个，连小括号都可以省略：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="title function_">double</span> = x =&gt; x * <span class="number">2</span>;</span><br></pre></td></tr></table></figure>
+
+<p>但别被这些简洁迷惑了，箭头函数背后隐藏着一些重要差异。</p>
+<hr>
+<h1 id="箭头函数-≠-普通函数"><a href="#箭头函数-≠-普通函数" class="headerlink" title="箭头函数 ≠ 普通函数"></a>箭头函数 ≠ 普通函数</h1><h2 id="1-箭头函数没有自己的-this"><a href="#1-箭头函数没有自己的-this" class="headerlink" title="1. 箭头函数没有自己的 this"></a>1. 箭头函数没有自己的 this</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">getName</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="variable language_">this</span>.<span class="property">userName</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">getNameArrow</span> = (<span class="params"></span>) =&gt; <span class="variable language_">this</span>.<span class="property">userName</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title class_">User</span> = &#123;</span><br><span class="line">  <span class="attr">userName</span>: <span class="string">&#x27;Tim Cook&#x27;</span>,</span><br><span class="line">  getName,</span><br><span class="line">  getNameArrow</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">User</span>.<span class="title function_">getName</span>()); <span class="comment">// ✅ 正常输出 Tim Cook</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">User</span>.<span class="title function_">getNameArrow</span>()); <span class="comment">// ❌ undefined</span></span><br></pre></td></tr></table></figure>
+
+<p>箭头函数会捕获<strong>定义时</strong>的 <code>this</code> 值，而不是调用时的。这也是为什么它不适合用作对象的方法或类的原型方法。</p>
+<hr>
+<h2 id="2-箭头函数不能用作构造函数"><a href="#2-箭头函数不能用作构造函数" class="headerlink" title="2. 箭头函数不能用作构造函数"></a>2. 箭头函数不能用作构造函数</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="title function_">User</span> = (<span class="params">userName, age</span>) =&gt; &#123;</span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">userName</span> = userName;</span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">age</span> = age;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> myUser = <span class="keyword">new</span> <span class="title class_">User</span>(<span class="string">&#x27;Tim Cook&#x27;</span>, <span class="number">55</span>); <span class="comment">// ❌ TypeError: User is not a constructor</span></span><br></pre></td></tr></table></figure>
+
+<p>你不能用 <code>new</code> 调用箭头函数，它们没有 <code>prototype</code>，也没有 <code>new.target</code>。</p>
+<hr>
+<h2 id="3-箭头函数不能使用-yield"><a href="#3-箭头函数不能使用-yield" class="headerlink" title="3. 箭头函数不能使用 yield"></a>3. 箭头函数不能使用 yield</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ❌ 不合法，不能在箭头函数里使用 yield</span></span><br><span class="line"><span class="keyword">function</span>* <span class="title function_">numberGen</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> <span class="title function_">show</span> = (<span class="params"></span>) =&gt; &#123;</span><br><span class="line">    <span class="keyword">yield</span> <span class="number">1</span>; <span class="comment">// SyntaxError</span></span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>箭头函数无法作为生成器使用，不能使用 <code>yield</code>，也无法被声明为 <code>function*</code>。</p>
+<hr>
+<h1 id="应该何时使用箭头函数？"><a href="#应该何时使用箭头函数？" class="headerlink" title="应该何时使用箭头函数？"></a>应该何时使用箭头函数？</h1><p>简单总结：</p>
+<table>
+<thead>
+<tr>
+<th>使用场景</th>
+<th>推荐写法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>不使用 this &#x2F; yield</td>
+<td>✅ 箭头函数更简洁</td>
+</tr>
+<tr>
+<td>需要 this 正确指向</td>
+<td>✅ 使用普通函数</td>
+</tr>
+<tr>
+<td>函数需要提前调用（如顶层函数）</td>
+<td>✅ 函数声明更合适</td>
+</tr>
+<tr>
+<td>用作构造函数</td>
+<td>✅ 使用普通函数或 class</td>
+</tr>
+<tr>
+<td>编写 generator 函数</td>
+<td>✅ 必须使用 function*</td>
+</tr>
+</tbody></table>
+<p>比如我们可以这样使用箭头函数作为回调：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[<span class="string">&#x27;a&#x27;</span>, <span class="string">&#x27;b&#x27;</span>, <span class="string">&#x27;c&#x27;</span>].<span class="title function_">map</span>(<span class="function"><span class="params">x</span> =&gt;</span> x.<span class="title function_">toUpperCase</span>());</span><br></pre></td></tr></table></figure>
+
+<p>或者创建一个通用的日志方法：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="title function_">log</span> = (<span class="params">obj</span>) =&gt; <span class="variable language_">console</span>.<span class="title function_">log</span>(obj.<span class="title function_">toLogString</span>());</span><br></pre></td></tr></table></figure>
+
+<p>只要不涉及 <code>this</code>，箭头函数通常都是更简洁的选择。</p>
+<hr>
+<h1 id="函数声明带来的-hoisting-优势"><a href="#函数声明带来的-hoisting-优势" class="headerlink" title="函数声明带来的 hoisting 优势"></a>函数声明带来的 hoisting 优势</h1><p>有时你可能希望把实现细节放在文件底部，而逻辑入口放在顶部，这时候函数声明的提升就很有用了：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> result = <span class="title function_">processOrder</span>(<span class="string">&#x27;pending&#x27;</span>);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(result); <span class="comment">// 输出：请尽快支付订单！</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// --- 下面是逻辑实现部分 ---</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">processOrder</span>(<span class="params">status</span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="title function_">isCancelled</span>(status)) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;订单已取消&#x27;</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (<span class="title function_">isPaid</span>(status)) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;感谢您的购买！&#x27;</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (<span class="title function_">isPending</span>(status)) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;请尽快支付订单！&#x27;</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="string">&#x27;未知状态&#x27;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">isCancelled</span>(<span class="params">status</span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> status === <span class="string">&#x27;cancelled&#x27;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">isPaid</span>(<span class="params">status</span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> status === <span class="string">&#x27;paid&#x27;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">isPending</span>(<span class="params">status</span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> status === <span class="string">&#x27;pending&#x27;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>这种结构让代码阅读起来更清晰：先看到“大意”，再了解“细节”。</p>
+<hr>
+<h1 id="总结：一张选择函数写法的流程图"><a href="#总结：一张选择函数写法的流程图" class="headerlink" title="总结：一张选择函数写法的流程图"></a>总结：一张选择函数写法的流程图</h1><p>我们可以根据以下几个问题，快速判断使用哪种函数写法更合适：</p>
+<ol>
+<li><strong>是否需要使用 <code>yield</code>？</strong> → 用 <code>function*</code></li>
+<li><strong>是否使用 <code>this</code>？</strong> → 用普通函数（method or function expression）</li>
+<li><strong>是否希望提前调用该函数？</strong> → 用函数声明（<code>function name() &#123;&#125;</code>）</li>
+<li><strong>其余情况？</strong> → 用箭头函数，代码更简洁</li>
+</ol>
+<p>当然，规范不应束缚创作，你完全可以根据团队风格、可读性或调试需要选择你喜欢的写法。但理解这些差异，可以让你写出更稳健、更清晰的 JavaScript 代码。</p>
+<hr>
+<h1 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h1><p>箭头函数不是 function 的替代品，而是一个补充。当你理解它们之间的本质差异后，就能更合理地在项目中权衡使用了。</p>
+<p>如果你有自己的选择标准，欢迎留言分享你的实践经验！</p>
 
     </article>
     <!-- license -->
     
         <div class="license-wrapper">
             <p>原文作者：<a href="https://itprohub.github.io/blog">乐予吕</a>
-            <p>原文链接：<a href="https://itprohub.github.io/blog/2025/08/01/hello-world/">https://itprohub.github.io/blog/2025/08/01/hello-world/</a>
-            <p>发表日期：<a href="https://itprohub.github.io/blog/2025/08/01/hello-world/">August 1st 2025, 3:27:15 am</a>
-            <p>更新日期：<a href="https://itprohub.github.io/blog/2025/08/01/hello-world/">August 1st 2025, 3:27:15 am</a>
+            <p>原文链接：<a href="https://itprohub.github.io/blog/2025/08/06/js-arrow-function/">https://itprohub.github.io/blog/2025/08/06/js-arrow-function/</a>
+            <p>发表日期：<a href="https://itprohub.github.io/blog/2025/08/06/js-arrow-function/">August 6th 2025, 3:36:41 pm</a>
+            <p>更新日期：<a href="https://itprohub.github.io/blog/2025/08/06/js-arrow-function/">August 8th 2025, 2:33:56 am</a>
             <p>版权声明：本文采用<a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
         </div>
     
@@ -527,16 +615,16 @@
         <li class="next">
             
                 <div class="nextSlogan">Next Post</div>
-                <a href="/blog/2025/08/01/send-off-1/" title="离别，是为了更好的重逢 —— 送别老同事的一晚">
-                    <div class="nextTitle">离别，是为了更好的重逢 —— 送别老同事的一晚</div>
+                <a href="/blog/2025/08/08/hello-world/" title="欢迎来到 ITProHub！">
+                    <div class="nextTitle">欢迎来到 ITProHub！</div>
                 </a>
             
         </li>
         <li class="previous">
             
                 <div class="prevSlogan">Previous Post</div>
-                <a href="/blog/2025/06/20/promise/" title="Promise 深度解析：从原理到实战">
-                    <div class="prevTitle">Promise 深度解析：从原理到实战</div>
+                <a href="/blog/2025/08/01/send-off-1/" title="离别，是为了更好的重逢 —— 送别老同事的一晚">
+                    <div class="prevTitle">离别，是为了更好的重逢 —— 送别老同事的一晚</div>
                 </a>
             
         </li>
@@ -689,7 +777,7 @@
                 <div class="toc-catalog">
                     <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
                 </div>
-                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%F0%9F%8C%90-%E6%AC%A2%E8%BF%8E%E6%9D%A5%E5%88%B0-ITProHub%EF%BC%81"><span class="toc-number">1.</span> <span class="toc-text">🌐 欢迎来到 ITProHub！</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%9A%80-%E4%BD%A0%E7%9A%84%E4%BF%A1%E6%81%AF%E6%8A%80%E6%9C%AF%E4%B8%93%E4%B8%9A%E4%B8%AD%E5%BF%83-%F0%9F%9A%80"><span class="toc-number">1.1.</span> <span class="toc-text">🚀 你的信息技术专业中心 🚀</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%F0%9F%94%8D-ITPro-%E4%B8%93%E4%B8%9A%E7%9A%84%E4%BF%A1%E6%81%AF%E6%8A%80%E6%9C%AF%E6%94%AF%E6%8C%81"><span class="toc-number">1.1.1.</span> <span class="toc-text">🔍 ITPro: 专业的信息技术支持</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%F0%9F%92%BC-Hub-%E4%B8%AD%E5%BF%83%E5%8C%96%E7%9A%84%E8%B5%84%E6%BA%90%E5%92%8C%E7%A4%BE%E5%8C%BA"><span class="toc-number">1.1.2.</span> <span class="toc-text">💼 Hub: 中心化的资源和社区</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%9C%A8-%E6%88%91%E4%BB%AC%E7%9A%84%E7%89%B9%E8%89%B2%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%86%85%E5%AE%B9%E5%8C%85%E6%8B%AC%EF%BC%9A"><span class="toc-number">1.1.2.1.</span> <span class="toc-text">✨ 我们的特色服务和内容包括：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%8C%90-%E6%8E%A2%E7%B4%A2%E6%97%A0%E9%99%90%E5%8F%AF%E8%83%BD%EF%BC%8C%E5%8A%A0%E5%85%A5-ITProHub-%EF%BC%81%F0%9F%8C%90"><span class="toc-number">1.2.</span> <span class="toc-text">🌐 探索无限可能，加入 ITProHub ！🌐</span></a></li></ol></li></ol>
+                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%89%E7%A7%8D%E5%88%9B%E5%BB%BA%E5%87%BD%E6%95%B0%E7%9A%84%E6%96%B9%E5%BC%8F"><span class="toc-number">1.</span> <span class="toc-text">三种创建函数的方式</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%87%BD%E6%95%B0%E5%A3%B0%E6%98%8E%EF%BC%88Function-Declaration%EF%BC%89"><span class="toc-number">1.1.</span> <span class="toc-text">1. 函数声明（Function Declaration）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%F0%9F%94%8D-%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%99%E6%A0%B7%E4%B8%8D%E4%BC%9A%E6%8A%A5%E9%94%99%EF%BC%9F"><span class="toc-number">1.1.1.</span> <span class="toc-text">🔍 为什么这样不会报错？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%87%BD%E6%95%B0%E8%A1%A8%E8%BE%BE%E5%BC%8F%EF%BC%88Function-Expression%EF%BC%89"><span class="toc-number">1.2.</span> <span class="toc-text">2. 函数表达式（Function Expression）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%EF%B8%8F%E2%83%A3-%E5%87%BD%E6%95%B0%E5%A3%B0%E6%98%8E%E4%BC%9A%E8%A2%AB%E5%AE%8C%E6%95%B4%E6%8F%90%E5%8D%87%EF%BC%8C%E8%80%8C%E5%87%BD%E6%95%B0%E8%A1%A8%E8%BE%BE%E5%BC%8F%E4%B8%8D%E4%BC%9A"><span class="toc-number">1.2.1.</span> <span class="toc-text">1️⃣ 函数声明会被完整提升，而函数表达式不会</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%EF%B8%8F%E2%83%A3-%E5%8C%BF%E5%90%8D%E5%87%BD%E6%95%B0%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%9C%A8%E8%B0%83%E8%AF%95%E5%A0%86%E6%A0%88%E4%B8%AD%E5%8F%AF%E8%83%BD%E4%B8%A2%E5%A4%B1%E5%87%BD%E6%95%B0%E5%90%8D"><span class="toc-number">1.2.2.</span> <span class="toc-text">2️⃣ 匿名函数表达式在调试堆栈中可能丢失函数名</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E7%AE%AD%E5%A4%B4%E5%87%BD%E6%95%B0%EF%BC%88Arrow-Function%EF%BC%89"><span class="toc-number">1.3.</span> <span class="toc-text">3. 箭头函数（Arrow Function）</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AE%AD%E5%A4%B4%E5%87%BD%E6%95%B0-%E2%89%A0-%E6%99%AE%E9%80%9A%E5%87%BD%E6%95%B0"><span class="toc-number">2.</span> <span class="toc-text">箭头函数 ≠ 普通函数</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E7%AE%AD%E5%A4%B4%E5%87%BD%E6%95%B0%E6%B2%A1%E6%9C%89%E8%87%AA%E5%B7%B1%E7%9A%84-this"><span class="toc-number">2.1.</span> <span class="toc-text">1. 箭头函数没有自己的 this</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E7%AE%AD%E5%A4%B4%E5%87%BD%E6%95%B0%E4%B8%8D%E8%83%BD%E7%94%A8%E4%BD%9C%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0"><span class="toc-number">2.2.</span> <span class="toc-text">2. 箭头函数不能用作构造函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E7%AE%AD%E5%A4%B4%E5%87%BD%E6%95%B0%E4%B8%8D%E8%83%BD%E4%BD%BF%E7%94%A8-yield"><span class="toc-number">2.3.</span> <span class="toc-text">3. 箭头函数不能使用 yield</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%BA%94%E8%AF%A5%E4%BD%95%E6%97%B6%E4%BD%BF%E7%94%A8%E7%AE%AD%E5%A4%B4%E5%87%BD%E6%95%B0%EF%BC%9F"><span class="toc-number">3.</span> <span class="toc-text">应该何时使用箭头函数？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%87%BD%E6%95%B0%E5%A3%B0%E6%98%8E%E5%B8%A6%E6%9D%A5%E7%9A%84-hoisting-%E4%BC%98%E5%8A%BF"><span class="toc-number">4.</span> <span class="toc-text">函数声明带来的 hoisting 优势</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93%EF%BC%9A%E4%B8%80%E5%BC%A0%E9%80%89%E6%8B%A9%E5%87%BD%E6%95%B0%E5%86%99%E6%B3%95%E7%9A%84%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="toc-number">5.</span> <span class="toc-text">总结：一张选择函数写法的流程图</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BB%93%E8%AF%AD"><span class="toc-number">6.</span> <span class="toc-text">结语</span></a></li></ol>
             </div>
         
         <!-- sidebar -->
@@ -943,7 +1031,26 @@
         
         
         
+        
+        
+        
+        
+        
     
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         
         
         
@@ -1358,7 +1465,7 @@
     
     <div class="total-and-search">
         <div class="total-archive">
-        Total : 48
+        Total : 49
         </div>
         <!-- search  -->
         
@@ -1372,6 +1479,12 @@
             <div class="archive-year"> 2025 </div>
             <ul class="year-list">
             
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/06</span>
+            <a class="archive-post-title" href="/blog/2025/08/06/js-arrow-function/">别再乱用箭头函数了！JavaScript 三种函数写法的终极指南</a>
+        </li>
+    
         
         <li class="archive-post-item">
             <span class="archive-post-date">08/01</span>
@@ -1605,6 +1718,18 @@
     
         
         <li class="archive-post-item">
+            <span class="archive-post-date">06/20</span>
+            <a class="archive-post-title" href="/blog/2024/06/20/proxy/">代理服务解析：正向代理、反向代理和透明代理</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/30</span>
+            <a class="archive-post-title" href="/blog/2024/05/30/similar-image-search/">从零开始搭建自己的相似图片搜索引擎</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
             <span class="archive-post-date">05/30</span>
             <a class="archive-post-title" href="/blog/2024/05/30/TaskCompletionSource/">C# 学习笔记： TaskCompletionSource</a>
         </li>
@@ -1623,8 +1748,32 @@
     
         
         <li class="archive-post-item">
+            <span class="archive-post-date">04/18</span>
+            <a class="archive-post-title" href="/blog/2024/04/18/redis-interview-1/">Redis成长记 - Redis的陷阱（一）</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/11</span>
+            <a class="archive-post-title" href="/blog/2024/04/11/https/">HTTPS的工作原理以及安装</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
             <span class="archive-post-date">04/07</span>
             <a class="archive-post-title" href="/blog/2024/04/07/garnet/">Garnet，缓存的新选择！</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/28</span>
+            <a class="archive-post-title" href="/blog/2024/03/28/organization-internal-loss/">组织发展致命杀手：内耗</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/19</span>
+            <a class="archive-post-title" href="/blog/2024/03/19/http/">深入理解 HTTP Connection 头</a>
         </li>
     
         
@@ -1639,52 +1788,7 @@
         
         <li class="archive-post-item">
             <span class="archive-post-date">Invalid date</span>
-            <a class="archive-post-title" href="/blog/2025/08/01/hello-world/">欢迎来到 ITProHub！</a>
-        </li>
-    
-        
-            
-            
-                
-                </ul>
-            
-            <div class="archive-year"> 2024 </div>
-            <ul class="year-list">
-            
-        
-        <li class="archive-post-item">
-            <span class="archive-post-date">06/20</span>
-            <a class="archive-post-title" href="/blog/2024/06/20/proxy/">代理服务解析：正向代理、反向代理和透明代理</a>
-        </li>
-    
-        
-        <li class="archive-post-item">
-            <span class="archive-post-date">05/30</span>
-            <a class="archive-post-title" href="/blog/2024/05/30/similar-image-search/">从零开始搭建自己的相似图片搜索引擎</a>
-        </li>
-    
-        
-        <li class="archive-post-item">
-            <span class="archive-post-date">04/18</span>
-            <a class="archive-post-title" href="/blog/2024/04/18/redis-interview-1/">Redis成长记 - Redis的陷阱（一）</a>
-        </li>
-    
-        
-        <li class="archive-post-item">
-            <span class="archive-post-date">04/11</span>
-            <a class="archive-post-title" href="/blog/2024/04/11/https/">HTTPS的工作原理以及安装</a>
-        </li>
-    
-        
-        <li class="archive-post-item">
-            <span class="archive-post-date">03/28</span>
-            <a class="archive-post-title" href="/blog/2024/03/28/organization-internal-loss/">组织发展致命杀手：内耗</a>
-        </li>
-    
-        
-        <li class="archive-post-item">
-            <span class="archive-post-date">03/19</span>
-            <a class="archive-post-title" href="/blog/2024/03/19/http/">深入理解 HTTP Connection 头</a>
+            <a class="archive-post-title" href="/blog/2025/08/08/hello-world/">欢迎来到 ITProHub！</a>
         </li>
     
     </div>
