@@ -27,8 +27,9 @@
 <meta property="og:description" content="在 JavaScript 中，我们有多种方式来定义函数。最常见的两种就是普通函数（使用 function 关键字）和箭头函数（&#x3D;&gt;）。虽然它们看起来有些相似，但实际上它们之间有不少微妙的区别，尤其是在 this、new、yield 等语义上的差异。如果你也常常纠结“我该用哪种写法更合适？”，那本文或许能帮你厘清思路。  三种创建函数的方式1. 函数声明（Function Declaratio">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://itprohub.github.io/blog/images/js-arrow-function/stack.png">
+<meta property="og:image" content="https://itprohub.github.io/blog/images/js-arrow-function/choose.png">
 <meta property="article:published_time" content="2025-08-06T15:36:41.000Z">
-<meta property="article:modified_time" content="2025-08-08T02:33:56.645Z">
+<meta property="article:modified_time" content="2025-08-08T07:27:38.494Z">
 <meta property="article:author" content="乐予吕">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://itprohub.github.io/blog/images/js-arrow-function/stack.png">
@@ -588,6 +589,7 @@
 <p>这种结构让代码阅读起来更清晰：先看到“大意”，再了解“细节”。</p>
 <hr>
 <h1 id="总结：一张选择函数写法的流程图"><a href="#总结：一张选择函数写法的流程图" class="headerlink" title="总结：一张选择函数写法的流程图"></a>总结：一张选择函数写法的流程图</h1><p>我们可以根据以下几个问题，快速判断使用哪种函数写法更合适：</p>
+<p><img src="/blog/./images/js-arrow-function/choose.png" alt="流程"></p>
 <ol>
 <li><strong>是否需要使用 <code>yield</code>？</strong> → 用 <code>function*</code></li>
 <li><strong>是否使用 <code>this</code>？</strong> → 用普通函数（method or function expression）</li>
@@ -606,7 +608,7 @@
             <p>原文作者：<a href="https://itprohub.github.io/blog">乐予吕</a>
             <p>原文链接：<a href="https://itprohub.github.io/blog/2025/08/06/js-arrow-function/">https://itprohub.github.io/blog/2025/08/06/js-arrow-function/</a>
             <p>发表日期：<a href="https://itprohub.github.io/blog/2025/08/06/js-arrow-function/">August 6th 2025, 3:36:41 pm</a>
-            <p>更新日期：<a href="https://itprohub.github.io/blog/2025/08/06/js-arrow-function/">August 8th 2025, 2:33:56 am</a>
+            <p>更新日期：<a href="https://itprohub.github.io/blog/2025/08/06/js-arrow-function/">August 8th 2025, 7:27:38 am</a>
             <p>版权声明：本文采用<a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
         </div>
     
@@ -1459,6 +1461,8 @@
         
         
         
+        
+        
     
     
     
@@ -1479,6 +1483,12 @@
             <div class="archive-year"> 2025 </div>
             <ul class="year-list">
             
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/08</span>
+            <a class="archive-post-title" href="/blog/2025/08/08/hello-world/">欢迎来到 ITProHub！</a>
+        </li>
+    
         
         <li class="archive-post-item">
             <span class="archive-post-date">08/06</span>
@@ -1774,21 +1784,6 @@
         <li class="archive-post-item">
             <span class="archive-post-date">03/19</span>
             <a class="archive-post-title" href="/blog/2024/03/19/http/">深入理解 HTTP Connection 头</a>
-        </li>
-    
-        
-            
-            
-                
-                </ul>
-            
-            <div class="archive-year"> Invalid date </div>
-            <ul class="year-list">
-            
-        
-        <li class="archive-post-item">
-            <span class="archive-post-date">Invalid date</span>
-            <a class="archive-post-title" href="/blog/2025/08/08/hello-world/">欢迎来到 ITProHub！</a>
         </li>
     
     </div>
