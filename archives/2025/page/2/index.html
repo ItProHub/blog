@@ -430,6 +430,76 @@
             
         
         <article class="index-post">
+            <a class="abstract-title" href="/blog/2025/05/06/javelin-servlet/">
+                
+                <span class="abstract-title-text">构建自己的微型 Spring 框架（三）：接入内嵌 Tomcat 与 Servlet</span>
+            </a>
+            <div class="abstract-content">
+                在前两篇中，我们已经实现了一个具备依赖注入、路由注册、参数绑定、中间件、JSON 返回、异常处理的微型 Web 框架 —— Javelin，它基于 JDK 自带的 HttpServer 实现了最小运行闭环。
+曾几何时，我一度以为HttpServer就是我的最终目标，直到我被告知它存在一定的局限性，不适合生产使用。显然我们的目标不仅仅是一个简单的最小闭环，而是一个完整的、可扩展的、强壮的 Web 框架。本篇将带你将 Javelin 接入内嵌 Tomcat，并运行在标准 Servlet 容器之上，向真正的工程化迈进一步。
+
+为什么 HttpServer 不适合生产环境？
+
+
+项目
+说明
+
+
+...
+            </div>
+            <!-- read more -->
+            
+            <div class="abstract-post-meta">
+                <!-- date -->
+                <div class="abstract-date" title="Last updated: 2025/09/12">
+                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2025/05/06</span>
+                </div>
+                <!-- tags -->
+                
+            </div>
+        </article>
+        <div class="index-post-divider"></div>
+    
+        
+        
+        
+        
+            
+        
+        <article class="index-post">
+            <a class="abstract-title" href="/blog/2025/04/30/javelin-nhttpcontext/">
+                
+                <span class="abstract-title-text">手写一个微型Spring框架（三）：NHttpContext的详解</span>
+            </a>
+            <div class="abstract-content">
+                在Javelin框架中，NHttpContext类在HTTP请求处理流水线中扮演着至关重要的角色。它是一个封装了请求-响应生命周期各个方面的对象，管理着HTTP请求的各个环节。下面我们将深入探讨NHttpContext的功能、组成部分及其设计思路。
+
+NHttpContext概述NHttpContext是一个容器，保存了处理HTTP请求所需的所有必要元素。它不仅代表当前HTTP交换的状态，还管理流水线上下文、日志记录、错误处理等内容。其设计使其成为HTTP请求生命周期中的主要上下文对象，提供了一种有组织的方式来管理请求和响应。
+
+以下是NHttpContext中主要属性的介绍：
+
+Htt...
+            </div>
+            <!-- read more -->
+            
+            <div class="abstract-post-meta">
+                <!-- date -->
+                <div class="abstract-date" title="Last updated: 2025/09/12">
+                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2025/04/30</span>
+                </div>
+                <!-- tags -->
+                
+            </div>
+        </article>
+        <div class="index-post-divider"></div>
+    
+        
+        
+        
+        
+            
+        
+        <article class="index-post">
             <a class="abstract-title" href="/blog/2025/04/27/javelin-2/">
                 
                 <span class="abstract-title-text">手写一个微型 Spring 框架（二）:从路由到生命周期管理</span>
@@ -443,7 +513,7 @@
             
             <div class="abstract-post-meta">
                 <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/08/08">
+                <div class="abstract-date" title="Last updated: 2025/09/12">
                     <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2025/04/27</span>
                 </div>
                 <!-- tags -->
@@ -474,7 +544,7 @@
             
             <div class="abstract-post-meta">
                 <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/08/08">
+                <div class="abstract-date" title="Last updated: 2025/09/12">
                     <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2025/04/14</span>
                 </div>
                 <!-- tags -->
@@ -504,7 +574,7 @@
             
             <div class="abstract-post-meta">
                 <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/08/08">
+                <div class="abstract-date" title="Last updated: 2025/09/12">
                     <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2025/04/02</span>
                 </div>
                 <!-- tags -->
@@ -544,7 +614,7 @@ JS错误和Promise异常
             
             <div class="abstract-post-meta">
                 <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/08/08">
+                <div class="abstract-date" title="Last updated: 2025/09/12">
                     <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2025/03/28</span>
                 </div>
                 <!-- tags -->
@@ -580,7 +650,7 @@ JS错误和Promise异常
             
             <div class="abstract-post-meta">
                 <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/08/08">
+                <div class="abstract-date" title="Last updated: 2025/09/12">
                     <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2025/03/18</span>
                 </div>
                 <!-- tags -->
@@ -609,7 +679,7 @@ JS错误和Promise异常
             
             <div class="abstract-post-meta">
                 <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/08/08">
+                <div class="abstract-date" title="Last updated: 2025/09/12">
                     <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2025/03/14</span>
                 </div>
                 <!-- tags -->
@@ -637,7 +707,7 @@ JS错误和Promise异常
             
             <div class="abstract-post-meta">
                 <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/08/08">
+                <div class="abstract-date" title="Last updated: 2025/09/12">
                     <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2025/02/27</span>
                 </div>
                 <!-- tags -->
@@ -668,70 +738,8 @@ JS错误和Promise异常
             
             <div class="abstract-post-meta">
                 <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/08/08">
+                <div class="abstract-date" title="Last updated: 2025/09/12">
                     <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2025/02/21</span>
-                </div>
-                <!-- tags -->
-                
-            </div>
-        </article>
-        <div class="index-post-divider"></div>
-    
-        
-        
-        
-        
-            
-        
-        <article class="index-post">
-            <a class="abstract-title" href="/blog/2025/02/12/openai-operator/">
-                
-                <span class="abstract-title-text">「AI」科普向 | OpenAI Operator：推动数字世界的新纪元</span>
-            </a>
-            <div class="abstract-content">
-                上个月，OpenAI宣布上线名为Operator的首款AI智能体，它能通过网页执行各种任务。个人认为它标志着AI技术向更高层次发展的重要一步。
-
-随着人工智能（AI）技术的不断进步，我们已经进入了一个充满变革的时代。特别是当 OpenAI 推出其新工具——Operator 时，AI 与数字世界的互动方式迎来了前所未有的变革。Operator 并不是简单的工具，它标志着 AI 不仅仅是一个内容生成器，而是成为了一个能够主动操作、自动化任务和“浏览”网络的智能代理。
-在本文中，我们将介绍 OpenAI Operator 的核心功能、它如何改变信息的获取方式，以及它可能引发的互联网商业模式变革...
-            </div>
-            <!-- read more -->
-            
-            <div class="abstract-post-meta">
-                <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/08/08">
-                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2025/02/12</span>
-                </div>
-                <!-- tags -->
-                
-            </div>
-        </article>
-        <div class="index-post-divider"></div>
-    
-        
-        
-        
-        
-            
-        
-        <article class="index-post">
-            <a class="abstract-title" href="/blog/2025/02/12/deepseek-vscode/">
-                
-                <span class="abstract-title-text">Cursor平替：把 DeepSeek 接入 VS Code</span>
-            </a>
-            <div class="abstract-content">
-                提到春节最火热的两件事，一定是”哪吒“和”DeepSeek“了。
-趁着这波热潮，作为开发人员的我们怎么利用上这波红利呢？
-提到AI代码编辑器就不得不提到Cursor，它不仅仅是一个开发环境（IDE），融合了最先进 AI 技术的智能助手。无论你是经验丰富的程序员，还是对编程一窍不通的普通用户，Cursor 都能为你带来前所未有的效率提升和创新可能。但是价格。。。
-
-而VS Code作为当下最流行的编辑器之一，提供了丰富的插件生态，可以让开发者轻松集成各种外部工具。今天，我们将介绍如何通过Roo Code插件将DeepSeek接入VS Code，助力开发者更高效地进行开发工作。
-什么是 Ro...
-            </div>
-            <!-- read more -->
-            
-            <div class="abstract-post-meta">
-                <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/08/08">
-                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2025/02/12</span>
                 </div>
                 <!-- tags -->
                 
@@ -1104,7 +1112,35 @@ JS错误和Promise异常
         
         
         
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
     
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         
         
         
@@ -1535,7 +1571,7 @@ JS错误和Promise异常
     
     <div class="total-and-search">
         <div class="total-archive">
-        Total : 49
+        Total : 51
         </div>
         <!-- search  -->
         
@@ -1551,8 +1587,20 @@ JS错误和Promise异常
             
         
         <li class="archive-post-item">
-            <span class="archive-post-date">08/08</span>
-            <a class="archive-post-title" href="/blog/2025/08/08/hello-world/">欢迎来到 ITProHub！</a>
+            <span class="archive-post-date">09/12</span>
+            <a class="archive-post-title" href="/blog/2025/09/12/hello-world/">欢迎来到 ITProHub！</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/11</span>
+            <a class="archive-post-title" href="/blog/2025/09/11/GEO/">GEO 入门：从 SEO 到 GEO 的转变</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/04</span>
+            <a class="archive-post-title" href="/blog/2025/09/04/oauth/">OAuth：为什么登录要绕一大圈？</a>
         </li>
     
         
