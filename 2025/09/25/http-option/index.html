@@ -19,25 +19,25 @@
         <meta name="keywords" content="hexo,ITProHub,hexo-theme,hexo-blog">
     
     <meta name="description" content="">
-    <meta name="description" content="🌐 欢迎来到 ITProHub！🚀 你的信息技术专业中心 🚀在 ITProHub，我们致力于成为信息技术领域的中心枢纽，为专业人士、学习者和技术爱好者提供丰富的资源、技能培训和社区交流平台。 🔍 ITPro: 专业的信息技术支持无论你是正在寻找IT职业发展的道路，还是想提升你的专业技能，ITProHub都为你提供了全面的资源和指导。我们关注行业趋势，分享最新的技术知识，助你成为更专业的I">
+    <meta name="description" content="引子：一个常见的问题假设你正在开发一个前端应用，遇到这样一个接口： 1POST &#x2F;api&#x2F;orders  你心里冒出几个问题：  这个接口除了 POST，还能不能用 GET 来获取订单？ 如果能更新订单，是 PUT 还是 PATCH？ 服务器期望的数据格式是 JSON、XML，还是 form-data？ 这个接口有没有写权限，或者我只能读？  通常我们需要查文档（比如 OpenAPI、Swagge">
 <meta property="og:type" content="article">
-<meta property="og:title" content="欢迎来到 ITProHub！">
-<meta property="og:url" content="https://itprohub.github.io/blog/2025/09/12/hello-world/index.html">
+<meta property="og:title" content="用 HTTP OPTIONS 发现 API 的隐藏能力">
+<meta property="og:url" content="https://itprohub.github.io/blog/2025/09/25/http-option/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="🌐 欢迎来到 ITProHub！🚀 你的信息技术专业中心 🚀在 ITProHub，我们致力于成为信息技术领域的中心枢纽，为专业人士、学习者和技术爱好者提供丰富的资源、技能培训和社区交流平台。 🔍 ITPro: 专业的信息技术支持无论你是正在寻找IT职业发展的道路，还是想提升你的专业技能，ITProHub都为你提供了全面的资源和指导。我们关注行业趋势，分享最新的技术知识，助你成为更专业的I">
+<meta property="og:description" content="引子：一个常见的问题假设你正在开发一个前端应用，遇到这样一个接口： 1POST &#x2F;api&#x2F;orders  你心里冒出几个问题：  这个接口除了 POST，还能不能用 GET 来获取订单？ 如果能更新订单，是 PUT 还是 PATCH？ 服务器期望的数据格式是 JSON、XML，还是 form-data？ 这个接口有没有写权限，或者我只能读？  通常我们需要查文档（比如 OpenAPI、Swagge">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://itprohub.github.io/blog/images/hello-bg.png">
-<meta property="og:image" content="https://myom-dev.oss-cn-hangzhou.aliyuncs.com/WechatPublicPlatformQrCode.jpg">
-<meta property="article:published_time" content="2025-09-12T07:24:15.530Z">
-<meta property="article:modified_time" content="2025-09-12T07:24:15.530Z">
+<meta property="og:image" content="https://itprohub.github.io/blog/images/http-option/visitor.png">
+<meta property="og:image" content="https://itprohub.github.io/blog/images/http-option/admin.png">
+<meta property="article:published_time" content="2025-09-25T09:31:53.000Z">
+<meta property="article:modified_time" content="2025-09-29T06:25:32.887Z">
 <meta property="article:author" content="乐予吕">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://itprohub.github.io/blog/images/hello-bg.png">
+<meta name="twitter:image" content="https://itprohub.github.io/blog/images/http-option/visitor.png">
     <meta http-equiv="Cache-control" content="no-cache">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <link rel="icon" href="/blog/assets/favicon.ico">
     
-    <title>欢迎来到 ITProHub！ · 个人技术日常分享</title>
+    <title>用 HTTP OPTIONS 发现 API 的隐藏能力 · 个人技术日常分享</title>
     <!-- /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
 /* This file is meant as a standalone workflow for
 - testing support for link[rel=preload]
@@ -264,7 +264,7 @@
                 <a href="/blog/">个人技术日常分享</a>
             </div>
             <div class="post-title header-element">
-                <a href="#" class="post-name">欢迎来到 ITProHub！</a>
+                <a href="#" class="post-name">用 HTTP OPTIONS 发现 API 的隐藏能力</a>
             </div>
         </div>
     
@@ -310,7 +310,7 @@
         <h1 class="intro-title">
             <!-- 主页  -->
             
-                欢迎来到 ITProHub！
+                用 HTTP OPTIONS 发现 API 的隐藏能力
             <!-- 404 -->
             
         </h1>
@@ -338,7 +338,7 @@
                 <div class="post-intro-meta">
                     <!-- 撰写日期 -->
                     <span class="iconfont-archer post-intro-calander">&#xe676;</span>
-                    <span class="post-intro-time">2025/09/12</span>
+                    <span class="post-intro-time">2025/09/25</span>
                     <!-- busuanzi -->
                     
                         <span id="busuanzi_container_page_pv" class="busuanzi-pv">
@@ -493,38 +493,163 @@
             <div class="container container-unloaded">
                 <main class="main post-page">
     <article class="article-entry">
-        <p><img src="/blog/images/hello-bg.png" alt="background"></p>
-<h1 id="🌐-欢迎来到-ITProHub！"><a href="#🌐-欢迎来到-ITProHub！" class="headerlink" title="🌐 欢迎来到 ITProHub！"></a>🌐 欢迎来到 ITProHub！</h1><h2 id="🚀-你的信息技术专业中心-🚀"><a href="#🚀-你的信息技术专业中心-🚀" class="headerlink" title="🚀 你的信息技术专业中心 🚀"></a>🚀 你的信息技术专业中心 🚀</h2><p>在 ITProHub，我们致力于成为信息技术领域的中心枢纽，为专业人士、学习者和技术爱好者提供丰富的资源、技能培训和社区交流平台。</p>
-<h3 id="🔍-ITPro-专业的信息技术支持"><a href="#🔍-ITPro-专业的信息技术支持" class="headerlink" title="🔍 ITPro: 专业的信息技术支持"></a>🔍 ITPro: 专业的信息技术支持</h3><p>无论你是正在寻找IT职业发展的道路，还是想提升你的专业技能，ITProHub都为你提供了全面的资源和指导。我们关注行业趋势，分享最新的技术知识，助你成为更专业的IT从业者。</p>
-<h3 id="💼-Hub-中心化的资源和社区"><a href="#💼-Hub-中心化的资源和社区" class="headerlink" title="💼 Hub: 中心化的资源和社区"></a>💼 Hub: 中心化的资源和社区</h3><p>ITProHub是一个汇聚各种IT资源的中心，包括职业指导、技术文章、培训课程等。在我们的社区中，你可以与其他IT专业人士建立联系，分享经验，共同成长。</p>
-<h4 id="✨-我们的特色服务和内容包括："><a href="#✨-我们的特色服务和内容包括：" class="headerlink" title="✨ 我们的特色服务和内容包括："></a>✨ 我们的特色服务和内容包括：</h4><p>🎓 专业的IT技能培训课程</p>
-<p>📰 行业趋势和技术文章分享</p>
-<p>🚀 职业发展指导和招聘信息</p>
-<p>💬 与专业人士互动的社交平台</p>
-<p>👥 加入我们的社区，你将获得：</p>
-<p>与同行专业人士的互动和交流机会</p>
-<p>获取实用的职业发展建议和技术支持</p>
-<p>参与丰富多彩的线上和线下活动</p>
-<p>无论你是刚刚踏入IT领域，还是寻求更高级别的技术挑战，ITProHub都是你信息技术之旅的理想伴侣。</p>
-<h2 id="🌐-探索无限可能，加入-ITProHub-！🌐"><a href="#🌐-探索无限可能，加入-ITProHub-！🌐" class="headerlink" title="🌐 探索无限可能，加入 ITProHub ！🌐"></a>🌐 探索无限可能，加入 ITProHub ！🌐</h2><p>公众号将不定期更新，欢迎订阅！</p>
-<p>#ITProHub #信息技术 #专业发展 #社区交流</p>
-<p>更多一手讯息，可关注公众号：<a target="_blank" rel="noopener" href="https://myom-dev.oss-cn-hangzhou.aliyuncs.com/WechatPublicPlatformQrCode.jpg">ITProHub</a></p>
-<p><img src="https://myom-dev.oss-cn-hangzhou.aliyuncs.com/WechatPublicPlatformQrCode.jpg" alt="ITProHub"></p>
+        <h1 id="引子：一个常见的问题"><a href="#引子：一个常见的问题" class="headerlink" title="引子：一个常见的问题"></a>引子：一个常见的问题</h1><p>假设你正在开发一个前端应用，遇到这样一个接口：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">POST /api/orders</span><br></pre></td></tr></table></figure>
+
+<p>你心里冒出几个问题：</p>
+<ul>
+<li>这个接口除了 <code>POST</code>，还能不能用 <code>GET</code> 来获取订单？</li>
+<li>如果能更新订单，是 <code>PUT</code> 还是 <code>PATCH</code>？</li>
+<li>服务器期望的数据格式是 JSON、XML，还是 <code>form-data</code>？</li>
+<li>这个接口有没有写权限，或者我只能读？</li>
+</ul>
+<p>通常我们需要查文档（比如 OpenAPI、Swagger），但如果文档缺失、过时或者不完整呢？<br>其实 HTTP 协议早就提供了一种“问 API 自己”的方式，那就是 <strong>OPTIONS 方法</strong>。</p>
+<p>很多人第一次接触 OPTIONS 是在跨域请求（CORS）里：浏览器会先发一个预检请求 <code>OPTIONS</code>，确认目标服务器是否允许真正的请求。但 <strong>OPTIONS 的价值远不止于此</strong>。它的设计初衷是让客户端能够被动地发现“在这里我能做什么”。</p>
+<p>接下来，我们就深入聊聊 OPTIONS 的用途，并配合实际案例演示。</p>
+<hr>
+<h1 id="基本用法：Allow-头部"><a href="#基本用法：Allow-头部" class="headerlink" title="基本用法：Allow 头部"></a>基本用法：Allow 头部</h1><p>最经典的 OPTIONS 用法是通过 <code>Allow</code> 头部告诉客户端，某个资源支持哪些方法。</p>
+<p>比如我们对 <code>/api/orders/123</code> 发起请求：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -X OPTIONS http://localhost:8080/api/orders/123</span><br></pre></td></tr></table></figure>
+
+<p>可能会得到：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">HTTP/1.1 204 No Content</span><br><span class="line">Date: Tue, 24 Sep 2025 12:00:00 GMT</span><br><span class="line">Server: DemoServer/1.2</span><br><span class="line">Allow: GET, PUT, DELETE, OPTIONS</span><br></pre></td></tr></table></figure>
+
+<p>从 <code>Allow</code> 头就能看出：</p>
+<ul>
+<li>这个订单可以 <code>GET</code>（查看）</li>
+<li>可以 <code>PUT</code>（更新）</li>
+<li>可以 <code>DELETE</code>（删除）</li>
+<li>当然，OPTIONS 也被允许</li>
+</ul>
+<p>这就像 API 自己在告诉你“菜单上有哪些菜”。</p>
+<hr>
+<h2 id="动态-Allow：权限控制"><a href="#动态-Allow：权限控制" class="headerlink" title="动态 Allow：权限控制"></a>动态 Allow：权限控制</h2><p>更有意思的是，<code>Allow</code> 可以根据<strong>用户角色</strong>动态返回。</p>
+<h2 id="普通用户："><a href="#普通用户：" class="headerlink" title="普通用户："></a>普通用户：</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Allow: GET, OPTIONS</span><br></pre></td></tr></table></figure>
+
+<p>只能查看订单，不能修改。</p>
+<h2 id="管理员用户："><a href="#管理员用户：" class="headerlink" title="管理员用户："></a>管理员用户：</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Allow: GET, PUT, DELETE, OPTIONS</span><br></pre></td></tr></table></figure>
+
+<p>可以修改和删除订单。</p>
+<p>这意味着，前端应用完全可以在渲染按钮之前，先发一个 OPTIONS 请求，根据 <code>Allow</code> 动态决定界面上是否显示“删除订单”按钮。</p>
+<p>这种做法的好处是 <strong>前后端解耦</strong>：前端不需要硬编码权限逻辑，直接让 API 自己说话。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">OrderController</span> : <span class="title">ControllerBase</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">HttpOptions</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> IActionResult <span class="title">Options</span>(<span class="params"><span class="built_in">string</span> role</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (role == <span class="string">&quot;admin&quot;</span>) &#123;</span><br><span class="line">            Response.Headers[<span class="string">&quot;Allow&quot;</span>] = <span class="string">&quot;GET, POST, PUT, DELETE, OPTIONS&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            Response.Headers[<span class="string">&quot;Allow&quot;</span>] = <span class="string">&quot;GET, OPTIONS&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> Ok();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    [<span class="meta">HttpGet</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> IActionResult <span class="title">Get</span>()</span> =&gt; Ok(<span class="string">&quot;GET OK&quot;</span>);</span><br><span class="line"></span><br><span class="line">    [<span class="meta">HttpPost</span>]</span><br><span class="line">    [<span class="meta">Authorize</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> IActionResult <span class="title">Post</span>()</span> =&gt; Ok(<span class="string">&quot;POST OK&quot;</span>);</span><br><span class="line"></span><br><span class="line">    [<span class="meta">HttpPut</span>]</span><br><span class="line">    [<span class="meta">Authorize(Roles = <span class="string">&quot;Admin&quot;</span>)</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> IActionResult <span class="title">Put</span>()</span> =&gt; Ok(<span class="string">&quot;PUT OK&quot;</span>);</span><br><span class="line"></span><br><span class="line">    [<span class="meta">HttpDelete</span>]</span><br><span class="line">    [<span class="meta">Authorize(Roles = <span class="string">&quot;Admin&quot;</span>)</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> IActionResult <span class="title">Delete</span>()</span> =&gt; Ok(<span class="string">&quot;DELETE OK&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>普通用户<br><img src="/blog/./images/http-option/visitor.png" alt="普通用户 OPTIONS 响应"></p>
+<p>管理员<br><img src="/blog/./images/http-option/admin.png" alt="管理员 OPTIONS 响应"></p>
+<hr>
+<h1 id="进一步探索：Accept-和-Accept-系列头"><a href="#进一步探索：Accept-和-Accept-系列头" class="headerlink" title="进一步探索：Accept 和 Accept-* 系列头"></a>进一步探索：Accept 和 Accept-* 系列头</h1><p>OPTIONS 不只是告诉你支持哪些方法，它还能说明<strong>支持哪些数据格式</strong>。</p>
+<h2 id="Accept-响应头"><a href="#Accept-响应头" class="headerlink" title="Accept 响应头"></a>Accept 响应头</h2><p>比如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">HTTP/1.1 204 No Content</span><br><span class="line">Date: Tue, 24 Sep 2025 12:10:00 GMT</span><br><span class="line">Server: DemoServer/1.2</span><br><span class="line">Allow: GET, POST, OPTIONS</span><br><span class="line">Accept: application/json, application/xml</span><br></pre></td></tr></table></figure>
+
+<p>这里的 <code>Accept</code> 表示该接口支持返回 <strong>JSON</strong> 和 <strong>XML</strong>。<br>这对客户端来说很有用：</p>
+<ul>
+<li>如果你是浏览器，可以直接选择 JSON</li>
+<li>如果是一个老系统，需要 XML 也没问题</li>
+</ul>
+<hr>
+<h2 id="Accept-Post"><a href="#Accept-Post" class="headerlink" title="Accept-Post"></a>Accept-Post</h2><p>对于 <code>POST</code> 请求，还能通过 <code>Accept-Post</code> 指定可接受的请求体类型：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">HTTP/1.1 204 No Content</span><br><span class="line">Allow: POST, OPTIONS</span><br><span class="line">Accept-Post: multipart/form-data, application/json</span><br></pre></td></tr></table></figure>
+
+<p>这告诉我们：</p>
+<ul>
+<li>你可以用 <code>multipart/form-data</code> 来上传文件</li>
+<li>也可以用 JSON 来创建数据</li>
+</ul>
+<p>举个例子，前端上传头像时用：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> form = <span class="keyword">new</span> <span class="title class_">FormData</span>();</span><br><span class="line">form.<span class="title function_">append</span>(<span class="string">&quot;avatar&quot;</span>, file);</span><br><span class="line"><span class="keyword">await</span> <span class="title function_">fetch</span>(<span class="string">&quot;/api/profile/avatar&quot;</span>, &#123;</span><br><span class="line">  <span class="attr">method</span>: <span class="string">&quot;POST&quot;</span>,</span><br><span class="line">  <span class="attr">body</span>: form</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>而创建用户时则用：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">await</span> <span class="title function_">fetch</span>(<span class="string">&quot;/api/users&quot;</span>, &#123;</span><br><span class="line">  <span class="attr">method</span>: <span class="string">&quot;POST&quot;</span>,</span><br><span class="line">  <span class="attr">headers</span>: &#123;<span class="string">&quot;Content-Type&quot;</span>: <span class="string">&quot;application/json&quot;</span>&#125;,</span><br><span class="line">  <span class="attr">body</span>: <span class="title class_">JSON</span>.<span class="title function_">stringify</span>(&#123;<span class="attr">name</span>: <span class="string">&quot;Alice&quot;</span>, <span class="attr">email</span>: <span class="string">&quot;a@example.com&quot;</span>&#125;)</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="Accept-Patch"><a href="#Accept-Patch" class="headerlink" title="Accept-Patch"></a>Accept-Patch</h2><p>PATCH 方法常见于部分更新资源，比如只更新订单状态。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">HTTP/1.1 204 No Content</span><br><span class="line">Allow: PATCH, OPTIONS</span><br><span class="line">Accept-Patch: application/merge-patch+json, application/json-patch+json</span><br></pre></td></tr></table></figure>
+
+<p>这意味着服务器支持两种 PATCH 格式：</p>
+<ul>
+<li><strong>JSON Merge Patch</strong>：整体覆盖部分字段</li>
+<li><strong>JSON Patch</strong>：通过操作指令更新特定字段</li>
+</ul>
+<p>示例请求（JSON Patch）：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">[</span></span><br><span class="line">  <span class="punctuation">&#123;</span> <span class="attr">&quot;op&quot;</span><span class="punctuation">:</span> <span class="string">&quot;replace&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;path&quot;</span><span class="punctuation">:</span> <span class="string">&quot;/status&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;value&quot;</span><span class="punctuation">:</span> <span class="string">&quot;shipped&quot;</span> <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">]</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="Accept-Query"><a href="#Accept-Query" class="headerlink" title="Accept-Query"></a>Accept-Query</h2><p>这是一个不常见但很有潜力的头部，表示接口支持某种查询语言。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">HTTP/1.1 204 No Content</span><br><span class="line">Allow: QUERY, OPTIONS</span><br><span class="line">Accept-Query: application/graphql</span><br></pre></td></tr></table></figure>
+
+<p>说明你可以通过 <code>QUERY</code> 方法发 GraphQL 查询。虽然大多数框架不常用 QUERY 方法，但它在协议层面完全合法。</p>
+<hr>
+<h1 id="OPTIONS-响应中的文档链接"><a href="#OPTIONS-响应中的文档链接" class="headerlink" title="OPTIONS 响应中的文档链接"></a>OPTIONS 响应中的文档链接</h1><p>OPTIONS 还可以充当“接口说明书入口”。</p>
+<p>例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">HTTP/1.1 200 OK</span><br><span class="line">Allow: GET, POST, OPTIONS</span><br><span class="line">Link: &lt;https://api.example.com/docs/orders&gt;; rel=&quot;help&quot;</span><br><span class="line">Link: &lt;https://api.example.com/openapi.yaml&gt;; rel=&quot;service-desc&quot; type=&quot;application/openapi+yaml&quot;</span><br><span class="line">Content-Type: text/plain</span><br><span class="line"></span><br><span class="line">你可以在 https://api.example.com/docs/orders 找到详细文档。</span><br></pre></td></tr></table></figure>
+
+<p>这里有几点：</p>
+<ul>
+<li><code>Link</code> 头指向了 API 文档和 OpenAPI 描述</li>
+<li>响应体里返回了友好的提示</li>
+</ul>
+<p>这样即便文档站点挂了，至少还能找到线索。</p>
+<hr>
+<h1 id="OPTIONS-：探测整个服务"><a href="#OPTIONS-：探测整个服务" class="headerlink" title="OPTIONS * ：探测整个服务"></a>OPTIONS * ：探测整个服务</h1><p>平时我们都是对某个路径发 OPTIONS，比如 <code>/api/orders</code>。<br>但协议里还规定了一个特殊格式：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">OPTIONS * HTTP/1.1</span><br></pre></td></tr></table></figure>
+
+<p>注意 <code>*</code> 不是路径，而是“整个服务器”。</p>
+<p>用 <code>curl</code> 可以这样试：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -vX OPTIONS --request-target <span class="string">&#x27;*&#x27;</span> http://localhost:8080</span><br></pre></td></tr></table></figure>
+
+<p>可能返回：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">HTTP/1.1 204 No Content</span><br><span class="line">Allow: GET, POST, PUT, DELETE, PATCH, OPTIONS</span><br></pre></td></tr></table></figure>
+
+<p>这表示服务器全局支持的方法。<br>虽然现代 fetch() 不支持 <code>OPTIONS *</code>，但老牌服务器（如 Apache、Nginx）大多兼容。</p>
+<hr>
+<h1 id="特殊用法：WebDAV-与扩展"><a href="#特殊用法：WebDAV-与扩展" class="headerlink" title="特殊用法：WebDAV 与扩展"></a>特殊用法：WebDAV 与扩展</h1><p>OPTIONS 也常用于 WebDAV、CalDAV、CardDAV 这类扩展协议。</p>
+<p>例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">HTTP/1.1 204 No Content</span><br><span class="line">Allow: GET, PROPFIND, MKCOL, LOCK, UNLOCK</span><br><span class="line">DAV: 1, 2, calendar-access, addressbook</span><br></pre></td></tr></table></figure>
+
+<p>这就超出了传统 REST 的范围，进入了文件共享、日历、联系人等场景。</p>
+<p>这类协议通常依赖 OPTIONS 来声明自己支持的扩展能力。</p>
+<hr>
+<h1 id="实战：用-Node-js-实现一个-OPTIONS"><a href="#实战：用-Node-js-实现一个-OPTIONS" class="headerlink" title="实战：用 Node.js 实现一个 OPTIONS"></a>实战：用 Node.js 实现一个 OPTIONS</h1><p>为了直观，我们用 Node.js&#x2F;Express 搭个例子：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> express <span class="keyword">from</span> <span class="string">&quot;express&quot;</span>;</span><br><span class="line"><span class="keyword">const</span> app = <span class="title function_">express</span>();</span><br><span class="line"></span><br><span class="line">app.<span class="title function_">use</span>(express.<span class="title function_">json</span>());</span><br><span class="line"></span><br><span class="line">app.<span class="title function_">options</span>(<span class="string">&quot;/api/orders&quot;</span>, <span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">  res.<span class="title function_">set</span>(<span class="string">&quot;Allow&quot;</span>, <span class="string">&quot;GET, POST, OPTIONS&quot;</span>);</span><br><span class="line">  res.<span class="title function_">set</span>(<span class="string">&quot;Accept&quot;</span>, <span class="string">&quot;application/json, application/xml&quot;</span>);</span><br><span class="line">  res.<span class="title function_">set</span>(<span class="string">&quot;Accept-Post&quot;</span>, <span class="string">&quot;application/json, multipart/form-data&quot;</span>);</span><br><span class="line">  res.<span class="title function_">status</span>(<span class="number">204</span>).<span class="title function_">send</span>();</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">app.<span class="title function_">listen</span>(<span class="number">8080</span>, <span class="function">() =&gt;</span> <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Server started&quot;</span>));</span><br></pre></td></tr></table></figure>
+
+<p>测试：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -i -X OPTIONS http://localhost:8080/api/orders</span><br></pre></td></tr></table></figure>
+
+<p>结果：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">HTTP/1.1 204 No Content</span><br><span class="line">Allow: GET, POST, OPTIONS</span><br><span class="line">Accept: application/json, application/xml</span><br><span class="line">Accept-Post: application/json, multipart/form-data</span><br></pre></td></tr></table></figure>
+
+<p>这样前端开发者无需文档就能获知接口支持情况。</p>
+<hr>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>OPTIONS 是 HTTP 协议里被低估的一个方法。</p>
+<ul>
+<li>它不仅仅是 CORS 的配角，更是 API 的“自描述能力”。</li>
+<li>通过 OPTIONS + Allow，客户端能知道支持的方法。</li>
+<li>通过 Accept 和 Accept-*，客户端能知道支持的数据格式。</li>
+<li>OPTIONS 响应还能附带文档链接，帮助开发者快速找到资料。</li>
+<li>特殊场景下，OPTIONS * 和 WebDAV 扩展让它更加强大。</li>
+</ul>
+<p>所以，当你设计 API 时，不妨善用 OPTIONS，让接口自己“说话”，这能让使用者的体验提升一个档次。</p>
+<hr>
+<p>👉 未来我准备写一篇《用 OPTIONS 打造自解释 API》的实战文章，展示如何在实际项目中动态返回不同角色的 Allow 结果，并结合前端渲染逻辑，做一个“接口驱动 UI”的 demo，敬请期待！</p>
 
     </article>
     <!-- license -->
     
         <div class="license-wrapper">
             <p>原文作者：<a href="https://itprohub.github.io/blog">乐予吕</a>
-            <p>原文链接：<a href="https://itprohub.github.io/blog/2025/09/12/hello-world/">https://itprohub.github.io/blog/2025/09/12/hello-world/</a>
-            <p>发表日期：<a href="https://itprohub.github.io/blog/2025/09/12/hello-world/">September 12th 2025, 7:24:15 am</a>
-            <p>更新日期：<a href="https://itprohub.github.io/blog/2025/09/12/hello-world/">September 12th 2025, 7:24:15 am</a>
+            <p>原文链接：<a href="https://itprohub.github.io/blog/2025/09/25/http-option/">https://itprohub.github.io/blog/2025/09/25/http-option/</a>
+            <p>发表日期：<a href="https://itprohub.github.io/blog/2025/09/25/http-option/">September 25th 2025, 9:31:53 am</a>
+            <p>更新日期：<a href="https://itprohub.github.io/blog/2025/09/25/http-option/">September 29th 2025, 6:25:32 am</a>
             <p>版权声明：本文采用<a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
         </div>
     
     <!-- paginator -->
     <ul class="post-paginator">
         <li class="next">
+            
+                <div class="nextSlogan">Next Post</div>
+                <a href="/blog/2025/09/29/hello-world/" title="欢迎来到 ITProHub！">
+                    <div class="nextTitle">欢迎来到 ITProHub！</div>
+                </a>
             
         </li>
         <li class="previous">
@@ -684,7 +809,7 @@
                 <div class="toc-catalog">
                     <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
                 </div>
-                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%F0%9F%8C%90-%E6%AC%A2%E8%BF%8E%E6%9D%A5%E5%88%B0-ITProHub%EF%BC%81"><span class="toc-number">1.</span> <span class="toc-text">🌐 欢迎来到 ITProHub！</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%9A%80-%E4%BD%A0%E7%9A%84%E4%BF%A1%E6%81%AF%E6%8A%80%E6%9C%AF%E4%B8%93%E4%B8%9A%E4%B8%AD%E5%BF%83-%F0%9F%9A%80"><span class="toc-number">1.1.</span> <span class="toc-text">🚀 你的信息技术专业中心 🚀</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%F0%9F%94%8D-ITPro-%E4%B8%93%E4%B8%9A%E7%9A%84%E4%BF%A1%E6%81%AF%E6%8A%80%E6%9C%AF%E6%94%AF%E6%8C%81"><span class="toc-number">1.1.1.</span> <span class="toc-text">🔍 ITPro: 专业的信息技术支持</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%F0%9F%92%BC-Hub-%E4%B8%AD%E5%BF%83%E5%8C%96%E7%9A%84%E8%B5%84%E6%BA%90%E5%92%8C%E7%A4%BE%E5%8C%BA"><span class="toc-number">1.1.2.</span> <span class="toc-text">💼 Hub: 中心化的资源和社区</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%9C%A8-%E6%88%91%E4%BB%AC%E7%9A%84%E7%89%B9%E8%89%B2%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%86%85%E5%AE%B9%E5%8C%85%E6%8B%AC%EF%BC%9A"><span class="toc-number">1.1.2.1.</span> <span class="toc-text">✨ 我们的特色服务和内容包括：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%8C%90-%E6%8E%A2%E7%B4%A2%E6%97%A0%E9%99%90%E5%8F%AF%E8%83%BD%EF%BC%8C%E5%8A%A0%E5%85%A5-ITProHub-%EF%BC%81%F0%9F%8C%90"><span class="toc-number">1.2.</span> <span class="toc-text">🌐 探索无限可能，加入 ITProHub ！🌐</span></a></li></ol></li></ol>
+                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%BC%95%E5%AD%90%EF%BC%9A%E4%B8%80%E4%B8%AA%E5%B8%B8%E8%A7%81%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-number">1.</span> <span class="toc-text">引子：一个常见的问题</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95%EF%BC%9AAllow-%E5%A4%B4%E9%83%A8"><span class="toc-number">2.</span> <span class="toc-text">基本用法：Allow 头部</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8A%A8%E6%80%81-Allow%EF%BC%9A%E6%9D%83%E9%99%90%E6%8E%A7%E5%88%B6"><span class="toc-number">2.1.</span> <span class="toc-text">动态 Allow：权限控制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%99%AE%E9%80%9A%E7%94%A8%E6%88%B7%EF%BC%9A"><span class="toc-number">2.2.</span> <span class="toc-text">普通用户：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%A1%E7%90%86%E5%91%98%E7%94%A8%E6%88%B7%EF%BC%9A"><span class="toc-number">2.3.</span> <span class="toc-text">管理员用户：</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%BF%9B%E4%B8%80%E6%AD%A5%E6%8E%A2%E7%B4%A2%EF%BC%9AAccept-%E5%92%8C-Accept-%E7%B3%BB%E5%88%97%E5%A4%B4"><span class="toc-number">3.</span> <span class="toc-text">进一步探索：Accept 和 Accept-* 系列头</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Accept-%E5%93%8D%E5%BA%94%E5%A4%B4"><span class="toc-number">3.1.</span> <span class="toc-text">Accept 响应头</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Accept-Post"><span class="toc-number">3.2.</span> <span class="toc-text">Accept-Post</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Accept-Patch"><span class="toc-number">3.3.</span> <span class="toc-text">Accept-Patch</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Accept-Query"><span class="toc-number">3.4.</span> <span class="toc-text">Accept-Query</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#OPTIONS-%E5%93%8D%E5%BA%94%E4%B8%AD%E7%9A%84%E6%96%87%E6%A1%A3%E9%93%BE%E6%8E%A5"><span class="toc-number">4.</span> <span class="toc-text">OPTIONS 响应中的文档链接</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#OPTIONS-%EF%BC%9A%E6%8E%A2%E6%B5%8B%E6%95%B4%E4%B8%AA%E6%9C%8D%E5%8A%A1"><span class="toc-number">5.</span> <span class="toc-text">OPTIONS * ：探测整个服务</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%89%B9%E6%AE%8A%E7%94%A8%E6%B3%95%EF%BC%9AWebDAV-%E4%B8%8E%E6%89%A9%E5%B1%95"><span class="toc-number">6.</span> <span class="toc-text">特殊用法：WebDAV 与扩展</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%9E%E6%88%98%EF%BC%9A%E7%94%A8-Node-js-%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA-OPTIONS"><span class="toc-number">7.</span> <span class="toc-text">实战：用 Node.js 实现一个 OPTIONS</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">8.</span> <span class="toc-text">总结</span></a></li></ol>
             </div>
         
         <!-- sidebar -->
@@ -953,7 +1078,20 @@
         
         
         
+        
+        
+        
+        
+        
     
+        
+        
+        
+        
+        
+        
+        
+        
         
         
         
@@ -1402,7 +1540,7 @@
     
     <div class="total-and-search">
         <div class="total-archive">
-        Total : 51
+        Total : 52
         </div>
         <!-- search  -->
         
@@ -1418,8 +1556,8 @@
             
         
         <li class="archive-post-item">
-            <span class="archive-post-date">09/12</span>
-            <a class="archive-post-title" href="/blog/2025/09/12/hello-world/">欢迎来到 ITProHub！</a>
+            <span class="archive-post-date">09/25</span>
+            <a class="archive-post-title" href="/blog/2025/09/25/http-option/">用 HTTP OPTIONS 发现 API 的隐藏能力</a>
         </li>
     
         
@@ -1673,18 +1811,6 @@
     
         
         <li class="archive-post-item">
-            <span class="archive-post-date">06/20</span>
-            <a class="archive-post-title" href="/blog/2024/06/20/proxy/">代理服务解析：正向代理、反向代理和透明代理</a>
-        </li>
-    
-        
-        <li class="archive-post-item">
-            <span class="archive-post-date">05/30</span>
-            <a class="archive-post-title" href="/blog/2024/05/30/similar-image-search/">从零开始搭建自己的相似图片搜索引擎</a>
-        </li>
-    
-        
-        <li class="archive-post-item">
             <span class="archive-post-date">05/30</span>
             <a class="archive-post-title" href="/blog/2024/05/30/TaskCompletionSource/">C# 学习笔记： TaskCompletionSource</a>
         </li>
@@ -1699,6 +1825,42 @@
         <li class="archive-post-item">
             <span class="archive-post-date">04/28</span>
             <a class="archive-post-title" href="/blog/2024/04/28/dump/">Dump分析入门指南</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> Invalid date </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span>
+            <a class="archive-post-title" href="/blog/2025/09/29/hello-world/">欢迎来到 ITProHub！</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> 2024 </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">06/20</span>
+            <a class="archive-post-title" href="/blog/2024/06/20/proxy/">代理服务解析：正向代理、反向代理和透明代理</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/30</span>
+            <a class="archive-post-title" href="/blog/2024/05/30/similar-image-search/">从零开始搭建自己的相似图片搜索引擎</a>
         </li>
     
         
