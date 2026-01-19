@@ -445,6 +445,74 @@
             
         
         <article class="index-post">
+            <a class="abstract-title" href="/blog/2024/07/11/rabbitmq-quorum/">
+                
+                <span class="abstract-title-text">RabbitMQ之三种队列之间的区别及如何选型</span>
+            </a>
+            <div class="abstract-content">
+                RabbitMQ 是一个强大的消息队列系统，它提供了多种队列类型以满足不同的使用需求。本文将探讨三种主要队列类型：经典队列、仲裁队列和流式队列，并讨论它们的区别和选型建议。
+经典队列（Classic Queues）简介：经典队列是 RabbitMQ 中最早期也是最常用的一种队列类型。它们具有良好的性能和稳定性，适合大多数常规的消息传递场景。
+特点：
+存储机制：消息存储在磁盘或内存中，支持持久化。
+消息传递：一旦消息被消费者确认，消息会从队列中删除。
+性能：性能相对较高，但在高并发和大消息量场景下，可能会遇到瓶颈。
+高可用性：支持镜像队列，实现高可用性。镜像队列中的消息会复制到多个节点，以...
+            </div>
+            <!-- read more -->
+            
+            <div class="abstract-post-meta">
+                <!-- date -->
+                <div class="abstract-date" title="Last updated: 2026/01/19">
+                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2024/07/11</span>
+                </div>
+                <!-- tags -->
+                
+            </div>
+        </article>
+        <div class="index-post-divider"></div>
+    
+        
+        
+        
+        
+            
+        
+        <article class="index-post">
+            <a class="abstract-title" href="/blog/2024/07/09/rabbitmq-basic/">
+                
+                <span class="abstract-title-text">深入理解 RabbitMQ 中的基础概念</span>
+            </a>
+            <div class="abstract-content">
+                RabbitMQ 是一个广泛使用的消息代理，它使得不同系统和服务之间可以进行可靠的消息传递。理解 RabbitMQ 的核心概念是高效使用它的关键。本文将深入探讨 RabbitMQ 的 Channel、Exchange、Queue、Vhost、Route 等概念，并通过实际开发示例展示如何在项目中应用这些概念。
+标准 RabbitMQ 消息流
+生产者向交易所发布一条消息。
+交换机收到消息并且负责消息的路由。
+必须在队列和交换机之间建立绑定。在本例中，我们绑定了来自交换机的两个不同队列。交换机将消息路由到队列中。
+消息一直留在队列中，直到被消费者处理。
+消费者处理该消息。
+
+1. 核心概念1...
+            </div>
+            <!-- read more -->
+            
+            <div class="abstract-post-meta">
+                <!-- date -->
+                <div class="abstract-date" title="Last updated: 2026/01/19">
+                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2024/07/09</span>
+                </div>
+                <!-- tags -->
+                
+            </div>
+        </article>
+        <div class="index-post-divider"></div>
+    
+        
+        
+        
+        
+            
+        
+        <article class="index-post">
             <a class="abstract-title" href="/blog/2024/07/08/docker-2/">
                 
                 <span class="abstract-title-text">Docker镜像构建优化</span>
@@ -458,7 +526,7 @@ Dockerfile中的层定义在Dockerfile中，每一个指令（如RUN、COPY、AD
             
             <div class="abstract-post-meta">
                 <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/09/29">
+                <div class="abstract-date" title="Last updated: 2026/01/19">
                     <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2024/07/08</span>
                 </div>
                 <!-- tags -->
@@ -488,7 +556,7 @@ Dockerfile中的层定义在Dockerfile中，每一个指令（如RUN、COPY、AD
             
             <div class="abstract-post-meta">
                 <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/09/29">
+                <div class="abstract-date" title="Last updated: 2026/01/19">
                     <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2024/07/05</span>
                 </div>
                 <!-- tags -->
@@ -517,7 +585,7 @@ Dockerfile中的层定义在Dockerfile中，每一个指令（如RUN、COPY、AD
             
             <div class="abstract-post-meta">
                 <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/09/29">
+                <div class="abstract-date" title="Last updated: 2026/01/19">
                     <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2024/06/20</span>
                 </div>
                 <!-- tags -->
@@ -546,7 +614,7 @@ Dockerfile中的层定义在Dockerfile中，每一个指令（如RUN、COPY、AD
             
             <div class="abstract-post-meta">
                 <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/09/29">
+                <div class="abstract-date" title="Last updated: 2026/01/19">
                     <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2024/05/30</span>
                 </div>
                 <!-- tags -->
@@ -575,7 +643,7 @@ TaskCompletionSource是 .NET 库中用于处理任务的极其有用的工具，
             
             <div class="abstract-post-meta">
                 <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/09/29">
+                <div class="abstract-date" title="Last updated: 2026/01/19">
                     <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2024/05/30</span>
                 </div>
                 <!-- tags -->
@@ -607,7 +675,7 @@ TaskCompletionSource是 .NET 库中用于处理任务的极其有用的工具，
             
             <div class="abstract-post-meta">
                 <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/09/29">
+                <div class="abstract-date" title="Last updated: 2026/01/19">
                     <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2024/05/22</span>
                 </div>
                 <!-- tags -->
@@ -637,7 +705,7 @@ Dump 文件是什么？Dump 文件是在应用程序发生崩溃或异常情况�
             
             <div class="abstract-post-meta">
                 <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/09/29">
+                <div class="abstract-date" title="Last updated: 2026/01/19">
                     <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2024/04/28</span>
                 </div>
                 <!-- tags -->
@@ -677,7 +745,7 @@ Dump 文件是什么？Dump 文件是在应用程序发生崩溃或异常情况�
             
             <div class="abstract-post-meta">
                 <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/09/29">
+                <div class="abstract-date" title="Last updated: 2026/01/19">
                     <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2024/04/18</span>
                 </div>
                 <!-- tags -->
@@ -686,97 +754,6 @@ Dump 文件是什么？Dump 文件是在应用程序发生崩溃或异常情况�
     
     
         <a class="post-tag" href="javascript:void(0);" data-tags="redis 面试 求职">redis 面试 求职</a>
-    
-</div>
-
-                
-            </div>
-        </article>
-        <div class="index-post-divider"></div>
-    
-        
-        
-        
-        
-            
-        
-        <article class="index-post">
-            <a class="abstract-title" href="/blog/2024/04/11/https/">
-                
-                <span class="abstract-title-text">HTTPS的工作原理以及安装</span>
-            </a>
-            <div class="abstract-content">
-                什么是 HTTPS？HTTP 是一种用于在服务器和客户端（Web 浏览器）之间交换数据的互联网协议。 HTTPS 只不过是在HTTP的基础上添加了安全层。HTTP 不是一个安全协议：它是为了纯粹的功能目标而设计的，没有考虑任何安全约束。
-所以我们给HTTP添加了一个安全层。更准确地说，将 HTTP 封装到安全连接中。
-
-HTTPS 使我们能够实现三个目标：
-
-身份验证：HTTPS 使用数字证书来验证服务器和客户端的身份，防止中间人攻击。服务器需要提供有效的数字证书，而客户端可以验证证书的有效性，确保与正确的服务器建立连接。
-隐私：网络上的任何人都无法读取数据，因为它是加密的
-完整性：HT...
-            </div>
-            <!-- read more -->
-            
-            <div class="abstract-post-meta">
-                <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/09/29">
-                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2024/04/11</span>
-                </div>
-                <!-- tags -->
-                
-                    <div class= abstract-tags >
-    
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags="https http ssl tls">https http ssl tls</a>
-    
-</div>
-
-                
-            </div>
-        </article>
-        <div class="index-post-divider"></div>
-    
-        
-        
-        
-        
-            
-        
-        <article class="index-post">
-            <a class="abstract-title" href="/blog/2024/04/07/garnet/">
-                
-                <span class="abstract-title-text">Garnet，缓存的新选择！</span>
-            </a>
-            <div class="abstract-content">
-                号外号外！
-
-redis不再“开源”；
-微软开源了Garnet
-
-什么是Garnet？Garnet是微软推出的一款远程缓存存储系统，旨在为开发者提供高性能、可靠性和可伸缩性的缓存解决方案。它采用了现代化的架构和技术，具有高度可定制性和灵活性，适用于各种规模和类型的应用场景。
-特性和优势
-高性能
-&nbsp; Garnet采用了高效的缓存算法和数据结构，以实现快速的数据访问和响应。它支持并发访问和高吞吐量，能够处理大规模的请求流量。
-
-
-  Garnet通过智能缓存策略，将热点数据（经常访问的数据）存储在用户附近的节点上，从而减少了数据传输的时间和距离，实现了低延迟访问。
-
-可靠性
-&nb...
-            </div>
-            <!-- read more -->
-            
-            <div class="abstract-post-meta">
-                <!-- date -->
-                <div class="abstract-date" title="Last updated: 2025/09/29">
-                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2024/04/07</span>
-                </div>
-                <!-- tags -->
-                
-                    <div class= abstract-tags >
-    
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags="Garnet 缓存 微软">Garnet 缓存 微软</a>
     
 </div>
 
@@ -1254,7 +1231,45 @@ redis不再“开源”；
         
         
         
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
     
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         
         
         
@@ -1711,7 +1726,7 @@ redis不再“开源”；
     
     <div class="total-and-search">
         <div class="total-archive">
-        Total : 52
+        Total : 54
         </div>
         <!-- search  -->
         
@@ -1722,9 +1737,36 @@ redis不再“开源”；
         
             
             
+            <div class="archive-year"> 2026 </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">01/19</span>
+            <a class="archive-post-title" href="/blog/2026/01/19/hello-world/">欢迎来到 ITProHub！</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">01/15</span>
+            <a class="archive-post-title" href="/blog/2026/01/15/ai-security/">AI_职场“保命”手册</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
             <div class="archive-year"> 2025 </div>
             <ul class="year-list">
             
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/11</span>
+            <a class="archive-post-title" href="/blog/2025/10/11/agent-framework/">Microsoft Agent Framework：让 AI 智能体开发像写 Web 应用一样简单</a>
+        </li>
+    
         
         <li class="archive-post-item">
             <span class="archive-post-date">09/25</span>
@@ -1982,6 +2024,18 @@ redis不再“开源”；
     
         
         <li class="archive-post-item">
+            <span class="archive-post-date">06/20</span>
+            <a class="archive-post-title" href="/blog/2024/06/20/proxy/">代理服务解析：正向代理、反向代理和透明代理</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/30</span>
+            <a class="archive-post-title" href="/blog/2024/05/30/similar-image-search/">从零开始搭建自己的相似图片搜索引擎</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
             <span class="archive-post-date">05/30</span>
             <a class="archive-post-title" href="/blog/2024/05/30/TaskCompletionSource/">C# 学习笔记： TaskCompletionSource</a>
         </li>
@@ -1996,42 +2050,6 @@ redis不再“开源”；
         <li class="archive-post-item">
             <span class="archive-post-date">04/28</span>
             <a class="archive-post-title" href="/blog/2024/04/28/dump/">Dump分析入门指南</a>
-        </li>
-    
-        
-            
-            
-                
-                </ul>
-            
-            <div class="archive-year"> Invalid date </div>
-            <ul class="year-list">
-            
-        
-        <li class="archive-post-item">
-            <span class="archive-post-date">Invalid date</span>
-            <a class="archive-post-title" href="/blog/2025/09/29/hello-world/">欢迎来到 ITProHub！</a>
-        </li>
-    
-        
-            
-            
-                
-                </ul>
-            
-            <div class="archive-year"> 2024 </div>
-            <ul class="year-list">
-            
-        
-        <li class="archive-post-item">
-            <span class="archive-post-date">06/20</span>
-            <a class="archive-post-title" href="/blog/2024/06/20/proxy/">代理服务解析：正向代理、反向代理和透明代理</a>
-        </li>
-    
-        
-        <li class="archive-post-item">
-            <span class="archive-post-date">05/30</span>
-            <a class="archive-post-title" href="/blog/2024/05/30/similar-image-search/">从零开始搭建自己的相似图片搜索引擎</a>
         </li>
     
         
