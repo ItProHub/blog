@@ -1,0 +1,15 @@
+# 构建上下文瘦身：这些都不需要进镜像
+node_modules
+themes/*/node_modules
+.git
+.github
+.idea
+public
+db.json
+*.log
+npm-debug.log*
+
+# 本地已有的镜像构建产物与文档
+Dockerfile.legacy
+docker-entrypoint.sh
+README.md
