@@ -1,0 +1,2170 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <!-- title -->
+
+
+    
+
+<!-- keywords -->
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="author" content="乐予吕">
+    <meta name="renderer" content="webkit">
+    <meta name="copyright" content="乐予吕">
+    
+        <meta name="keywords" content="hexo,ITProHub,hexo-theme,hexo-blog">
+    
+    <meta name="description" content="">
+    <meta name="description" content="一次给博客 HTML head 做的逐项体检：38 个标签里挑出 6 个历史包袱和 6 个真 bug，附上判断依据与修法。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="我的 HTML Head 清单：38 个标签的体检报告">
+<meta property="og:url" content="https://itprohub.github.io/blog/2026/09/29/html-head/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="一次给博客 HTML head 做的逐项体检：38 个标签里挑出 6 个历史包袱和 6 个真 bug，附上判断依据与修法。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-09-29T15:10:00.000Z">
+<meta property="article:modified_time" content="2026-09-29T06:52:10.105Z">
+<meta property="article:author" content="乐予吕">
+<meta property="article:tag" content="HTML">
+<meta property="article:tag" content="SEO">
+<meta property="article:tag" content="Web 性能">
+<meta property="article:tag" content="Hexo">
+<meta name="twitter:card" content="summary">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="icon" href="/blog/assets/favicon.ico">
+    
+    <title>我的 HTML Head 清单：38 个标签的体检报告 · 个人技术日常分享</title>
+    <!-- /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+/* This file is meant as a standalone workflow for
+- testing support for link[rel=preload]
+- enabling async CSS loading in browsers that do not support rel=preload
+- applying rel preload css once loaded, whether supported or not.
+*/ -->
+<script>
+    (function (w) {
+        'use strict'
+        // rel=preload support test
+        if (!w.loadCSS) {
+            w.loadCSS = function () {}
+        }
+        // define on the loadCSS obj
+        var rp = (loadCSS.relpreload = {})
+        // rel=preload feature support test
+        // runs once and returns a function for compat purposes
+        rp.support = (function () {
+            var ret
+            try {
+                ret = w.document.createElement('link').relList.supports('preload')
+            } catch (e) {
+                ret = false
+            }
+            return function () {
+                return ret
+            }
+        })()
+
+        // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+        // then change that media back to its intended value on load
+        rp.bindMediaToggle = function (link) {
+            // remember existing media attr for ultimate state, or default to 'all'
+            var finalMedia = link.media || 'all'
+
+            function enableStylesheet() {
+                link.media = finalMedia
+            }
+
+            // bind load handlers to enable media
+            if (link.addEventListener) {
+                link.addEventListener('load', enableStylesheet)
+            } else if (link.attachEvent) {
+                link.attachEvent('onload', enableStylesheet)
+            }
+
+            // Set rel and non-applicable media type to start an async request
+            // note: timeout allows this to happen async to let rendering continue in IE
+            setTimeout(function () {
+                link.rel = 'stylesheet'
+                link.media = 'only x'
+            })
+            // also enable media after 3 seconds,
+            // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+            setTimeout(enableStylesheet, 3000)
+        }
+
+        // loop through link elements in DOM
+        rp.poly = function () {
+            // double check this to prevent external calls from running
+            if (rp.support()) {
+                return
+            }
+            var links = w.document.getElementsByTagName('link')
+            for (var i = 0; i < links.length; i++) {
+                var link = links[i]
+                // qualify links to those with rel=preload and as=style attrs
+                if (
+                    link.rel === 'preload' &&
+                    link.getAttribute('as') === 'style' &&
+                    !link.getAttribute('data-loadcss')
+                ) {
+                    // prevent rerunning on link
+                    link.setAttribute('data-loadcss', true)
+                    // bind listeners to toggle media back
+                    rp.bindMediaToggle(link)
+                }
+            }
+        }
+
+        // if unsupported, run the polyfill
+        if (!rp.support()) {
+            // run once at least
+            rp.poly()
+
+            // rerun poly on an interval until onload
+            var run = w.setInterval(rp.poly, 500)
+            if (w.addEventListener) {
+                w.addEventListener('load', function () {
+                    rp.poly()
+                    w.clearInterval(run)
+                })
+            } else if (w.attachEvent) {
+                w.attachEvent('onload', function () {
+                    rp.poly()
+                    w.clearInterval(run)
+                })
+            }
+        }
+
+        // commonjs
+        if (typeof exports !== 'undefined') {
+            exports.loadCSS = loadCSS
+        } else {
+            w.loadCSS = loadCSS
+        }
+    })(typeof global !== 'undefined' ? global : this)
+</script>
+
+    <style type="text/css">
+    @font-face {
+        font-family: 'Oswald-Regular';
+        src: url("/blog/font/Oswald-Regular.ttf");
+    }
+
+    body {
+        margin: 0;
+    }
+
+    header,
+    footer,
+    .back-top,
+    .sidebar,
+    .container,
+    .site-intro-meta,
+    .toc-wrapper {
+        display: none;
+    }
+
+    .site-intro {
+        position: relative;
+        z-index: 3;
+        width: 100%;
+        /* height: 50vh; */
+        overflow: hidden;
+    }
+
+    .site-intro-placeholder {
+        position: absolute;
+        z-index: -2;
+        top: 0;
+        left: 0;
+        width: calc(100% + 300px);
+        height: 100%;
+        background: repeating-linear-gradient(-45deg, #444 0, #444 80px, #333 80px, #333 160px);
+        background-position: center center;
+        transform: translate3d(-226px, 0, 0);
+        animation: gradient-move 2.5s ease-out 0s infinite;
+    }
+
+    @keyframes gradient-move {
+        0% {
+            transform: translate3d(-226px, 0, 0);
+        }
+        100% {
+            transform: translate3d(0, 0, 0);
+        }
+    }
+</style>
+
+    <link rel="preload" href="/blog/css/style.css?v=20211217" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="/blog/css/dark.css?v=20211217" as="style">
+    <link rel="stylesheet" href="/blog/css/dark.css">
+    <link rel="stylesheet" href="/blog/css/mobile.css?v=20211217" media="(max-width: 960px)">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" as="script">
+    <link rel="preload" href="/blog/scripts/main.js?v=20211217" as="script">
+    <link rel="preload" href="/blog/scripts/dark.js?v=20211217" as="script">
+    <link rel="preload" href="/blog/font/Oswald-Regular.ttf" as="font" crossorigin>
+    <link rel="preload" href="https://at.alicdn.com/t/font_327081_1dta1rlogw17zaor.woff" as="font" crossorigin>
+    <!-- algolia -->
+    
+    <!-- 百度统计  -->
+    
+    <!-- Google tag (gtag.js) -->
+    
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6058253486086884"
+    crossorigin="anonymous"></script>
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>    
+    <script type="text/javascript">
+        if (typeof window.$ == undefined) {
+            console.warn('jquery load from jsdelivr failed, will load local script')
+            document.write('<script src="/blog/lib/jquery.min.js" />')
+        }
+    </script>
+    
+        <body class="post-body">
+    
+        <!-- header -->
+        <header class="header header-mobile">
+    <!-- top read progress line -->
+    <div class="header-element">
+        <div class="read-progress"></div>
+    </div>
+    <!-- sidebar menu button -->
+    <div class="header-element">
+        
+            <div class="header-sidebar-menu">
+        
+            
+                <div style="padding-left: 1px;">&#xe775;</div>
+            
+        </div>
+    </div>
+    <!-- header actions -->
+    <div class="header-actions">
+        <!-- theme mode switch button -->
+        <span class="header-theme-btn header-element">
+            <i class="fas fa-adjust"></i>
+        </span>
+        <!-- back to home page text -->
+        <span class="home-link header-element">
+            <a href=/blog/>个人技术日常分享</a>
+        </span>
+    </div>
+    <!-- toggle banner for post layout -->
+    
+        
+            <div class="banner">
+        
+            <div class="blog-title header-element">
+                <a href="/blog/">个人技术日常分享</a>
+            </div>
+            <div class="post-title header-element">
+                <a href="#" class="post-name">我的 HTML Head 清单：38 个标签的体检报告</a>
+            </div>
+        </div>
+    
+</header>
+
+        <!-- fixed footer -->
+        <footer class="footer-fixed">
+    <!-- back to top button -->
+    <div class="footer-fixed-element">
+        
+            <div class="back-top back-top-hidden">
+        
+        
+            <div>&#xe639;</div>
+        
+        </div>
+    </div>
+</footer>
+
+        <!-- wrapper -->
+        <div class="wrapper">
+            <div class="site-intro" style="
+
+
+
+
+
+
+
+    height:50vh;
+
+">
+    
+    <!-- 主页  -->
+    
+        
+    <!-- 404页  -->
+    
+    <div class="site-intro-placeholder"></div>
+    <div class="site-intro-img" style="background-image: url(/blog/intro/post-bg.jpg)"></div>
+    <div class="site-intro-meta">
+        <!-- 标题  -->
+        <h1 class="intro-title">
+            <!-- 主页  -->
+            
+                我的 HTML Head 清单：38 个标签的体检报告
+            <!-- 404 -->
+            
+        </h1>
+        <!-- 副标题 -->
+        <p class="intro-subtitle">
+            <!-- 主页副标题  -->
+            
+                
+            <!-- 404 -->
+            
+        </p>
+        <!-- 文章页 meta -->
+        
+            <div class="post-intros">
+                <!-- 文章页标签  -->
+                
+                    <div class= post-intro-tags >
+    
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags="HTML">HTML</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags="SEO">SEO</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags="Web 性能">Web 性能</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags="Hexo">Hexo</a>
+    
+</div>
+
+                
+                <!-- 文章字数统计 -->
+                
+                <div class="post-intro-meta">
+                    <!-- 撰写日期 -->
+                    <span class="iconfont-archer post-intro-calander">&#xe676;</span>
+                    <span class="post-intro-time">2026/09/29</span>
+                    <!-- busuanzi -->
+                    
+                        <span id="busuanzi_container_page_pv" class="busuanzi-pv">
+                            <span class="iconfont-archer post-intro-busuanzi">&#xe602;</span>
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    
+                    <!-- 文章分享 -->
+                    <span class="share-wrapper">
+                        <span class="iconfont-archer share-icon">&#xe71d;</span>
+                        <span class="share-text">Share</span>
+                        <ul class="share-list">
+                            <li class="iconfont-archer share-qr" data-type="qr">&#xe75b;
+                                <div class="share-qrcode"></div>
+                            </li>
+                            <li class="iconfont-archer" data-type="weibo">&#xe619;</li>
+                            <li class="iconfont-archer" data-type="qzone">&#xe62e;</li>
+                            <li class="iconfont-archer" data-type="twitter">&#xe634;</li>
+                            <li class="iconfont-archer" data-type="facebook">&#xe67a;</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
+        
+    </div>
+</div>
+
+            <script>
+  // get user agent
+  function getBrowserVersions() {
+    var u = window.navigator.userAgent
+    return {
+      userAgent: u,
+      trident: u.indexOf('Trident') > -1, //IE内核
+      presto: u.indexOf('Presto') > -1, //opera内核
+      webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+      gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
+      mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
+      ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+      android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器
+      iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者安卓QQ浏览器
+      iPad: u.indexOf('iPad') > -1, //是否为iPad
+      webApp: u.indexOf('Safari') == -1, //是否为web应用程序，没有头部与底部
+      weixin: u.indexOf('MicroMessenger') == -1, //是否为微信浏览器
+      uc: u.indexOf('UCBrowser') > -1, //是否为android下的UC浏览器
+    }
+  }
+  var browser = {
+    versions: getBrowserVersions(),
+  }
+  console.log('userAgent: ' + browser.versions.userAgent)
+
+  // callback
+  function fontLoaded() {
+    console.log('font loaded')
+    if (document.getElementsByClassName('site-intro-meta')) {
+      document
+        .getElementsByClassName('intro-title')[0]
+        .classList.add('intro-fade-in')
+      document
+        .getElementsByClassName('intro-subtitle')[0]
+        .classList.add('intro-fade-in')
+      var postIntros = document.getElementsByClassName('post-intros')[0]
+      if (postIntros) {
+        postIntros.classList.add('post-fade-in')
+      }
+    }
+  }
+
+  // UC不支持跨域，所以直接显示
+  function asyncCb() {
+    if (browser.versions.uc) {
+      console.log('UCBrowser')
+      fontLoaded()
+    } else {
+      WebFont.load({
+        custom: {
+          families: ['Oswald-Regular'],
+        },
+        loading: function () {
+          // 所有字体开始加载
+          // console.log('font loading');
+        },
+        active: function () {
+          // 所有字体已渲染
+          fontLoaded()
+        },
+        inactive: function () {
+          // 字体预加载失败，无效字体或浏览器不支持加载
+          console.log('inactive: timeout')
+          fontLoaded()
+        },
+        timeout: 5000, // Set the timeout to two seconds
+      })
+    }
+  }
+
+  function asyncErr() {
+    console.warn('script load from CDN failed, will load local script')
+  }
+
+  // load webfont-loader async, and add callback function
+  function async(u, cb, err) {
+    var d = document,
+      t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0]
+    o.src = u
+    if (cb) {
+      o.addEventListener(
+        'load',
+        function (e) {
+          cb(null, e)
+        },
+        false
+      )
+    }
+    if (err) {
+      o.addEventListener(
+        'error',
+        function (e) {
+          err(null, e)
+        },
+        false
+      )
+    }
+    s.parentNode.insertBefore(o, s)
+  }
+
+  var asyncLoadWithFallBack = function (arr, success, reject) {
+    var currReject = function () {
+      reject()
+      arr.shift()
+      if (arr.length) async(arr[0], success, currReject)
+    }
+
+    async(arr[0], success, currReject)
+  }
+
+  asyncLoadWithFallBack(
+    [
+      'https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js',
+      'https://cdn.bootcss.com/webfont/1.6.28/webfontloader.js',
+      "/blog/lib/webfontloader.min.js",
+    ],
+    asyncCb,
+    asyncErr
+  )
+</script>
+
+            <img class="loading" src="/blog/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
+            <div class="container container-unloaded">
+                <main class="main post-page">
+    <article class="article-entry">
+        <blockquote>
+<p>最近读到 Vale.Rocks 的《My HTML Boilerplate》，作者把自己手写的 HTML 骨架逐行拆开讲了一遍取舍，读起来很过瘾。</p>
+<p>但我和他的情况不太一样：我的博客不是手写 HTML，是 Hexo 加主题模板生成的。这意味着 <code>&lt;head&gt;</code> 里那些标签<strong>没有一行是我亲手写的</strong> —— 它们是主题作者、插件和我的配置文件三方妥协的产物。</p>
+<p>于是我做了件早该做的事：把线上页面 dump 出来，逐个标签看过去。</p>
+</blockquote>
+<hr>
+<h1 id="📋-一、为什么-head-值得单独看一遍"><a href="#📋-一、为什么-head-值得单独看一遍" class="headerlink" title="📋 一、为什么 head 值得单独看一遍"></a>📋 一、为什么 head 值得单独看一遍</h1><p>HTML 世界里有一条铁律叫 <strong>“Don’t Break The Web”</strong> —— 1995 年写的网站在今天的浏览器里仍应能跑。为了这个承诺，HTML 采取了一种“存在即启用”的兼容策略：<strong>新元素你写了就生效，不写就回退到旧行为</strong>。</p>
+<p>代价就是 <code>head</code> 里堆满了各种“可选但建议写”的标签。它们不决定页面长什么样，却决定了很多别的事：你被分享到微信里长什么样、暗色模式下会不会闪一下白屏、搜索引擎怎么理解这个页面、浏览器要不要提前加载某个字体。</p>
+<p>更要命的是：<strong>head 里标签的顺序会显著影响性能</strong>。同样几个标签，换个位置，首屏可能差上几百毫秒。这也是为什么会有 Capo.js 这种专门评估 head 顺序的工具。</p>
+<p>所以 <code>head</code> 是最容易积累技术债的地方 —— 它不影响功能，没人会因为它报错，于是没人回头清理。</p>
+<p>我的博客已经跑了两年多，主题是从别处 clone 来的。我决定给它做一次体检。</p>
+<hr>
+<h1 id="🔬-二、体检方法：别看模板，看输出"><a href="#🔬-二、体检方法：别看模板，看输出" class="headerlink" title="🔬 二、体检方法：别看模板，看输出"></a>🔬 二、体检方法：别看模板，看输出</h1><p>这是第一个坑，先记下来：</p>
+<p><strong>不要读你的模板文件，要读生成出来的 HTML。</strong></p>
+<p>模板里写着 <code>config.description</code>，你以为输出的是站点描述；模板里写着条件判断，你以为某些标签不会渲染。但模板语言、主题默认值、插件注入会叠加在一起，最终可能和你想象的完全不是一回事。</p>
+<p>一行命令就能拿到真相：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -s https://your-domain.com/some-page/ | sed -n <span class="string">&#x27;1,60p&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>或者更省事：浏览器打开页面，<code>Ctrl+U</code> 看源码、<code>Ctrl+A</code> 全选 <code>head</code> 部分。</p>
+<p>我把某篇文章的源码拖进编辑器，从 <code>&lt;!DOCTYPE html&gt;</code> 数到 <code>&lt;/head&gt;</code>，结果是 <strong>38 个节点</strong>（不含 <code>head</code> 外面的脚本）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">身份与必需   █████              5</span><br><span class="line">分享与语义   ████████████      12</span><br><span class="line">样式与资源   █████████████     13</span><br><span class="line">兼容与元信息 ████████           8   ← 包袱集中在这里</span><br></pre></td></tr></table></figure>
+
+<p>其中 meta 类 22 个、link 类 10 个、内联 script&#x2F;style 3 个，外加一个 <code>meta generator</code>。</p>
+<p>看着没感觉，一个一个念出来就不对劲了。</p>
+<hr>
+<h1 id="🗑️-三、第一类：可以删掉的-6-个历史包袱"><a href="#🗑️-三、第一类：可以删掉的-6-个历史包袱" class="headerlink" title="🗑️ 三、第一类：可以删掉的 6 个历史包袱"></a>🗑️ 三、第一类：可以删掉的 6 个历史包袱</h1><p>这些标签<strong>没有一个是错的</strong> —— 它们只是过时了，或者从来没真正生效过。删掉它们不影响任何功能。</p>
+<h2 id="1-meta-keywords-——-搜索引擎早就不看了"><a href="#1-meta-keywords-——-搜索引擎早就不看了" class="headerlink" title="1. meta keywords —— 搜索引擎早就不看了"></a>1. <code>meta keywords</code> —— 搜索引擎早就不看了</h2><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;keywords&quot;</span> <span class="attr">content</span>=<span class="string">&quot;hexo,ITProHub,hexo-theme,hexo-blog&quot;</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>Google 在 2009 年就公开说明不再参考这个标签，原因是它被滥用得太彻底。百度也早已弱化。<strong>2026 年了，它唯一的作用是告诉别人你不太懂 SEO。</strong></p>
+<p>更尴尬的是我这份值：<code>hexo,ITProHub,hexo-theme,hexo-blog</code> —— 这是主题的<strong>默认 SEO 关键词</strong>，我两年都没改过。每篇文章的 keywords 都是这同一串，跟文章内容毫无关系。</p>
+<h2 id="2-meta-copyright-——-非标准，无行为"><a href="#2-meta-copyright-——-非标准，无行为" class="headerlink" title="2. meta copyright —— 非标准，无行为"></a>2. <code>meta copyright</code> —— 非标准，无行为</h2><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;copyright&quot;</span> <span class="attr">content</span>=<span class="string">&quot;乐予吕&quot;</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>不在 HTML 规范里，没有浏览器或搜索引擎会读它。版权声明应该出现在页脚和 <code>LICENSE</code> 文件里，不是这里。</p>
+<h2 id="3-meta-renderer-——-国产双核浏览器的遗物"><a href="#3-meta-renderer-——-国产双核浏览器的遗物" class="headerlink" title="3. meta renderer —— 国产双核浏览器的遗物"></a>3. <code>meta renderer</code> —— 国产双核浏览器的遗物</h2><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;renderer&quot;</span> <span class="attr">content</span>=<span class="string">&quot;webkit&quot;</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>这是当年给 360、QQ 浏览器这类“双核”浏览器指定用哪个内核渲染用的（<code>webkit</code> 还是老 IE 核）。现在这些浏览器早已默认极速内核，这个标签的使命结束了。</p>
+<h2 id="4-X-UA-Compatible-——-IE-专用，IE-已经退役"><a href="#4-X-UA-Compatible-——-IE-专用，IE-已经退役" class="headerlink" title="4. X-UA-Compatible —— IE 专用，IE 已经退役"></a>4. <code>X-UA-Compatible</code> —— IE 专用，IE 已经退役</h2><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">&quot;X-UA-Compatible&quot;</span> <span class="attr">content</span>=<span class="string">&quot;IE=edge,chrome=1&quot;</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>它的历史使命是让 IE 用最新的渲染引擎、或者借用 Chrome 的引擎。而 <strong>IE 已经在 2022 年 6 月正式停止支持</strong>。这个标签现在只会出现在“从不清理 head”的网站里。</p>
+<h2 id="5-meta-http-equiv-Cache-control-——-缓存该用响应头"><a href="#5-meta-http-equiv-Cache-control-——-缓存该用响应头" class="headerlink" title="5. meta http-equiv=&quot;Cache-control&quot; —— 缓存该用响应头"></a>5. <code>meta http-equiv=&quot;Cache-control&quot;</code> —— 缓存该用响应头</h2><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">&quot;Cache-control&quot;</span> <span class="attr">content</span>=<span class="string">&quot;no-cache&quot;</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>这是常见误解：以为写上这行就能控制缓存。实际上 <strong>缓存策略应该由服务端响应头决定</strong>（<code>Cache-Control</code>、<code>ETag</code>、<code>Expires</code>），<code>http-equiv</code> 形式的缓存指令在实践中作用极其有限，而且写 <code>no-cache</code> 反而可能让浏览器做更保守的判定。</p>
+<p>想要强缓存控制，去配置 Nginx 或 CDN，不要指望这里。</p>
+<h2 id="6-meta-generator-——-白白暴露构建工具"><a href="#6-meta-generator-——-白白暴露构建工具" class="headerlink" title="6. meta generator —— 白白暴露构建工具"></a>6. <code>meta generator</code> —— 白白暴露构建工具</h2><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;generator&quot;</span> <span class="attr">content</span>=<span class="string">&quot;Hexo 6.3.0&quot;</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>它由 Hexo 自动注入，等于在告诉全世界“我用 Hexo 6.3.0 生成”。这不构成真正的安全漏洞，但在自动化爬虫眼里是个有用的指纹 —— 而它对读者、对搜索引擎、对你都没有任何好处。</p>
+<p>Hexo 里关掉它很简单，根 <code>_config.yml</code> 加一行：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">meta_generator:</span> <span class="literal">false</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="🐛-四、第二类：真正出问题的-6-个地方"><a href="#🐛-四、第二类：真正出问题的-6-个地方" class="headerlink" title="🐛 四、第二类：真正出问题的 6 个地方"></a>🐛 四、第二类：真正出问题的 6 个地方</h1><p>接下来这 6 个不是“过时”，是<strong>确实在产生错误行为</strong>。</p>
+<h2 id="1-og-site-name-一直是-“Hexo”"><a href="#1-og-site-name-一直是-“Hexo”" class="headerlink" title="1. og:site_name 一直是 “Hexo”"></a>1. <code>og:site_name</code> 一直是 “Hexo”</h2><p>这是最让我意外的一个。生成出来的源码里躺着这么一行：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">property</span>=<span class="string">&quot;og:site_name&quot;</span> <span class="attr">content</span>=<span class="string">&quot;Hexo&quot;</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>站点名为什么会是 “Hexo”？因为 <code>open_graph</code> 辅助函数取的是配置里的 <strong>config.title</strong>，而我的根 <code>_config.yml</code> 那行还是脚手架生成的默认值：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">title:</span> <span class="string">Hexo</span>          <span class="comment"># ← 从没改过</span></span><br><span class="line"><span class="attr">description:</span> <span class="string">&#x27;&#x27;</span>      <span class="comment"># ← 也是空的</span></span><br></pre></td></tr></table></figure>
+
+<p>也就是说：我的文章被分享到微信、微博、Twitter 时，卡片上的站点名显示的是 <strong>“Hexo”</strong> —— 一个人家的产品名。</p>
+<p>而页面 <code>&lt;title&gt;</code> 用的是主题里另一套配置（<code>theme.SEO_title</code>），显示“个人技术日常分享”，所以<strong>站点内部看着一切正常，只有分享出去才露馅</strong>。这种 bug 不看生成源码根本发现不了。</p>
+<h2 id="2-输出了两个-meta-description，第一个是空的"><a href="#2-输出了两个-meta-description，第一个是空的" class="headerlink" title="2. 输出了两个 meta description，第一个是空的"></a>2. 输出了两个 <code>meta description</code>，第一个是空的</h2><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;description&quot;</span> <span class="attr">content</span>=<span class="string">&quot;&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;description&quot;</span> <span class="attr">content</span>=<span class="string">&quot;Harness 本义是马具，在 AI 时代……&quot;</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>第一行来自主题模板（读 <code>config.description</code>，而它是空的 <code>&#39;&#39;</code>），第二行来自 Hexo 的 <code>open_graph</code>（读文章的 <code>description</code>）。两个同名标签是无效 HTML，爬虫取到哪个取决于实现 —— 有可能就是那个空的。</p>
+<p>修法是补上站点描述（上面那行 <code>description: &#39;&#39;</code>），让两个标签都有意义，或者干脆改模板去掉重复。</p>
+<h2 id="3-user-scalable-no-在禁止用户缩放"><a href="#3-user-scalable-no-在禁止用户缩放" class="headerlink" title="3. user-scalable=no 在禁止用户缩放"></a>3. <code>user-scalable=no</code> 在禁止用户缩放</h2><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width, initial-scale=1.0, user-scalable=no&quot;</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>这是主题模板里写的。<code>user-scalable=no</code> 会<strong>禁用双指缩放</strong>，对视障用户是硬伤害 —— 他们本来就需要放大来读文字。同理，<code>minimum-scale</code> 和 <code>maximum-scale</code> 也应该避免。</p>
+<p>顺带一提：<code>initial-scale=1</code> 现在已经没有必要写了，<code>width=device-width</code> 就够了。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width&quot;</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="4-声明了-twitter-card-summary，却配了张大图"><a href="#4-声明了-twitter-card-summary，却配了张大图" class="headerlink" title="4. 声明了 twitter:card: summary，却配了张大图"></a>4. 声明了 <code>twitter:card: summary</code>，却配了张大图</h2><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;twitter:card&quot;</span> <span class="attr">content</span>=<span class="string">&quot;summary&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;twitter:image&quot;</span> <span class="attr">content</span>=<span class="string">&quot;https://.../cover.png&quot;</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><code>twitter:card</code> 的值决定了卡片样式：<code>summary</code> 是<strong>小图</strong>布局，<code>summary_large_image</code> 才是<strong>大图横幅</strong>。我的封面图是 1536×1024 的横图，配 <code>summary</code> 会被裁成小方图，等于白做。</p>
+<h2 id="5-缺-canonical"><a href="#5-缺-canonical" class="headerlink" title="5. 缺 canonical"></a>5. 缺 <code>canonical</code></h2><p>我的博客现在有两个入口：</p>
+<ul>
+<li><code>https://itprohub.github.io/blog/</code>（GitHub Pages 原生地址）</li>
+<li><code>https://www.itprohub.site/blog/</code>（Cloudflare Tunnel 转发）</li>
+</ul>
+<p>同一个页面两套 URL，却没有一行 <code>&lt;link rel=&quot;canonical&quot;&gt;</code> 告诉搜索引擎哪个是权威版本 —— 这正是 canonical 存在的意义，也是最该用它的场景。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">&quot;canonical&quot;</span> <span class="attr">href</span>=<span class="string">&quot;https://www.itprohub.site/blog/2026/09/24/agent-harness/&quot;</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="6-缺-color-scheme，暗色模式会闪白"><a href="#6-缺-color-scheme，暗色模式会闪白" class="headerlink" title="6. 缺 color-scheme，暗色模式会闪白"></a>6. 缺 <code>color-scheme</code>，暗色模式会闪白</h2><p>我的主题有完整的暗色样式（<code>dark.css</code>）和切换脚本，但没有声明：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;color-scheme&quot;</span> <span class="attr">content</span>=<span class="string">&quot;light dark&quot;</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>这一行告诉浏览器“本站支持明暗两套配色”。缺了它，一个系统设为暗色的用户打开我的博客，会先看到一瞬刺眼的白屏，然后脚本跑起来才切到黑色 —— 也就是所谓的 <strong>FOUC（无样式内容闪烁）</strong>。有了这一行，浏览器在解析阶段就知道该用深色底来绘制。</p>
+<hr>
+<h1 id="⚡-五、第三类：性能上的小账"><a href="#⚡-五、第三类：性能上的小账" class="headerlink" title="⚡ 五、第三类：性能上的小账"></a>⚡ 五、第三类：性能上的小账</h1><h2 id="1-jQuery-同步加载，还卡在-和-中间"><a href="#1-jQuery-同步加载，还卡在-和-中间" class="headerlink" title="1. jQuery 同步加载，还卡在 &lt;/head&gt; 和 &lt;body&gt; 中间"></a>1. jQuery 同步加载，还卡在 <code>&lt;/head&gt;</code> 和 <code>&lt;body&gt;</code> 中间</h2><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">        <span class="keyword">if</span> (<span class="keyword">typeof</span> <span class="variable language_">window</span>.<span class="property">$</span> == <span class="literal">undefined</span>) &#123;</span></span><br><span class="line"><span class="language-javascript">            <span class="variable language_">console</span>.<span class="title function_">warn</span>(<span class="string">&#x27;jquery load from jsdelivr failed, will load local script&#x27;</span>)</span></span><br><span class="line"><span class="language-javascript">            <span class="variable language_">document</span>.<span class="title function_">write</span>(<span class="string">&#x27;&lt;script src=&quot;/blog/lib/jquery.min.js&quot; /&gt;&#x27;</span>)</span></span><br><span class="line"><span class="language-javascript">        &#125;</span></span><br><span class="line"><span class="language-javascript">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>这是我这次找到的<strong>性能问题第一名</strong>：</p>
+<ul>
+<li>这个 <code>&lt;script&gt;</code> 没有 <code>async</code> 也没有 <code>defer</code>，是<strong>同步</strong>的 → 浏览器必须下载并执行完 jQuery，才能继续解析后面的 <code>&lt;body&gt;</code></li>
+<li>它从 jsDelivr 加载，国内网络下这个请求的耗时完全不可控 → <strong>首屏白屏时间会被它直接绑架</strong></li>
+<li>还夹在 <code>&lt;/head&gt;</code> 和 <code>&lt;body&gt;</code> 之间，位置本身就不规范</li>
+</ul>
+<p>主题的用意是好的（从 CDN 拿，失败就 fallback 到本地），但代价太大。改成 <code>defer</code>、或者干脆把依赖降到 0（这年头用原生 JS 写前端交互完全够），首屏能立竿见影地变快。</p>
+<h2 id="2-字体-preload-用的是-TTF，还缺了-type"><a href="#2-字体-preload-用的是-TTF，还缺了-type" class="headerlink" title="2. 字体 preload 用的是 TTF，还缺了 type"></a>2. 字体 preload 用的是 TTF，还缺了 type</h2><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">&quot;preload&quot;</span> <span class="attr">href</span>=<span class="string">&quot;/blog/font/Oswald-Regular.ttf&quot;</span> <span class="attr">as</span>=<span class="string">&quot;font&quot;</span> <span class="attr">crossorigin</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>两个问题：</p>
+<ul>
+<li><strong>格式</strong>：TTF 是未压缩的字体格式，同样的字样比 WOFF2 大 2～3 倍。既然都要 preload 了，就该给它最小体积 —— 换成 WOFF2 并补上 <code>type</code>：</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">&quot;preload&quot;</span> <span class="attr">href</span>=<span class="string">&quot;/blog/font/Oswald-Regular.woff2&quot;</span> <span class="attr">as</span>=<span class="string">&quot;font&quot;</span> <span class="attr">type</span>=<span class="string">&quot;font/woff2&quot;</span> <span class="attr">crossorigin</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>跨域属性</strong>：<code>crossorigin</code> 是必须的（文中开头那篇作者特意强调过：即使字体同源也要写），这一点主题是对的 ✅</li>
+</ul>
+<p>另外还有一行从 <code>at.alicdn.com</code> 拉的图标字体 —— <strong>第三方 CDN 是个隐藏依赖</strong>，它慢或者挂掉，你的图标就全变成方块。图标能内联成 SVG 就内联。</p>
+<h2 id="3-v-20211217-——-版本号停在-2021-年"><a href="#3-v-20211217-——-版本号停在-2021-年" class="headerlink" title="3. ?v=20211217 —— 版本号停在 2021 年"></a>3. <code>?v=20211217</code> —— 版本号停在 2021 年</h2><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">&quot;preload&quot;</span> <span class="attr">href</span>=<span class="string">&quot;/blog/css/style.css?v=20211217&quot;</span> <span class="attr">as</span>=<span class="string">&quot;style&quot;</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>主题用 <code>theme.source_version</code> 给静态资源打版本号来破缓存，但这个值我两年没动过。结果就是：<strong>我改了 CSS，老访客拿到的还是旧文件</strong> —— 缓存失效机制形同虚设。改样式时顺手把这个版本号也改掉，或者交给构建流程自动生成哈希。</p>
+<h2 id="4-dark-css-被重复引用"><a href="#4-dark-css-被重复引用" class="headerlink" title="4. dark.css 被重复引用"></a>4. <code>dark.css</code> 被重复引用</h2><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">&quot;preload&quot;</span> <span class="attr">href</span>=<span class="string">&quot;/blog/css/dark.css?v=20211217&quot;</span> <span class="attr">as</span>=<span class="string">&quot;style&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">&quot;stylesheet&quot;</span> <span class="attr">href</span>=<span class="string">&quot;/blog/css/dark.css&quot;</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>同一文件先 preload（但没有转换逻辑）又直接以 stylesheet 引入。浏览器会去重，不会真的下载两次，但 preload 那一行纯属冗余 —— 后面那行 stylesheet 本身就会立即发起请求。</p>
+<h2 id="5-head-之前漏了-9-行注释和空行"><a href="#5-head-之前漏了-9-行注释和空行" class="headerlink" title="5. head 之前漏了 9 行注释和空行"></a>5. <code>head</code> 之前漏了 9 行注释和空行</h2><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;zh-cn&quot;</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- title --&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- keywords --&gt;</span></span><br><span class="line">    ...</span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;utf-8&quot;</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>主题模板里的变量声明逻辑（<code>&lt;% var title = &quot;&quot; %&gt;</code> 这类）在渲染后留下了注释和空行，<strong>它们跑到了 head 开始之前</strong>。</p>
+<p>这件事的严重性在于：规范要求 <code>charset</code> 声明必须出现在<strong>文档前 1024 字节内</strong>，否则浏览器会重新解析。这些空格本身还不至于超限，但白白浪费字节、还让源码第一屏全是噪音。</p>
+<p>顺带说，<code>lang=&quot;zh-cn&quot;</code> 的规范写法是 <code>lang=&quot;zh-CN&quot;</code> —— <strong>地区子标签需要大写</strong>（RFC 5646 的大小写规范：语言小写、地区大写）。浏览器匹配不区分大小写，所以不算 bug，但不规范。</p>
+<hr>
+<h1 id="✅-六、第四类：值得留下的"><a href="#✅-六、第四类：值得留下的" class="headerlink" title="✅ 六、第四类：值得留下的"></a>✅ 六、第四类：值得留下的</h1><p>体检不是只删东西。这套 head 里也有做得对的部分，值得点出来：</p>
+<table>
+<thead>
+<tr>
+<th>标签</th>
+<th>为什么对</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>meta charset</code> <strong>是 head 第一个元素</strong></td>
+<td>硬要求（前 1024 字节内），位置完全正确</td>
+</tr>
+<tr>
+<td><code>viewport: width=device-width</code></td>
+<td>响应式的开关，不能少</td>
+</tr>
+<tr>
+<td><code>&lt;title&gt;</code> 用「页面名 · 站点名」格式</td>
+<td>书签、搜索结果、标签页都靠它</td>
+</tr>
+<tr>
+<td><code>og:*</code> &#x2F; <code>article:*</code> 一整套</td>
+<td>分享卡片的完整信息，比缺的强太多</td>
+</tr>
+<tr>
+<td><code>link rel=&quot;icon&quot;</code></td>
+<td>品牌识别，尤其标签页多的时候</td>
+</tr>
+<tr>
+<td>字体 preload 带 <code>crossorigin</code></td>
+<td>很多人会漏掉这个属性</td>
+</tr>
+<tr>
+<td>内联 critical CSS + loadCSS 异步加载主样式</td>
+<td>主题这块做得相当专业，避免样式表阻塞</td>
+</tr>
+<tr>
+<td>feed 的 <code>rel=&quot;alternate&quot;</code></td>
+<td>让浏览器和阅读器能自动发现 RSS</td>
+</tr>
+<tr>
+<td><code>og:image</code> 用绝对 URL</td>
+<td>分享平台的硬要求，相对路径不认</td>
+</tr>
+</tbody></table>
+<p>还有一处可以升级：favicon 现在是 <code>.ico</code>。换成 <strong>SVG</strong> 会更好 —— 支持度已经足够，能自适应明暗模式，任何尺寸都清晰，还省掉维护一堆尺寸位图的麻烦。</p>
+<p>另外我那张封面图是 1536×1024，而 OG 图片的通用推荐尺寸是 <strong>1200×630</strong>，后面统一一下。</p>
+<hr>
+<h1 id="🧭-七、所以，我怎么审计自己的站点"><a href="#🧭-七、所以，我怎么审计自己的站点" class="headerlink" title="🧭 七、所以，我怎么审计自己的站点"></a>🧭 七、所以，我怎么审计自己的站点</h1><p>如果你也想给自己的站点做一次，流程大概是：</p>
+<ol>
+<li><strong>看输出，不看模板</strong> —— <code>curl</code> 或查看源码，把整个 <code>head</code> 复制到编辑器里</li>
+<li><strong>逐个数一遍</strong> —— 每个标签问三个问题：它还有效吗？它和我的配置一致吗？它值得占这个位置吗？</li>
+<li><strong>查顺序</strong> —— 用 Capo.js 评估 head 里的元素排序对性能的影响</li>
+<li><strong>验证分享卡片</strong> —— 用微信&#x2F;Twitter&#x2F;Facebook 的调试工具实际抓一次，看卡片长什么样（这一步会立刻暴露 <code>og:site_name</code> 那种 bug）</li>
+<li><strong>跑一次 Lighthouse</strong> —— 看首屏还有没有阻塞资源</li>
+</ol>
+<p>顺便说，我这次是把 dump 出来的 <code>head</code> 整段丢给 AI，逐个标签问“这个还需要吗、写对了吗”，再拿 MDN 和规范核对一遍 —— 比我自己翻规范快得多，也比凭印象判断可靠。AI 时代的代码审计，工具链变了，判断力还是得自己出。</p>
+<hr>
+<h1 id="🧾-八、写在最后"><a href="#🧾-八、写在最后" class="headerlink" title="🧾 八、写在最后"></a>🧾 八、写在最后</h1><p>这 38 个标签体检下来，我最大的感受不是“我的博客配置很烂”，而是：</p>
+<blockquote>
+<p><strong>你没读过的东西，你就不算拥有它。</strong></p>
+</blockquote>
+<p>主题是别人写的、配置是脚手架生成的、标签是插件注入的 —— 每一环都很合理，叠起来就是一个两年没人看过的 <code>head</code>。它不会报错，不会崩溃，只是安静地拖慢你的首屏、在你分享文章时显示别人的产品名。</p>
+<p>清理之后，我的 <code>head</code> 大概会从 38 个节点降到 30 个左右，多出来的空位留给真正有意义的东西：canonical、color-scheme，还有一张 1200×630 的封面图。</p>
+<p>毕竟上一篇里我写过：<strong>模型是引擎，“马具”才是那辆车</strong>。<code>head</code> 大概就是网页那副马具 —— 它不提供内容，但决定了别人怎么看待你的内容。</p>
+<hr>
+<h1 id="📚-参考资料"><a href="#📚-参考资料" class="headerlink" title="📚 参考资料"></a>📚 参考资料</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://vale.rocks/posts/html-boilerplate">Vale.Rocks — My HTML Boilerplate</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.matuzo.at/blog/html-boilerplate/">Manuel Matuzović — My HTML boilerplate in 2026</a></li>
+<li><a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta">MDN — The metadata element</a></li>
+<li><a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Learn/HTML/Introduction_to_HTML/The_head_metadata_in_HTML">MDN — The Document Head</a></li>
+<li><a target="_blank" rel="noopener" href="https://html.spec.whatwg.org/multipage/semantics.html">WHATWG HTML Standard — Pragmas and the head element</a></li>
+<li><a target="_blank" rel="noopener" href="https://rviscomi.github.io/capo.js/">Capo.js — head 元素顺序评估工具</a></li>
+<li><a target="_blank" rel="noopener" href="https://ogp.me/">Open Graph Protocol 官方文档</a></li>
+</ul>
+<hr>
+
+    </article>
+    <!-- license -->
+    
+        <div class="license-wrapper">
+            <p>原文作者：<a href="https://itprohub.github.io/blog">乐予吕</a>
+            <p>原文链接：<a href="https://itprohub.github.io/blog/2026/09/29/html-head/">https://itprohub.github.io/blog/2026/09/29/html-head/</a>
+            <p>发表日期：<a href="https://itprohub.github.io/blog/2026/09/29/html-head/">September 29th 2026, 3:10:00 pm</a>
+            <p>更新日期：<a href="https://itprohub.github.io/blog/2026/09/29/html-head/">September 29th 2026, 6:52:10 am</a>
+            <p>版权声明：本文采用<a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
+        </div>
+    
+    <!-- paginator -->
+    <ul class="post-paginator">
+        <li class="next">
+            
+        </li>
+        <li class="previous">
+            
+                <div class="prevSlogan">Previous Post</div>
+                <a href="/blog/2026/09/29/hello-world/" title="欢迎来到 ITProHub！">
+                    <div class="prevTitle">欢迎来到 ITProHub！</div>
+                </a>
+            
+        </li>
+    </ul>
+    <!-- comment -->
+    
+        <div class="post-comment">
+            <!-- 来必力 City 版安装代码 -->
+
+
+            
+
+            
+
+            
+
+            <!-- utteranc评论 -->
+
+
+            <!-- partial('_partial/comment/changyan') -->
+            <!--PC版-->
+
+
+            
+            
+
+            
+
+        </div>
+    
+    <!-- timeliness note -->
+    <!-- idea from: https://hexo.fluid-dev.com/posts/hexo-injector/#%E6%96%87%E7%AB%A0%E6%97%B6%E6%95%88%E6%80%A7%E6%8F%90%E7%A4%BA -->
+    
+    <!-- Mathjax -->
+    
+</main>
+
+                <!-- profile -->
+                
+            </div>
+            <footer class="footer footer-unloaded">
+    <!-- social  -->
+    
+        <div class="social">
+            
+    
+        
+            
+                <a href="mailto:287678478@qq.com" class="iconfont-archer email" title=email ></a>
+            
+        
+    
+        
+            
+                <a href="//github.com/ItProHub" class="iconfont-archer github" target="_blank" title=github></a>
+            
+        
+    
+        
+            
+                <span class="iconfont-archer wechat" title=wechat>
+                    
+                    <img class="profile-qr" src="/blog/assets/wechat_qr.jpg" />
+                </span>
+            
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+            
+                <a href="//juejin.cn/user/1489196396594523" class="iconfont-archer juejin" target="_blank" title=juejin></a>
+            
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+
+        </div>
+    
+    <!-- powered by Hexo  -->
+    <div class="copyright">
+        <span id="hexo-power">Powered by <a href="https://www.itprohub.site/" target="_blank">ITProHub</a></span><span class="iconfont-archer power">&#xe635;</span><span id="theme-info">theme <a href="https://github.com/fi3ework/hexo-theme-archer" target="_blank">Archer</a></span>
+    </div>
+    <!-- website approve for Chinese user -->
+    
+        <div class="website-approve">
+            
+                <span id="icp-approve" class="icp-approve">
+                    <a href="https://beian.miit.gov.cn/" target="_blank">备案号：鄂ICP备2024045313号</a>
+                </span>
+            
+            
+        </div>
+    
+    <!-- 不蒜子  -->
+    
+        <div class="busuanzi-container">
+            
+            
+                <span id="busuanzi_container_site_pv">PV: <span id="busuanzi_value_site_pv"></span> :)</span>
+            
+        </div>
+    
+</footer>
+
+        </div>
+        <!-- toc -->
+        
+            <div class="toc-wrapper toc-wrapper-loding" style=
+
+
+
+
+
+
+
+    top:50vh;
+
+>
+                <div class="toc-catalog">
+                    <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
+                </div>
+                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%F0%9F%93%8B-%E4%B8%80%E3%80%81%E4%B8%BA%E4%BB%80%E4%B9%88-head-%E5%80%BC%E5%BE%97%E5%8D%95%E7%8B%AC%E7%9C%8B%E4%B8%80%E9%81%8D"><span class="toc-number">1.</span> <span class="toc-text">📋 一、为什么 head 值得单独看一遍</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%F0%9F%94%AC-%E4%BA%8C%E3%80%81%E4%BD%93%E6%A3%80%E6%96%B9%E6%B3%95%EF%BC%9A%E5%88%AB%E7%9C%8B%E6%A8%A1%E6%9D%BF%EF%BC%8C%E7%9C%8B%E8%BE%93%E5%87%BA"><span class="toc-number">2.</span> <span class="toc-text">🔬 二、体检方法：别看模板，看输出</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%F0%9F%97%91%EF%B8%8F-%E4%B8%89%E3%80%81%E7%AC%AC%E4%B8%80%E7%B1%BB%EF%BC%9A%E5%8F%AF%E4%BB%A5%E5%88%A0%E6%8E%89%E7%9A%84-6-%E4%B8%AA%E5%8E%86%E5%8F%B2%E5%8C%85%E8%A2%B1"><span class="toc-number">3.</span> <span class="toc-text">🗑️ 三、第一类：可以删掉的 6 个历史包袱</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-meta-keywords-%E2%80%94%E2%80%94-%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%97%A9%E5%B0%B1%E4%B8%8D%E7%9C%8B%E4%BA%86"><span class="toc-number">3.1.</span> <span class="toc-text">1. meta keywords —— 搜索引擎早就不看了</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-meta-copyright-%E2%80%94%E2%80%94-%E9%9D%9E%E6%A0%87%E5%87%86%EF%BC%8C%E6%97%A0%E8%A1%8C%E4%B8%BA"><span class="toc-number">3.2.</span> <span class="toc-text">2. meta copyright —— 非标准，无行为</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-meta-renderer-%E2%80%94%E2%80%94-%E5%9B%BD%E4%BA%A7%E5%8F%8C%E6%A0%B8%E6%B5%8F%E8%A7%88%E5%99%A8%E7%9A%84%E9%81%97%E7%89%A9"><span class="toc-number">3.3.</span> <span class="toc-text">3. meta renderer —— 国产双核浏览器的遗物</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-X-UA-Compatible-%E2%80%94%E2%80%94-IE-%E4%B8%93%E7%94%A8%EF%BC%8CIE-%E5%B7%B2%E7%BB%8F%E9%80%80%E5%BD%B9"><span class="toc-number">3.4.</span> <span class="toc-text">4. X-UA-Compatible —— IE 专用，IE 已经退役</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-meta-http-equiv-Cache-control-%E2%80%94%E2%80%94-%E7%BC%93%E5%AD%98%E8%AF%A5%E7%94%A8%E5%93%8D%E5%BA%94%E5%A4%B4"><span class="toc-number">3.5.</span> <span class="toc-text">5. meta http-equiv&#x3D;&quot;Cache-control&quot; —— 缓存该用响应头</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-meta-generator-%E2%80%94%E2%80%94-%E7%99%BD%E7%99%BD%E6%9A%B4%E9%9C%B2%E6%9E%84%E5%BB%BA%E5%B7%A5%E5%85%B7"><span class="toc-number">3.6.</span> <span class="toc-text">6. meta generator —— 白白暴露构建工具</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%F0%9F%90%9B-%E5%9B%9B%E3%80%81%E7%AC%AC%E4%BA%8C%E7%B1%BB%EF%BC%9A%E7%9C%9F%E6%AD%A3%E5%87%BA%E9%97%AE%E9%A2%98%E7%9A%84-6-%E4%B8%AA%E5%9C%B0%E6%96%B9"><span class="toc-number">4.</span> <span class="toc-text">🐛 四、第二类：真正出问题的 6 个地方</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-og-site-name-%E4%B8%80%E7%9B%B4%E6%98%AF-%E2%80%9CHexo%E2%80%9D"><span class="toc-number">4.1.</span> <span class="toc-text">1. og:site_name 一直是 “Hexo”</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E8%BE%93%E5%87%BA%E4%BA%86%E4%B8%A4%E4%B8%AA-meta-description%EF%BC%8C%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%98%AF%E7%A9%BA%E7%9A%84"><span class="toc-number">4.2.</span> <span class="toc-text">2. 输出了两个 meta description，第一个是空的</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-user-scalable-no-%E5%9C%A8%E7%A6%81%E6%AD%A2%E7%94%A8%E6%88%B7%E7%BC%A9%E6%94%BE"><span class="toc-number">4.3.</span> <span class="toc-text">3. user-scalable&#x3D;no 在禁止用户缩放</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E5%A3%B0%E6%98%8E%E4%BA%86-twitter-card-summary%EF%BC%8C%E5%8D%B4%E9%85%8D%E4%BA%86%E5%BC%A0%E5%A4%A7%E5%9B%BE"><span class="toc-number">4.4.</span> <span class="toc-text">4. 声明了 twitter:card: summary，却配了张大图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E7%BC%BA-canonical"><span class="toc-number">4.5.</span> <span class="toc-text">5. 缺 canonical</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E7%BC%BA-color-scheme%EF%BC%8C%E6%9A%97%E8%89%B2%E6%A8%A1%E5%BC%8F%E4%BC%9A%E9%97%AA%E7%99%BD"><span class="toc-number">4.6.</span> <span class="toc-text">6. 缺 color-scheme，暗色模式会闪白</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E2%9A%A1-%E4%BA%94%E3%80%81%E7%AC%AC%E4%B8%89%E7%B1%BB%EF%BC%9A%E6%80%A7%E8%83%BD%E4%B8%8A%E7%9A%84%E5%B0%8F%E8%B4%A6"><span class="toc-number">5.</span> <span class="toc-text">⚡ 五、第三类：性能上的小账</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-jQuery-%E5%90%8C%E6%AD%A5%E5%8A%A0%E8%BD%BD%EF%BC%8C%E8%BF%98%E5%8D%A1%E5%9C%A8-%E5%92%8C-%E4%B8%AD%E9%97%B4"><span class="toc-number">5.1.</span> <span class="toc-text">1. jQuery 同步加载，还卡在 &lt;&#x2F;head&gt; 和 &lt;body&gt; 中间</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%AD%97%E4%BD%93-preload-%E7%94%A8%E7%9A%84%E6%98%AF-TTF%EF%BC%8C%E8%BF%98%E7%BC%BA%E4%BA%86-type"><span class="toc-number">5.2.</span> <span class="toc-text">2. 字体 preload 用的是 TTF，还缺了 type</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-v-20211217-%E2%80%94%E2%80%94-%E7%89%88%E6%9C%AC%E5%8F%B7%E5%81%9C%E5%9C%A8-2021-%E5%B9%B4"><span class="toc-number">5.3.</span> <span class="toc-text">3. ?v&#x3D;20211217 —— 版本号停在 2021 年</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-dark-css-%E8%A2%AB%E9%87%8D%E5%A4%8D%E5%BC%95%E7%94%A8"><span class="toc-number">5.4.</span> <span class="toc-text">4. dark.css 被重复引用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-head-%E4%B9%8B%E5%89%8D%E6%BC%8F%E4%BA%86-9-%E8%A1%8C%E6%B3%A8%E9%87%8A%E5%92%8C%E7%A9%BA%E8%A1%8C"><span class="toc-number">5.5.</span> <span class="toc-text">5. head 之前漏了 9 行注释和空行</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E2%9C%85-%E5%85%AD%E3%80%81%E7%AC%AC%E5%9B%9B%E7%B1%BB%EF%BC%9A%E5%80%BC%E5%BE%97%E7%95%99%E4%B8%8B%E7%9A%84"><span class="toc-number">6.</span> <span class="toc-text">✅ 六、第四类：值得留下的</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%F0%9F%A7%AD-%E4%B8%83%E3%80%81%E6%89%80%E4%BB%A5%EF%BC%8C%E6%88%91%E6%80%8E%E4%B9%88%E5%AE%A1%E8%AE%A1%E8%87%AA%E5%B7%B1%E7%9A%84%E7%AB%99%E7%82%B9"><span class="toc-number">7.</span> <span class="toc-text">🧭 七、所以，我怎么审计自己的站点</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%F0%9F%A7%BE-%E5%85%AB%E3%80%81%E5%86%99%E5%9C%A8%E6%9C%80%E5%90%8E"><span class="toc-number">8.</span> <span class="toc-text">🧾 八、写在最后</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%F0%9F%93%9A-%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="toc-number">9.</span> <span class="toc-text">📚 参考资料</span></a></li></ol>
+            </div>
+        
+        <!-- sidebar -->
+        <div class="sidebar sidebar-hide">
+    <ul class="sidebar-tabs sidebar-tabs-active-0">
+        <li class="sidebar-tab-archives"><span class="iconfont-archer">&#xe67d;</span><span class="tab-name">Archive</span></li>
+        <li class="sidebar-tab-tags"><span class="iconfont-archer">&#xe61b;</span><span class="tab-name">Tag</span></li>
+        <li class="sidebar-tab-categories"><span class="iconfont-archer">&#xe666;</span><span class="tab-name">Cate</span></li>
+    </ul>
+    <div class="sidebar-content sidebar-content-show-archive">
+        <div class="sidebar-panel-archives">
+    <!-- 在 ejs 中将 archive 按照时间排序 -->
+    
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    
+    
+    
+    
+    <div class="total-and-search">
+        <div class="total-archive">
+        Total : 56
+        </div>
+        <!-- search  -->
+        
+    </div>
+    
+    <div class="post-archive">
+    
+        
+            
+            
+            <div class="archive-year"> 2026 </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/29</span>
+            <a class="archive-post-title" href="/blog/2026/09/29/html-head/">我的 HTML Head 清单：38 个标签的体检报告</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/29</span>
+            <a class="archive-post-title" href="/blog/2026/09/29/hello-world/">欢迎来到 ITProHub！</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/24</span>
+            <a class="archive-post-title" href="/blog/2026/09/24/agent-harness/">Agent Harness：模型只是引擎，“马具”才是那辆车</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">01/15</span>
+            <a class="archive-post-title" href="/blog/2026/01/15/ai-security/">AI_职场“保命”手册</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> 2025 </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/11</span>
+            <a class="archive-post-title" href="/blog/2025/10/11/agent-framework/">Microsoft Agent Framework：让 AI 智能体开发像写 Web 应用一样简单</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/25</span>
+            <a class="archive-post-title" href="/blog/2025/09/25/http-option/">用 HTTP OPTIONS 发现 API 的隐藏能力</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/11</span>
+            <a class="archive-post-title" href="/blog/2025/09/11/GEO/">GEO 入门：从 SEO 到 GEO 的转变</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/04</span>
+            <a class="archive-post-title" href="/blog/2025/09/04/oauth/">OAuth：为什么登录要绕一大圈？</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/06</span>
+            <a class="archive-post-title" href="/blog/2025/08/06/js-arrow-function/">别再乱用箭头函数了！JavaScript 三种函数写法的终极指南</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/01</span>
+            <a class="archive-post-title" href="/blog/2025/08/01/send-off-1/">离别，是为了更好的重逢 —— 送别老同事的一晚</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">06/20</span>
+            <a class="archive-post-title" href="/blog/2025/06/20/promise/">Promise 深度解析：从原理到实战</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">06/04</span>
+            <a class="archive-post-title" href="/blog/2025/06/04/codex/">🚀 我们正在进入“任务级编程”时代，Copilot 已经过时了</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">06/03</span>
+            <a class="archive-post-title" href="/blog/2025/06/03/css-scope/">从 scoped 到 @scope：CSS 样式隔离的进化</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/23</span>
+            <a class="archive-post-title" href="/blog/2025/05/23/javelin-unit-testing/">手写一个微型 Spring 框架（五）：单元测试实践</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/12</span>
+            <a class="archive-post-title" href="/blog/2025/05/12/javelin-dal/">手写一个微型 Spring 框架（四）：数据访问层设计实战</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/06</span>
+            <a class="archive-post-title" href="/blog/2025/05/06/javelin-servlet/">构建自己的微型 Spring 框架（三）：接入内嵌 Tomcat 与 Servlet</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/30</span>
+            <a class="archive-post-title" href="/blog/2025/04/30/javelin-nhttpcontext/">手写一个微型Spring框架（三）：NHttpContext的详解</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/27</span>
+            <a class="archive-post-title" href="/blog/2025/04/27/javelin-2/">手写一个微型 Spring 框架（二）:从路由到生命周期管理</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/14</span>
+            <a class="archive-post-title" href="/blog/2025/04/14/javelin-1/">手写一个微型 Spring 框架：从端口监听到依赖注入</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/02</span>
+            <a class="archive-post-title" href="/blog/2025/04/02/java-init/">👨‍💻 十年开发老兵，从.NET到Java：我为何选择重新出发？ 🚀</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/28</span>
+            <a class="archive-post-title" href="/blog/2025/03/28/js-monitoring/">从入门到实战：一文搞定JS无埋点监控方案</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/18</span>
+            <a class="archive-post-title" href="/blog/2025/03/18/MCP/">MCP：AI 时代的“USB-C”，解锁模型上下文新范式</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/14</span>
+            <a class="archive-post-title" href="/blog/2025/03/14/deepseek-rag/">DeepSeek + RAG： 让大模型更智能、更精准</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/27</span>
+            <a class="archive-post-title" href="/blog/2025/02/27/midscenejs/">AI驱动的自动化测试：探索MidScene.js的强大功能</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/21</span>
+            <a class="archive-post-title" href="/blog/2025/02/21/function-calling/">让AI模型不再只是“说话”——探索AI模型的函数调用</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/12</span>
+            <a class="archive-post-title" href="/blog/2025/02/12/openai-operator/">「AI」科普向 | OpenAI Operator：推动数字世界的新纪元</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/12</span>
+            <a class="archive-post-title" href="/blog/2025/02/12/deepseek-vscode/">Cursor平替：把 DeepSeek 接入 VS Code</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/07</span>
+            <a class="archive-post-title" href="/blog/2025/02/07/deepseek-1/">DeepSeek 本地部署+web端访问 指南</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/05</span>
+            <a class="archive-post-title" href="/blog/2025/02/05/docker-log/">减少 Docker 日志大小：实用的日志管理指南</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">01/07</span>
+            <a class="archive-post-title" href="/blog/2025/01/07/parallelism/">并发不是并行！</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> 2024 </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/18</span>
+            <a class="archive-post-title" href="/blog/2024/12/18/log/">程序日志设计与存储：实践与注意事项(一)</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/16</span>
+            <a class="archive-post-title" href="/blog/2024/12/16/web-rtc/">WebRTC入门：让浏览器之间的实时通信变得简单</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/11</span>
+            <a class="archive-post-title" href="/blog/2024/12/11/k8s-helm/">Kubernetes 分享：如何使用 Helm 优化 Kubernetes 应用部署</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/29</span>
+            <a class="archive-post-title" href="/blog/2024/11/29/rspack/">Rspack：一个新一代的 JavaScript 打包工具</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/20</span>
+            <a class="archive-post-title" href="/blog/2024/11/20/mfa/">深入解读 MFA 和 TOTP 的实现原理与应用</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/08</span>
+            <a class="archive-post-title" href="/blog/2024/11/08/stream-output/">解读大型语言模型（LLM）API：了解流式输出的工作原理</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/06</span>
+            <a class="archive-post-title" href="/blog/2024/11/06/encrypt-hash-signature/">加密、哈希与签名：基本原理与区别解析</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/30</span>
+            <a class="archive-post-title" href="/blog/2024/10/30/js-signal/">JavaScript 信号：如何将响应式功能带到普通 Web 开发中</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/28</span>
+            <a class="archive-post-title" href="/blog/2024/08/28/sticky-packet/">深入探讨 TCP 粘包现象：问题、原因与解决方案</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/16</span>
+            <a class="archive-post-title" href="/blog/2024/08/16/quic/">QUIC:被寄予厚望的下一代互联网传输协议</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/08</span>
+            <a class="archive-post-title" href="/blog/2024/08/08/docker-layer/">深入理解容器镜像层</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/01</span>
+            <a class="archive-post-title" href="/blog/2024/08/01/daemonset/">Kubernetes DaemonSet – 它是什么以及如何使用</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/11</span>
+            <a class="archive-post-title" href="/blog/2024/07/11/rabbitmq-quorum/">RabbitMQ之三种队列之间的区别及如何选型</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/09</span>
+            <a class="archive-post-title" href="/blog/2024/07/09/rabbitmq-basic/">深入理解 RabbitMQ 中的基础概念</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/08</span>
+            <a class="archive-post-title" href="/blog/2024/07/08/docker-2/">Docker镜像构建优化</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/05</span>
+            <a class="archive-post-title" href="/blog/2024/07/05/docker-1/">Docker隐藏在细节中的技术基础</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">06/20</span>
+            <a class="archive-post-title" href="/blog/2024/06/20/proxy/">代理服务解析：正向代理、反向代理和透明代理</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/30</span>
+            <a class="archive-post-title" href="/blog/2024/05/30/similar-image-search/">从零开始搭建自己的相似图片搜索引擎</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/30</span>
+            <a class="archive-post-title" href="/blog/2024/05/30/TaskCompletionSource/">C# 学习笔记： TaskCompletionSource</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/22</span>
+            <a class="archive-post-title" href="/blog/2024/05/22/dead-message/">深入解析消息队列中的死信队列</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/28</span>
+            <a class="archive-post-title" href="/blog/2024/04/28/dump/">Dump分析入门指南</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/18</span>
+            <a class="archive-post-title" href="/blog/2024/04/18/redis-interview-1/">Redis成长记 - Redis的陷阱（一）</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/11</span>
+            <a class="archive-post-title" href="/blog/2024/04/11/https/">HTTPS的工作原理以及安装</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/07</span>
+            <a class="archive-post-title" href="/blog/2024/04/07/garnet/">Garnet，缓存的新选择！</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/28</span>
+            <a class="archive-post-title" href="/blog/2024/03/28/organization-internal-loss/">组织发展致命杀手：内耗</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/19</span>
+            <a class="archive-post-title" href="/blog/2024/03/19/http/">深入理解 HTTP Connection 头</a>
+        </li>
+    
+    </div>
+</div>
+
+        <div class="sidebar-panel-tags">
+    <div class="sidebar-tags-name">
+        
+            <span class="sidebar-tag-name" data-tags="dump 性能 异常">
+                <span class="iconfont-archer">&#xe606;</span>
+                dump 性能 异常
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="Garnet 缓存 微软">
+                <span class="iconfont-archer">&#xe606;</span>
+                Garnet 缓存 微软
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="HTML">
+                <span class="iconfont-archer">&#xe606;</span>
+                HTML
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="SEO">
+                <span class="iconfont-archer">&#xe606;</span>
+                SEO
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="Web 性能">
+                <span class="iconfont-archer">&#xe606;</span>
+                Web 性能
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="Hexo">
+                <span class="iconfont-archer">&#xe606;</span>
+                Hexo
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="http http协议 Connection">
+                <span class="iconfont-archer">&#xe606;</span>
+                http http协议 Connection
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="https http ssl tls">
+                <span class="iconfont-archer">&#xe606;</span>
+                https http ssl tls
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="前端监控 JavaScript Ajax">
+                <span class="iconfont-archer">&#xe606;</span>
+                前端监控 JavaScript Ajax
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="组织 内耗">
+                <span class="iconfont-archer">&#xe606;</span>
+                组织 内耗
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="redis 面试 求职">
+                <span class="iconfont-archer">&#xe606;</span>
+                redis 面试 求职
+            </span>
+        
+    </div>
+    <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
+    <div class="tag-load-fail" style="display: none; color: #ccc; font-size: 0.6rem;">
+        缺失模块，请参考主题文档进行安装配置：https://github.com/fi3ework/hexo-theme-archer#%E5%AE%89%E8%A3%85%E4%B8%BB%E9%A2%98
+    </div> 
+    <div class="sidebar-tags-list"></div>
+</div>
+
+        <div class="sidebar-panel-categories">
+    <div class="sidebar-categories-name">
+    
+    </div>
+    <div class="iconfont-archer sidebar-categories-empty">&#xe678;</div>
+    <div class="sidebar-categories-list"></div>
+</div>
+
+    </div>
+</div>
+
+        <!-- site-meta -->
+        <script>
+    var siteMetaRoot = "/blog/"
+    if (siteMetaRoot === "undefined") {
+        siteMetaRoot = '/'
+    }
+    var siteMeta = {
+        url: "https://itprohub.github.io/blog",
+        root: siteMetaRoot,
+        author: "乐予吕"
+    }
+</script>
+
+        <!-- import experimental options here -->
+        <!-- Custom Font -->
+
+
+        <!-- main func -->
+        <script src="/blog/scripts/main.js?v=20211217"></script>
+        <!-- dark mode -->
+        <script src="/blog/scripts/dark.js?v=20211217"></script>
+        <!-- fancybox -->
+        <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" defer></script>
+        <!-- algolia -->
+        
+        <!-- busuanzi -->
+        
+            <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+        
+        <!-- CNZZ -->
+        
+        <!-- async load share.js -->
+        
+            <script src="/blog/scripts/share.js?v=20211217" async></script>
+        
+        <!-- mermaid -->
+        
+    </body>
+</html>
