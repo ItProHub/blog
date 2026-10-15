@@ -1,0 +1,2270 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <!-- title -->
+
+
+    
+
+<!-- keywords -->
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="author" content="乐予吕">
+    <meta name="renderer" content="webkit">
+    <meta name="copyright" content="乐予吕">
+    
+        <meta name="keywords" content="hexo,ITProHub,hexo-theme,hexo-blog">
+    
+    <meta name="description" content="">
+    <meta name="description" content="网页自己把能力声明成结构化工具，浏览器里的 AI Agent 直接调用——这才是 WebMCP 想做的事。本文用 Career Copilot 项目实测 14 个工具的三层权限与人工闸门，并附国内数据源的绕行方案。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WebMCP：让网站直接对 AI Agent 说话">
+<meta property="og:url" content="https://itprohub.github.io/blog/2026/10/15/webmcp/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="网页自己把能力声明成结构化工具，浏览器里的 AI Agent 直接调用——这才是 WebMCP 想做的事。本文用 Career Copilot 项目实测 14 个工具的三层权限与人工闸门，并附国内数据源的绕行方案。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://itprohub.github.io/blog/images/webmcp/cover.png">
+<meta property="article:published_time" content="2026-10-15T16:20:00.000Z">
+<meta property="article:modified_time" content="2026-10-15T07:24:11.992Z">
+<meta property="article:author" content="乐予吕">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://itprohub.github.io/blog/images/webmcp/cover.png">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="icon" href="/blog/assets/favicon.ico">
+    
+    <title>WebMCP：让网站直接对 AI Agent 说话 · 个人技术日常分享</title>
+    <!-- /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+/* This file is meant as a standalone workflow for
+- testing support for link[rel=preload]
+- enabling async CSS loading in browsers that do not support rel=preload
+- applying rel preload css once loaded, whether supported or not.
+*/ -->
+<script>
+    (function (w) {
+        'use strict'
+        // rel=preload support test
+        if (!w.loadCSS) {
+            w.loadCSS = function () {}
+        }
+        // define on the loadCSS obj
+        var rp = (loadCSS.relpreload = {})
+        // rel=preload feature support test
+        // runs once and returns a function for compat purposes
+        rp.support = (function () {
+            var ret
+            try {
+                ret = w.document.createElement('link').relList.supports('preload')
+            } catch (e) {
+                ret = false
+            }
+            return function () {
+                return ret
+            }
+        })()
+
+        // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+        // then change that media back to its intended value on load
+        rp.bindMediaToggle = function (link) {
+            // remember existing media attr for ultimate state, or default to 'all'
+            var finalMedia = link.media || 'all'
+
+            function enableStylesheet() {
+                link.media = finalMedia
+            }
+
+            // bind load handlers to enable media
+            if (link.addEventListener) {
+                link.addEventListener('load', enableStylesheet)
+            } else if (link.attachEvent) {
+                link.attachEvent('onload', enableStylesheet)
+            }
+
+            // Set rel and non-applicable media type to start an async request
+            // note: timeout allows this to happen async to let rendering continue in IE
+            setTimeout(function () {
+                link.rel = 'stylesheet'
+                link.media = 'only x'
+            })
+            // also enable media after 3 seconds,
+            // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+            setTimeout(enableStylesheet, 3000)
+        }
+
+        // loop through link elements in DOM
+        rp.poly = function () {
+            // double check this to prevent external calls from running
+            if (rp.support()) {
+                return
+            }
+            var links = w.document.getElementsByTagName('link')
+            for (var i = 0; i < links.length; i++) {
+                var link = links[i]
+                // qualify links to those with rel=preload and as=style attrs
+                if (
+                    link.rel === 'preload' &&
+                    link.getAttribute('as') === 'style' &&
+                    !link.getAttribute('data-loadcss')
+                ) {
+                    // prevent rerunning on link
+                    link.setAttribute('data-loadcss', true)
+                    // bind listeners to toggle media back
+                    rp.bindMediaToggle(link)
+                }
+            }
+        }
+
+        // if unsupported, run the polyfill
+        if (!rp.support()) {
+            // run once at least
+            rp.poly()
+
+            // rerun poly on an interval until onload
+            var run = w.setInterval(rp.poly, 500)
+            if (w.addEventListener) {
+                w.addEventListener('load', function () {
+                    rp.poly()
+                    w.clearInterval(run)
+                })
+            } else if (w.attachEvent) {
+                w.attachEvent('onload', function () {
+                    rp.poly()
+                    w.clearInterval(run)
+                })
+            }
+        }
+
+        // commonjs
+        if (typeof exports !== 'undefined') {
+            exports.loadCSS = loadCSS
+        } else {
+            w.loadCSS = loadCSS
+        }
+    })(typeof global !== 'undefined' ? global : this)
+</script>
+
+    <style type="text/css">
+    @font-face {
+        font-family: 'Oswald-Regular';
+        src: url("/blog/font/Oswald-Regular.ttf");
+    }
+
+    body {
+        margin: 0;
+    }
+
+    header,
+    footer,
+    .back-top,
+    .sidebar,
+    .container,
+    .site-intro-meta,
+    .toc-wrapper {
+        display: none;
+    }
+
+    .site-intro {
+        position: relative;
+        z-index: 3;
+        width: 100%;
+        /* height: 50vh; */
+        overflow: hidden;
+    }
+
+    .site-intro-placeholder {
+        position: absolute;
+        z-index: -2;
+        top: 0;
+        left: 0;
+        width: calc(100% + 300px);
+        height: 100%;
+        background: repeating-linear-gradient(-45deg, #444 0, #444 80px, #333 80px, #333 160px);
+        background-position: center center;
+        transform: translate3d(-226px, 0, 0);
+        animation: gradient-move 2.5s ease-out 0s infinite;
+    }
+
+    @keyframes gradient-move {
+        0% {
+            transform: translate3d(-226px, 0, 0);
+        }
+        100% {
+            transform: translate3d(0, 0, 0);
+        }
+    }
+</style>
+
+    <link rel="preload" href="/blog/css/style.css?v=20211217" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="/blog/css/dark.css?v=20211217" as="style">
+    <link rel="stylesheet" href="/blog/css/dark.css">
+    <link rel="stylesheet" href="/blog/css/mobile.css?v=20211217" media="(max-width: 960px)">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" as="script">
+    <link rel="preload" href="/blog/scripts/main.js?v=20211217" as="script">
+    <link rel="preload" href="/blog/scripts/dark.js?v=20211217" as="script">
+    <link rel="preload" href="/blog/font/Oswald-Regular.ttf" as="font" crossorigin>
+    <link rel="preload" href="https://at.alicdn.com/t/font_327081_1dta1rlogw17zaor.woff" as="font" crossorigin>
+    <!-- algolia -->
+    
+    <!-- 百度统计  -->
+    
+    <!-- Google tag (gtag.js) -->
+    
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6058253486086884"
+    crossorigin="anonymous"></script>
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>    
+    <script type="text/javascript">
+        if (typeof window.$ == undefined) {
+            console.warn('jquery load from jsdelivr failed, will load local script')
+            document.write('<script src="/blog/lib/jquery.min.js" />')
+        }
+    </script>
+    
+        <body class="post-body">
+    
+        <!-- header -->
+        <header class="header header-mobile">
+    <!-- top read progress line -->
+    <div class="header-element">
+        <div class="read-progress"></div>
+    </div>
+    <!-- sidebar menu button -->
+    <div class="header-element">
+        
+            <div class="header-sidebar-menu">
+        
+            
+                <div style="padding-left: 1px;">&#xe775;</div>
+            
+        </div>
+    </div>
+    <!-- header actions -->
+    <div class="header-actions">
+        <!-- theme mode switch button -->
+        <span class="header-theme-btn header-element">
+            <i class="fas fa-adjust"></i>
+        </span>
+        <!-- back to home page text -->
+        <span class="home-link header-element">
+            <a href=/blog/>个人技术日常分享</a>
+        </span>
+    </div>
+    <!-- toggle banner for post layout -->
+    
+        
+            <div class="banner">
+        
+            <div class="blog-title header-element">
+                <a href="/blog/">个人技术日常分享</a>
+            </div>
+            <div class="post-title header-element">
+                <a href="#" class="post-name">WebMCP：让网站直接对 AI Agent 说话</a>
+            </div>
+        </div>
+    
+</header>
+
+        <!-- fixed footer -->
+        <footer class="footer-fixed">
+    <!-- back to top button -->
+    <div class="footer-fixed-element">
+        
+            <div class="back-top back-top-hidden">
+        
+        
+            <div>&#xe639;</div>
+        
+        </div>
+    </div>
+</footer>
+
+        <!-- wrapper -->
+        <div class="wrapper">
+            <div class="site-intro" style="
+
+
+
+
+
+
+
+    height:50vh;
+
+">
+    
+    <!-- 主页  -->
+    
+        
+    <!-- 404页  -->
+    
+    <div class="site-intro-placeholder"></div>
+    <div class="site-intro-img" style="background-image: url(/blog/intro/post-bg.jpg)"></div>
+    <div class="site-intro-meta">
+        <!-- 标题  -->
+        <h1 class="intro-title">
+            <!-- 主页  -->
+            
+                WebMCP：让网站直接对 AI Agent 说话
+            <!-- 404 -->
+            
+        </h1>
+        <!-- 副标题 -->
+        <p class="intro-subtitle">
+            <!-- 主页副标题  -->
+            
+                
+            <!-- 404 -->
+            
+        </p>
+        <!-- 文章页 meta -->
+        
+            <div class="post-intros">
+                <!-- 文章页标签  -->
+                
+                    <div class= post-intro-tags >
+    
+    
+</div>
+
+                
+                <!-- 文章字数统计 -->
+                
+                <div class="post-intro-meta">
+                    <!-- 撰写日期 -->
+                    <span class="iconfont-archer post-intro-calander">&#xe676;</span>
+                    <span class="post-intro-time">2026/10/15</span>
+                    <!-- busuanzi -->
+                    
+                        <span id="busuanzi_container_page_pv" class="busuanzi-pv">
+                            <span class="iconfont-archer post-intro-busuanzi">&#xe602;</span>
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    
+                    <!-- 文章分享 -->
+                    <span class="share-wrapper">
+                        <span class="iconfont-archer share-icon">&#xe71d;</span>
+                        <span class="share-text">Share</span>
+                        <ul class="share-list">
+                            <li class="iconfont-archer share-qr" data-type="qr">&#xe75b;
+                                <div class="share-qrcode"></div>
+                            </li>
+                            <li class="iconfont-archer" data-type="weibo">&#xe619;</li>
+                            <li class="iconfont-archer" data-type="qzone">&#xe62e;</li>
+                            <li class="iconfont-archer" data-type="twitter">&#xe634;</li>
+                            <li class="iconfont-archer" data-type="facebook">&#xe67a;</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
+        
+    </div>
+</div>
+
+            <script>
+  // get user agent
+  function getBrowserVersions() {
+    var u = window.navigator.userAgent
+    return {
+      userAgent: u,
+      trident: u.indexOf('Trident') > -1, //IE内核
+      presto: u.indexOf('Presto') > -1, //opera内核
+      webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+      gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
+      mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
+      ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+      android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器
+      iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者安卓QQ浏览器
+      iPad: u.indexOf('iPad') > -1, //是否为iPad
+      webApp: u.indexOf('Safari') == -1, //是否为web应用程序，没有头部与底部
+      weixin: u.indexOf('MicroMessenger') == -1, //是否为微信浏览器
+      uc: u.indexOf('UCBrowser') > -1, //是否为android下的UC浏览器
+    }
+  }
+  var browser = {
+    versions: getBrowserVersions(),
+  }
+  console.log('userAgent: ' + browser.versions.userAgent)
+
+  // callback
+  function fontLoaded() {
+    console.log('font loaded')
+    if (document.getElementsByClassName('site-intro-meta')) {
+      document
+        .getElementsByClassName('intro-title')[0]
+        .classList.add('intro-fade-in')
+      document
+        .getElementsByClassName('intro-subtitle')[0]
+        .classList.add('intro-fade-in')
+      var postIntros = document.getElementsByClassName('post-intros')[0]
+      if (postIntros) {
+        postIntros.classList.add('post-fade-in')
+      }
+    }
+  }
+
+  // UC不支持跨域，所以直接显示
+  function asyncCb() {
+    if (browser.versions.uc) {
+      console.log('UCBrowser')
+      fontLoaded()
+    } else {
+      WebFont.load({
+        custom: {
+          families: ['Oswald-Regular'],
+        },
+        loading: function () {
+          // 所有字体开始加载
+          // console.log('font loading');
+        },
+        active: function () {
+          // 所有字体已渲染
+          fontLoaded()
+        },
+        inactive: function () {
+          // 字体预加载失败，无效字体或浏览器不支持加载
+          console.log('inactive: timeout')
+          fontLoaded()
+        },
+        timeout: 5000, // Set the timeout to two seconds
+      })
+    }
+  }
+
+  function asyncErr() {
+    console.warn('script load from CDN failed, will load local script')
+  }
+
+  // load webfont-loader async, and add callback function
+  function async(u, cb, err) {
+    var d = document,
+      t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0]
+    o.src = u
+    if (cb) {
+      o.addEventListener(
+        'load',
+        function (e) {
+          cb(null, e)
+        },
+        false
+      )
+    }
+    if (err) {
+      o.addEventListener(
+        'error',
+        function (e) {
+          err(null, e)
+        },
+        false
+      )
+    }
+    s.parentNode.insertBefore(o, s)
+  }
+
+  var asyncLoadWithFallBack = function (arr, success, reject) {
+    var currReject = function () {
+      reject()
+      arr.shift()
+      if (arr.length) async(arr[0], success, currReject)
+    }
+
+    async(arr[0], success, currReject)
+  }
+
+  asyncLoadWithFallBack(
+    [
+      'https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js',
+      'https://cdn.bootcss.com/webfont/1.6.28/webfontloader.js',
+      "/blog/lib/webfontloader.min.js",
+    ],
+    asyncCb,
+    asyncErr
+  )
+</script>
+
+            <img class="loading" src="/blog/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
+            <div class="container container-unloaded">
+                <main class="main post-page">
+    <article class="article-entry">
+        <p><img src="/blog/./images/webmcp/cover.png" alt="WebMCP：让网站直接对 AI Agent 说话"></p>
+<blockquote>
+<p>前面几篇一直在讲 <a href="https://itprohub.github.io/blog/2025/03/18/MCP/">MCP</a> —— 那是<strong>给服务端开的一扇门</strong>，站点要专门开发接口、配认证，Agent 还得能独立访问它。</p>
+<p>这次把位置往前挪一步：如果这些工具不是服务端提供的，而是<strong>你正在浏览的那个页面</strong>当场声明出来的呢？</p>
+<p>我把这个想法做成了一个能跑的项目，下面是完整记录 —— 包括它怎么工作、谁真的能调用它、以及我在国内环境下撞到的几堵墙。</p>
+</blockquote>
+<hr>
+<h1 id="🎬-一、让-AI-用网站，难在哪"><a href="#🎬-一、让-AI-用网站，难在哪" class="headerlink" title="🎬 一、让 AI 用网站，难在哪"></a>🎬 一、让 AI 用网站，难在哪</h1><p>先说一个具体的活：让 AI 帮我找工作。</p>
+<p>它要看懂我的简历，去几个真实招聘板抓岗位、按我的情况打分排序、找出技能缺口、把过线的岗位准备成申请材料。整条链路十几步，其中只有最后一步是真正以我的名义对外动作 —— 提交申请。</p>
+<p>问题在于，<strong>怎么让 AI 用上“招聘网站”这个能力？</strong></p>
+<p>今天最主流的办法是视觉自动化：截屏、识别像素、模拟点击、再截屏。这条路能跑通，但它有三个天生的毛病：</p>
+<ul>
+<li><strong>脆弱</strong> —— 页面改一个 CSS 类名，脚本就可能瞎了；</li>
+<li><strong>慢</strong> —— 每一步都要等页面渲染、等跳转；</li>
+<li><strong>没有语义</strong> —— 模型知道它点了一个按钮，但不知道“点下去意味着什么”。它分不清“加入收藏”和“提交申请”，因为两者在像素层面长得很像。</li>
+</ul>
+<p>我此前写 <a href="https://itprohub.github.io/blog/2025/02/27/midscenejs/">Midscene.js</a> 和 <a href="https://itprohub.github.io/blog/2025/02/12/openai-operator/">OpenAI Operator</a> 时，讲的就是这条路线上的两种实践。它们已经很聪明了，但<strong>AI 依然是在猜一个界面，而不是在调用一个能力</strong>。</p>
+<p>WebMCP 把这件事反过来做：<strong>让网页自己把能力声明出来。</strong></p>
+<hr>
+<h1 id="🕰️-二、三代做法：从像素到函数"><a href="#🕰️-二、三代做法：从像素到函数" class="headerlink" title="🕰️ 二、三代做法：从像素到函数"></a>🕰️ 二、三代做法：从像素到函数</h1><p><img src="/blog/./images/webmcp/three-generations.png" alt="从视觉自动化到 WebMCP 的三代做法"></p>
+<p>画面上的三代做法，本质是<strong>作用范围在收敛</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>做法</th>
+<th>AI 看到的</th>
+<th>依赖</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>视觉自动化</td>
+<td>一片像素</td>
+<td>页面长相稳定</td>
+</tr>
+<tr>
+<td>远程 MCP</td>
+<td>一组服务端接口</td>
+<td>站点愿意开发并开放</td>
+</tr>
+<tr>
+<td><strong>WebMCP</strong></td>
+<td><strong>一组页面内的具名函数</strong></td>
+<td><strong>页面愿意声明</strong></td>
+</tr>
+</tbody></table>
+<p>WebMCP 的核心 API 只有几个，短得不像一个“框架”：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">document</span>.<span class="property">modelContext</span>.<span class="title function_">registerTool</span>(&#123;</span><br><span class="line">  <span class="attr">name</span>: <span class="string">&#x27;match_profile&#x27;</span>,</span><br><span class="line">  <span class="attr">description</span>: <span class="string">&#x27;给每个岗位按简历打分并排序&#x27;</span>,</span><br><span class="line">  <span class="attr">inputSchema</span>: &#123; <span class="attr">type</span>: <span class="string">&#x27;object&#x27;</span>, <span class="attr">properties</span>: &#123; <span class="attr">topN</span>: &#123; <span class="attr">type</span>: <span class="string">&#x27;number&#x27;</span> &#125; &#125; &#125;,</span><br><span class="line">  <span class="attr">annotations</span>: &#123; <span class="attr">readOnlyHint</span>: <span class="literal">true</span> &#125;,      <span class="comment">// ← 告诉 Agent：这一步只是读</span></span><br><span class="line">  <span class="keyword">async</span> <span class="title function_">execute</span>(<span class="params">args</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> &#123; <span class="attr">scored</span>: <span class="number">131</span>, <span class="attr">aboveThreshold</span>: <span class="number">1</span> &#125;;   <span class="comment">// ← 必须返回结构化数据</span></span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>工具跑在<strong>页面自己的 JS 上下文</strong>里，所以它天然继承了两样东西：<strong>你已经登录的会话</strong>，以及<strong>页面自己定的权限边界</strong>。</p>
+<p>这两点恰恰是远程 MCP 拿不到的。也是 WebMCP 与 MCP 最根本的分野 —— 后面第九节会专门讲它替代不了谁。</p>
+<hr>
+<h1 id="🧱-三、把它做成一个能跑的东西"><a href="#🧱-三、把它做成一个能跑的东西" class="headerlink" title="🧱 三、把它做成一个能跑的东西"></a>🧱 三、把它做成一个能跑的东西</h1><p>空谈 API 没意思。我把它落成了一个真实的项目：<strong>Career Copilot</strong>，一个单文件页面（<code>index.html</code>）+ 一个零依赖的本地 Node 代理。</p>
+<p>它把求职流程拆成 <strong>14 个 WebMCP 工具</strong>，打开页面就注册进浏览器：</p>
+<p><img src="/blog/./images/webmcp/page-top.png" alt="页面顶部：WebMCP 已就绪，注册了 14 个工具"></p>
+<p>数据是真的 —— 不是 mock。海外源直连 Greenhouse &#x2F; Ashby 的公开职位板，一次能抓 150 个在招岗位（GitLab 一个板就有 215 个岗，保留 117 个工程&#x2F;设计岗）；国内源接腾讯招聘。匹配打分也是本地确定性算法，不看模型脸色。</p>
+<p><img src="/blog/./images/webmcp/mission-log.png" alt="真实抓取：腾讯招聘 30 个岗位保留 26 个，GitLab 215 个保留 117 个"></p>
+<p>上图这段日志值得多看一眼。它是页面中栏的实时记录，每一行都对应<strong>一次真实的工具调用</strong>：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">→ tool parse_resume(&#123;&#125;)</span><br><span class="line">✓ result Parsed profile: 陈默 · staff · 13 yrs · focus 后端 · 18 skills</span><br><span class="line">→ tool set_preferences(&#123;&quot;keywords&quot;:[&quot;前端&quot;],&quot;remoteOnly&quot;:false,&quot;minScore&quot;:60&#125;)</span><br><span class="line">→ tool aggregate_openings(&#123;&quot;sources&quot;:[&quot;gitlab&quot;,&quot;tencent&quot;],&quot;limit&quot;:150&#125;)</span><br><span class="line">  抓取 腾讯招聘（关键词：前端） …</span><br><span class="line">✓ result 腾讯招聘: 30 个岗位 → 保留 26 个工程/设计岗</span><br><span class="line">✓ result Aggregated 143 live roles. (2665ms)</span><br><span class="line">→ tool match_profile(&#123;&#125;)</span><br><span class="line">✓ result Scored 131 real job descriptions. 1 above the 60% threshold. (348ms)</span><br></pre></td></tr></table></figure>
+
+<p><strong>注意：上面这一串不是我手点的，是 Agent 自己决定的调用顺序。</strong> 这就是整件事最关键的一步 —— 页面没有写任何“给 Agent 用”的适配代码，它只是把工具声明出来了。</p>
+<hr>
+<h1 id="🚪-四、核心设计：三层权限与一道人工闸门"><a href="#🚪-四、核心设计：三层权限与一道人工闸门" class="headerlink" title="🚪 四、核心设计：三层权限与一道人工闸门"></a>🚪 四、核心设计：三层权限与一道人工闸门</h1><p>14 个工具不是平铺的，我按<strong>“这个动作能不能撤销”</strong>把它们分成三层：</p>
+<p><img src="/blog/./images/webmcp/tiers.png" alt="14 个工具的三层权限划分"></p>
+<table>
+<thead>
+<tr>
+<th>层级</th>
+<th>数量</th>
+<th>典型工具</th>
+<th>约束</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>只读 <code>readOnlyHint</code></td>
+<td>7</td>
+<td><code>parse_resume</code>、<code>match_profile</code>、<code>find_gaps</code></td>
+<td>自由调用</td>
+</tr>
+<tr>
+<td>可逆</td>
+<td>6</td>
+<td><code>set_preferences</code>、<code>shortlist</code>、<code>import_openings</code></td>
+<td>自由调用，随时可改回</td>
+</tr>
+<tr>
+<td>不可逆 <code>consequentialHint</code></td>
+<td>1</td>
+<td><code>submit_batch</code></td>
+<td><strong>必须由人点击批准</strong></td>
+</tr>
+</tbody></table>
+<p>页面右栏就是这份清单的实拍 —— 每个工具都带着它的分级和权限标注：</p>
+<p><img src="/blog/./images/webmcp/tools-panel.png" alt="页面里的工具面板：14 个工具按只读 / 可逆 / 不可逆三档列出"></p>
+<p>只有 1 个工具需要人工确认 —— 因为只有 1 个真的<strong>以我的名义对外动作</strong>。</p>
+<p><img src="/blog/./images/webmcp/gate.png" alt="人工审批闸门：唯一不可逆的工具，Agent 无法自行通过"></p>
+<p>这里有个我特意验证过的设计，也是整个项目我最想讲的一点：</p>
+<blockquote>
+<p><strong>即使 Agent 在调用时传了 confirm 为 true，闸门依然会拒绝。</strong></p>
+</blockquote>
+<p>实测返回值：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span> <span class="attr">&quot;status&quot;</span><span class="punctuation">:</span> <span class="string">&quot;awaiting_approval&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;blocked&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span> <span class="attr">&quot;pending&quot;</span><span class="punctuation">:</span> <span class="number">4</span> <span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>原因很简单 —— 闸门代码只看 <code>state.gate.approved</code> 这个状态，而这个状态<strong>只能由页面里的一次真实点击产生</strong>。Agent 说什么都没用。</p>
+<blockquote>
+<p><strong>提示词是建议，代码才是约束。</strong></p>
+</blockquote>
+<p>我在 <a href="https://itprohub.github.io/blog/2026/01/15/ai-security/">AI 安全那篇</a> 里写过类似的观点：永远不要指望模型“自己判断”自己是否有权执行高危操作。这里就是它的一个具体实现 —— 你把安全边界写进系统提示词，那是君子协定；写进代码，那才是边界。</p>
+<p>这个设计不是我拍的脑袋。它来自一篇文章，我在最后会说明出处。</p>
+<hr>
+<h1 id="📡-五、谁来当这个“浏览器里的-Agent”"><a href="#📡-五、谁来当这个“浏览器里的-Agent”" class="headerlink" title="📡 五、谁来当这个“浏览器里的 Agent”"></a>📡 五、谁来当这个“浏览器里的 Agent”</h1><p>这部分是我花时间最多、也最容易踩坑的地方。</p>
+<p>WebMCP 的消费方不是你我，是<strong>浏览器里的 AI Agent</strong>。而“浏览器里的 AI Agent”目前有好几种形态，能力差别很大：</p>
+<table>
+<thead>
+<tr>
+<th>消费方</th>
+<th>能读页面工具吗</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Gemini in Chrome</strong></td>
+<td>✅</td>
+<td>浏览器自带，无需装扩展</td>
+</tr>
+<tr>
+<td><strong>ChatGPT Site Tools</strong></td>
+<td>⚠️ 仅限桌面 App 内置浏览器</td>
+<td>网页版与 Chrome 扩展<strong>都不支持</strong></td>
+</tr>
+<tr>
+<td><strong>Model Context Tool Inspector</strong></td>
+<td>✅</td>
+<td>Google 出的调试扩展，需自备 Gemini Key</td>
+</tr>
+<tr>
+<td>视觉自动化 Agent</td>
+<td>❌</td>
+<td>它只会看屏幕，看不见工具清单</td>
+</tr>
+</tbody></table>
+<h2 id="📌-为什么“网页版-ChatGPT”不行"><a href="#📌-为什么“网页版-ChatGPT”不行" class="headerlink" title="📌 为什么“网页版 ChatGPT”不行"></a>📌 为什么“网页版 ChatGPT”不行</h2><p>这不是“还没做”，是<strong>架构决定的</strong>：</p>
+<ul>
+<li><strong>工具绑在“页面 + 你的登录会话”上。</strong> Agent 必须和你在同一个活着的页面里工作，工具的 <code>execute</code> 跑在页面的 JS 上下文里，继承你的 cookie。而网页版 ChatGPT 是另一个网站，它手上没有“你正在浏览的那个页面”。</li>
+<li><strong>想用 iframe 嵌进来也不行。</strong> WebMCP 明确规定 <strong>iframe 内注册的工具不被发现</strong> —— 工具注册受 <code>tools</code> 这个 Permissions Policy 管控，默认只允许同源。</li>
+</ul>
+<p>一句很形象的总结：<strong>网页版没长手</strong> —— 它连你本机的 <code>localhost</code> 都够不到。</p>
+<p>这也解释了一个容易被忽略的事实：<strong>页面的“注册工具”这件事本身就是对接</strong>。你不需要为 Inspector 写一套代码、为 ChatGPT 再写一套 —— 换谁当大脑，工具契约都是同一份。</p>
+<hr>
+<h1 id="🧪-六、实测踩坑记录"><a href="#🧪-六、实测踩坑记录" class="headerlink" title="🧪 六、实测踩坑记录"></a>🧪 六、实测踩坑记录</h1><p>这一段可能是全文对你最有用的部分。以下每一条都是我在真机上撞出来的。</p>
+<h2 id="🛠️-1-浏览器开关的名字，不是文档里那个"><a href="#🛠️-1-浏览器开关的名字，不是文档里那个" class="headerlink" title="🛠️ 1. 浏览器开关的名字，不是文档里那个"></a>🛠️ 1. 浏览器开关的名字，不是文档里那个</h2><p>Chrome 155 默认<strong>不启用</strong> WebMCP。我是从 flags 页面里看到实验室开关名是 <code>enable-webmcp-testing</code>，兴冲冲地把它当命令行参数传：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ❌ 无效 —— 这只是 flags UI 里的 labs 名字</span></span><br><span class="line">chrome --enable-webmcp-testing</span><br><span class="line"></span><br><span class="line"><span class="comment"># ✅ 有效</span></span><br><span class="line">chrome --enable-features=WebMCPTesting</span><br></pre></td></tr></table></figure>
+
+<p>验证办法很直接：在控制台敲 <code>document.modelContext</code>，能打印出对象才算开了。</p>
+<h2 id="🔌-2-file-打不开这条路"><a href="#🔌-2-file-打不开这条路" class="headerlink" title="🔌 2. file:// 打不开这条路"></a>🔌 2. <code>file://</code> 打不开这条路</h2><p>我一度想省掉本地服务，直接双击 <code>index.html</code>。实测结论是<strong>页面这一半可以，另一半不行</strong>：</p>
+<ul>
+<li>页面本身<strong>没问题</strong> —— <code>document.modelContext</code> 存在，14 个工具照样注册成功；</li>
+<li>但<strong>扩展不会注入本地文件协议的页面</strong> —— 即使它声明了 <code>&lt;all_urls&gt;</code>，Chrome 的默认策略也不覆盖 <code>file://</code>。</li>
+</ul>
+<p>所以必须走 http。（顺带一提，WebMCP 还要求页面处于 <strong>origin-isolated agent cluster</strong>，我在静态响应里显式加了 <code>Origin-Agent-Cluster: ?1</code>，比依赖浏览器默认启发式更稳。）</p>
+<h2 id="📦-3-工具的返回值必须给机器看，不能给人看"><a href="#📦-3-工具的返回值必须给机器看，不能给人看" class="headerlink" title="📦 3. 工具的返回值必须给机器看，不能给人看"></a>📦 3. 工具的返回值必须给机器看，不能给人看</h2><p>这是最坑的一条。我一开始让工具返回一句人话：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">return</span> <span class="string">&#x27;已解析简历，共 18 个技能&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>结果 Agent 第 4 步直接卡死 —— 下一步要按 <code>jobId</code> 去查岗位，但它<strong>从这句话里拿不到任何 id</strong>。</p>
+<p>改成结构化返回后一路畅通：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">return</span> &#123; <span class="attr">profileId</span>: <span class="string">&#x27;p_1&#x27;</span>, <span class="attr">skills</span>: <span class="number">18</span>, <span class="attr">seniority</span>: <span class="string">&#x27;staff&#x27;</span> &#125;;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>教训：工具返回值是<strong>喂给模型的 observation</strong>，不是给人看的文案。给人看的文案应该由页面的 <code>render()</code> 单独负责。</p>
+</blockquote>
+<h2 id="⏱️-4-真模型规划一次调用，可能要-60-秒以上"><a href="#⏱️-4-真模型规划一次调用，可能要-60-秒以上" class="headerlink" title="⏱️ 4. 真模型规划一次调用，可能要 60 秒以上"></a>⏱️ 4. 真模型规划一次调用，可能要 60 秒以上</h2><p>接了模型增强后，简单问答 1.5 秒就回，但让它<strong>规划下一步调哪个工具</strong>时，单步经常超过 60 秒。我原本的代理超时是 60 秒，于是频繁失败 —— 改成 120 秒后才稳定下来。</p>
+<h2 id="🈶-5-中文-JD-提不出技能"><a href="#🈶-5-中文-JD-提不出技能" class="headerlink" title="🈶 5. 中文 JD 提不出技能"></a>🈶 5. 中文 JD 提不出技能</h2><p>技能词典原本是纯英文的（<code>React</code>、<code>Kubernetes</code>…），结果中文 JD 一个都命不中 —— 30 个腾讯岗位只能打分 2 个。</p>
+<p>扩了中文别名表（前端&#x2F;后端&#x2F;算法&#x2F;运维…）并做规范名合并后，能打 20 个。<strong>这不是模型问题，是词典问题</strong> —— 本地确定性算法吃的是词表质量。</p>
+<h2 id="🧱-6-国内招聘接口，一律没有-CORS-头"><a href="#🧱-6-国内招聘接口，一律没有-CORS-头" class="headerlink" title="🧱 6. 国内招聘接口，一律没有 CORS 头"></a>🧱 6. 国内招聘接口，一律没有 CORS 头</h2><p>这是最有中国特色的一堵墙：</p>
+<table>
+<thead>
+<tr>
+<th>站点</th>
+<th>障碍</th>
+<th>我的解法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>腾讯招聘</td>
+<td>无 CORS 头，浏览器直连必被拦</td>
+<td>本地 Node 代理转发（代理只转发，不落库）</td>
+</tr>
+<tr>
+<td>BOSS 直聘</td>
+<td>无公开 API + <code>__zp_stoken__</code> 反爬 + 协议禁止自动化</td>
+<td><strong>你自己点一下</strong>的书签桥接</td>
+</tr>
+</tbody></table>
+<p>BOSS 那条我最终没有硬闯。做法是给浏览器加一个书签：在 BOSS 搜索页点一下，它把当前页的岗位读成 JSON 放进剪贴板，再粘回页面导入。</p>
+<p>为此加了第 14 个工具 <code>import_openings</code>（属可逆层），导入时按 url 或“标题 + 公司”<strong>幂等判重</strong> —— 同一份数据粘十次，也只算一次。</p>
+<p><img src="/blog/./images/webmcp/sources-panel.png"></p>
+<h2 id="🔀-7-页面和代理分属两个端口时，得让它自己找"><a href="#🔀-7-页面和代理分属两个端口时，得让它自己找" class="headerlink" title="🔀 7. 页面和代理分属两个端口时，得让它自己找"></a>🔀 7. 页面和代理分属两个端口时，得让它自己找</h2><p>开发后期我的 4173 端口被本机一个 IIS 站点占用（物理路径正好就是项目目录），于是页面归 IIS、接口归 Node，分家了。</p>
+<p>解决办法是给页面写了<strong>代理自动发现</strong>：启动时依次探测 <code>?proxy=</code> 参数 → 同源 → 若干候选端口，命中就挂上；全都失败就明确标记为“静态托管模式”，把国内源置灰并写明恢复方式，而不是让人勾了之后才失败。</p>
+<p>代理侧的跨源放行<strong>只认本机来源</strong>（<code>127.0.0.1</code> &#x2F; <code>localhost</code> 任意端口），刻意不做 <code>ACAO: *</code> —— 因为代理手里可能存着模型 Key，全网放行等于让任何网站的 JS 都能白嫖它。</p>
+<hr>
+<h1 id="🚧-七、它替代不了远程-MCP"><a href="#🚧-七、它替代不了远程-MCP" class="headerlink" title="🚧 七、它替代不了远程 MCP"></a>🚧 七、它替代不了远程 MCP</h1><p>WebMCP 很漂亮，但它有一个硬边界：<strong>它只在标签页活着的时候存在，而且需要浏览器开关。</strong></p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>远程 MCP</th>
+<th>WebMCP</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>位置</td>
+<td>服务端，独立进程</td>
+<td>页面内，随标签页生死</td>
+</tr>
+<tr>
+<td>认证</td>
+<td>OAuth &#x2F; Token</td>
+<td>直接继承浏览器会话</td>
+</tr>
+<tr>
+<td>可发现性</td>
+<td>事先配置好</td>
+<td>打开页面即出现</td>
+</tr>
+<tr>
+<td>能否对外服务</td>
+<td>✅ 可长期运行、可多人共用</td>
+<td>❌ 页面关了工具就没了</td>
+</tr>
+<tr>
+<td>当前可用性</td>
+<td>广泛支持</td>
+<td>需要 flag，仍在实验阶段</td>
+</tr>
+</tbody></table>
+<p>所以这个项目<strong>没法当作公开网站给普通人用</strong> —— 它依赖浏览器实验开关。想分享给别人的话，分享代码和验证记录，而不是链接。</p>
+<p>一句话总结两者的分工：</p>
+<blockquote>
+<p><strong>MCP 解决“Agent 怎么够到某个能力”，WebMCP 解决“Agent 怎么和你正在看的那个页面协作”。</strong></p>
+</blockquote>
+<hr>
+<h1 id="🧭-八、写在最后"><a href="#🧭-八、写在最后" class="headerlink" title="🧭 八、写在最后"></a>🧭 八、写在最后</h1><p>把这条线串起来看，其实一直是在同一件事上往前走：</p>
+<ul>
+<li><a href="https://itprohub.github.io/blog/2025/02/21/function-calling/">函数调用</a> 解决了“模型怎么输出结构化动作”；</li>
+<li><a href="https://itprohub.github.io/blog/2025/03/18/MCP/">MCP</a> 解决了“工具怎么标准化地被发现和调用”；</li>
+<li><a href="https://itprohub.github.io/blog/2026/09/24/agent-harness/">Agent Harness</a> 说明了“模型之外那层骨架才决定下限”；</li>
+<li><strong>WebMCP 把这条链的最末端交给了网站自己</strong> —— 站点不再被动地被爬、被猜，而是主动声明“我能做这几件事，以及哪些事你必须问我”。</li>
+</ul>
+<p>我在 Harness 那篇里有个结论：<strong>大模型的能力上限是模型决定的，但你实际拿到的能力下限，是 harness 决定的。</strong> 放到这里可以再加一句：</p>
+<blockquote>
+<p><strong>当 Agent 真的开始替你操作真实世界时，“它会做什么”由模型决定，“它能不能做”必须由代码决定。</strong></p>
+</blockquote>
+<p>最后做个坦白的说明：这个项目的<strong>工具集设计、三层分级的思路，来自 Sreenath Menon 的文章</strong>《WebMCP: Teaching Your Website to Talk to AI Agents》。我做的事情有三件 —— 把它在中文环境里真正跑起来、补上了国内数据源（腾讯 + BOSS 书签桥接 + 第 14 个工具 <code>import_openings</code>）、以及记录了上面这一路的实测坑。</p>
+<p>原作者在那篇文章里有一个我很认同的判断：真正难的不是前面每一步自动化，而是<strong>最后一英里</strong> —— 那些企业的申请系统故意不开放接口，躲在登录和机器人检测后面。所以他的选择是“自动化到提交前一步，把提交留给人”。而 WebMCP 本该补上的，就是那个洞：如果招聘站自己暴露一个 <code>submit_application</code> 工具，Agent 就能在你已登录的会话里干净地提交。</p>
+<p>一个悄悄用你名义投简历的 Agent 是<strong>负债</strong>；干完全部活、动手前问你一句的，才是<strong>超能力</strong>。</p>
+<hr>
+<h1 id="📚-参考资料"><a href="#📚-参考资料" class="headerlink" title="📚 参考资料"></a>📚 参考资料</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://sreenathmenon.com/blog/2026-08-04-webmcp-teaching-websites-to-talk-to-ai-agents/">Sreenath Menon — WebMCP: Teaching Your Website to Talk to AI Agents</a></li>
+<li><a target="_blank" rel="noopener" href="https://developer.chrome.com/blog/webmcp-epp">Chrome for Developers — WebMCP 实验性 API</a></li>
+<li><a target="_blank" rel="noopener" href="https://chromewebstore.google.com/detail/model-context-tool-inspec/gbpafapgefenggkahomfgkhfehlcenpd">Model Context Tool Inspector（Chrome 扩展）</a></li>
+<li><a target="_blank" rel="noopener" href="https://chromestatus.com/feature/5113594882125824">Chrome Platform Status — WebMCP</a></li>
+<li><a target="_blank" rel="noopener" href="https://api.ashbyhq.com/posting-api/job-board/linear">Ashby Job Board API</a></li>
+<li><a target="_blank" rel="noopener" href="https://boards-api.greenhouse.io/v1/boards/gitlab/jobs?content=true">Greenhouse Job Board API</a></li>
+<li><a target="_blank" rel="noopener" href="https://careers.tencent.com/tencentcareer/api/post/Query">腾讯招聘查询接口</a></li>
+</ul>
+<hr>
+
+    </article>
+    <!-- license -->
+    
+        <div class="license-wrapper">
+            <p>原文作者：<a href="https://itprohub.github.io/blog">乐予吕</a>
+            <p>原文链接：<a href="https://itprohub.github.io/blog/2026/10/15/webmcp/">https://itprohub.github.io/blog/2026/10/15/webmcp/</a>
+            <p>发表日期：<a href="https://itprohub.github.io/blog/2026/10/15/webmcp/">October 15th 2026, 4:20:00 pm</a>
+            <p>更新日期：<a href="https://itprohub.github.io/blog/2026/10/15/webmcp/">October 15th 2026, 7:24:11 am</a>
+            <p>版权声明：本文采用<a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
+        </div>
+    
+    <!-- paginator -->
+    <ul class="post-paginator">
+        <li class="next">
+            
+        </li>
+        <li class="previous">
+            
+                <div class="prevSlogan">Previous Post</div>
+                <a href="/blog/2026/10/15/hello-world/" title="欢迎来到 ITProHub！">
+                    <div class="prevTitle">欢迎来到 ITProHub！</div>
+                </a>
+            
+        </li>
+    </ul>
+    <!-- comment -->
+    
+        <div class="post-comment">
+            <!-- 来必力 City 版安装代码 -->
+
+
+            
+
+            
+
+            
+
+            <!-- utteranc评论 -->
+
+
+            <!-- partial('_partial/comment/changyan') -->
+            <!--PC版-->
+
+
+            
+            
+
+            
+
+        </div>
+    
+    <!-- timeliness note -->
+    <!-- idea from: https://hexo.fluid-dev.com/posts/hexo-injector/#%E6%96%87%E7%AB%A0%E6%97%B6%E6%95%88%E6%80%A7%E6%8F%90%E7%A4%BA -->
+    
+    <!-- Mathjax -->
+    
+</main>
+
+                <!-- profile -->
+                
+            </div>
+            <footer class="footer footer-unloaded">
+    <!-- social  -->
+    
+        <div class="social">
+            
+    
+        
+            
+                <a href="mailto:287678478@qq.com" class="iconfont-archer email" title=email ></a>
+            
+        
+    
+        
+            
+                <a href="//github.com/ItProHub" class="iconfont-archer github" target="_blank" title=github></a>
+            
+        
+    
+        
+            
+                <span class="iconfont-archer wechat" title=wechat>
+                    
+                    <img class="profile-qr" src="/blog/assets/wechat_qr.jpg" />
+                </span>
+            
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+            
+                <a href="//juejin.cn/user/1489196396594523" class="iconfont-archer juejin" target="_blank" title=juejin></a>
+            
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+
+        </div>
+    
+    <!-- powered by Hexo  -->
+    <div class="copyright">
+        <span id="hexo-power">Powered by <a href="https://www.itprohub.site/" target="_blank">ITProHub</a></span><span class="iconfont-archer power">&#xe635;</span><span id="theme-info">theme <a href="https://github.com/fi3ework/hexo-theme-archer" target="_blank">Archer</a></span>
+    </div>
+    <!-- website approve for Chinese user -->
+    
+        <div class="website-approve">
+            
+                <span id="icp-approve" class="icp-approve">
+                    <a href="https://beian.miit.gov.cn/" target="_blank">备案号：鄂ICP备2024045313号</a>
+                </span>
+            
+            
+        </div>
+    
+    <!-- 不蒜子  -->
+    
+        <div class="busuanzi-container">
+            
+            
+                <span id="busuanzi_container_site_pv">PV: <span id="busuanzi_value_site_pv"></span> :)</span>
+            
+        </div>
+    
+</footer>
+
+        </div>
+        <!-- toc -->
+        
+            <div class="toc-wrapper toc-wrapper-loding" style=
+
+
+
+
+
+
+
+    top:50vh;
+
+>
+                <div class="toc-catalog">
+                    <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
+                </div>
+                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%F0%9F%8E%AC-%E4%B8%80%E3%80%81%E8%AE%A9-AI-%E7%94%A8%E7%BD%91%E7%AB%99%EF%BC%8C%E9%9A%BE%E5%9C%A8%E5%93%AA"><span class="toc-number">1.</span> <span class="toc-text">🎬 一、让 AI 用网站，难在哪</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%F0%9F%95%B0%EF%B8%8F-%E4%BA%8C%E3%80%81%E4%B8%89%E4%BB%A3%E5%81%9A%E6%B3%95%EF%BC%9A%E4%BB%8E%E5%83%8F%E7%B4%A0%E5%88%B0%E5%87%BD%E6%95%B0"><span class="toc-number">2.</span> <span class="toc-text">🕰️ 二、三代做法：从像素到函数</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%F0%9F%A7%B1-%E4%B8%89%E3%80%81%E6%8A%8A%E5%AE%83%E5%81%9A%E6%88%90%E4%B8%80%E4%B8%AA%E8%83%BD%E8%B7%91%E7%9A%84%E4%B8%9C%E8%A5%BF"><span class="toc-number">3.</span> <span class="toc-text">🧱 三、把它做成一个能跑的东西</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%F0%9F%9A%AA-%E5%9B%9B%E3%80%81%E6%A0%B8%E5%BF%83%E8%AE%BE%E8%AE%A1%EF%BC%9A%E4%B8%89%E5%B1%82%E6%9D%83%E9%99%90%E4%B8%8E%E4%B8%80%E9%81%93%E4%BA%BA%E5%B7%A5%E9%97%B8%E9%97%A8"><span class="toc-number">4.</span> <span class="toc-text">🚪 四、核心设计：三层权限与一道人工闸门</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%F0%9F%93%A1-%E4%BA%94%E3%80%81%E8%B0%81%E6%9D%A5%E5%BD%93%E8%BF%99%E4%B8%AA%E2%80%9C%E6%B5%8F%E8%A7%88%E5%99%A8%E9%87%8C%E7%9A%84-Agent%E2%80%9D"><span class="toc-number">5.</span> <span class="toc-text">📡 五、谁来当这个“浏览器里的 Agent”</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%93%8C-%E4%B8%BA%E4%BB%80%E4%B9%88%E2%80%9C%E7%BD%91%E9%A1%B5%E7%89%88-ChatGPT%E2%80%9D%E4%B8%8D%E8%A1%8C"><span class="toc-number">5.1.</span> <span class="toc-text">📌 为什么“网页版 ChatGPT”不行</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%F0%9F%A7%AA-%E5%85%AD%E3%80%81%E5%AE%9E%E6%B5%8B%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95"><span class="toc-number">6.</span> <span class="toc-text">🧪 六、实测踩坑记录</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%9B%A0%EF%B8%8F-1-%E6%B5%8F%E8%A7%88%E5%99%A8%E5%BC%80%E5%85%B3%E7%9A%84%E5%90%8D%E5%AD%97%EF%BC%8C%E4%B8%8D%E6%98%AF%E6%96%87%E6%A1%A3%E9%87%8C%E9%82%A3%E4%B8%AA"><span class="toc-number">6.1.</span> <span class="toc-text">🛠️ 1. 浏览器开关的名字，不是文档里那个</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%94%8C-2-file-%E6%89%93%E4%B8%8D%E5%BC%80%E8%BF%99%E6%9D%A1%E8%B7%AF"><span class="toc-number">6.2.</span> <span class="toc-text">🔌 2. file:&#x2F;&#x2F; 打不开这条路</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%93%A6-3-%E5%B7%A5%E5%85%B7%E7%9A%84%E8%BF%94%E5%9B%9E%E5%80%BC%E5%BF%85%E9%A1%BB%E7%BB%99%E6%9C%BA%E5%99%A8%E7%9C%8B%EF%BC%8C%E4%B8%8D%E8%83%BD%E7%BB%99%E4%BA%BA%E7%9C%8B"><span class="toc-number">6.3.</span> <span class="toc-text">📦 3. 工具的返回值必须给机器看，不能给人看</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E2%8F%B1%EF%B8%8F-4-%E7%9C%9F%E6%A8%A1%E5%9E%8B%E8%A7%84%E5%88%92%E4%B8%80%E6%AC%A1%E8%B0%83%E7%94%A8%EF%BC%8C%E5%8F%AF%E8%83%BD%E8%A6%81-60-%E7%A7%92%E4%BB%A5%E4%B8%8A"><span class="toc-number">6.4.</span> <span class="toc-text">⏱️ 4. 真模型规划一次调用，可能要 60 秒以上</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%88%B6-5-%E4%B8%AD%E6%96%87-JD-%E6%8F%90%E4%B8%8D%E5%87%BA%E6%8A%80%E8%83%BD"><span class="toc-number">6.5.</span> <span class="toc-text">🈶 5. 中文 JD 提不出技能</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%A7%B1-6-%E5%9B%BD%E5%86%85%E6%8B%9B%E8%81%98%E6%8E%A5%E5%8F%A3%EF%BC%8C%E4%B8%80%E5%BE%8B%E6%B2%A1%E6%9C%89-CORS-%E5%A4%B4"><span class="toc-number">6.6.</span> <span class="toc-text">🧱 6. 国内招聘接口，一律没有 CORS 头</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%94%80-7-%E9%A1%B5%E9%9D%A2%E5%92%8C%E4%BB%A3%E7%90%86%E5%88%86%E5%B1%9E%E4%B8%A4%E4%B8%AA%E7%AB%AF%E5%8F%A3%E6%97%B6%EF%BC%8C%E5%BE%97%E8%AE%A9%E5%AE%83%E8%87%AA%E5%B7%B1%E6%89%BE"><span class="toc-number">6.7.</span> <span class="toc-text">🔀 7. 页面和代理分属两个端口时，得让它自己找</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%F0%9F%9A%A7-%E4%B8%83%E3%80%81%E5%AE%83%E6%9B%BF%E4%BB%A3%E4%B8%8D%E4%BA%86%E8%BF%9C%E7%A8%8B-MCP"><span class="toc-number">7.</span> <span class="toc-text">🚧 七、它替代不了远程 MCP</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%F0%9F%A7%AD-%E5%85%AB%E3%80%81%E5%86%99%E5%9C%A8%E6%9C%80%E5%90%8E"><span class="toc-number">8.</span> <span class="toc-text">🧭 八、写在最后</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%F0%9F%93%9A-%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="toc-number">9.</span> <span class="toc-text">📚 参考资料</span></a></li></ol>
+            </div>
+        
+        <!-- sidebar -->
+        <div class="sidebar sidebar-hide">
+    <ul class="sidebar-tabs sidebar-tabs-active-0">
+        <li class="sidebar-tab-archives"><span class="iconfont-archer">&#xe67d;</span><span class="tab-name">Archive</span></li>
+        <li class="sidebar-tab-tags"><span class="iconfont-archer">&#xe61b;</span><span class="tab-name">Tag</span></li>
+        <li class="sidebar-tab-categories"><span class="iconfont-archer">&#xe666;</span><span class="tab-name">Cate</span></li>
+    </ul>
+    <div class="sidebar-content sidebar-content-show-archive">
+        <div class="sidebar-panel-archives">
+    <!-- 在 ejs 中将 archive 按照时间排序 -->
+    
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    
+    
+    
+    
+    <div class="total-and-search">
+        <div class="total-archive">
+        Total : 57
+        </div>
+        <!-- search  -->
+        
+    </div>
+    
+    <div class="post-archive">
+    
+        
+            
+            
+            <div class="archive-year"> 2026 </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/15</span>
+            <a class="archive-post-title" href="/blog/2026/10/15/webmcp/">WebMCP：让网站直接对 AI Agent 说话</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/29</span>
+            <a class="archive-post-title" href="/blog/2026/09/29/html-head/">我的 HTML Head 清单：38 个标签的体检报告</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/24</span>
+            <a class="archive-post-title" href="/blog/2026/09/24/agent-harness/">Agent Harness：模型只是引擎，“马具”才是那辆车</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">01/15</span>
+            <a class="archive-post-title" href="/blog/2026/01/15/ai-security/">AI_职场“保命”手册</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> 2025 </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/11</span>
+            <a class="archive-post-title" href="/blog/2025/10/11/agent-framework/">Microsoft Agent Framework：让 AI 智能体开发像写 Web 应用一样简单</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/25</span>
+            <a class="archive-post-title" href="/blog/2025/09/25/http-option/">用 HTTP OPTIONS 发现 API 的隐藏能力</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/11</span>
+            <a class="archive-post-title" href="/blog/2025/09/11/GEO/">GEO 入门：从 SEO 到 GEO 的转变</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/04</span>
+            <a class="archive-post-title" href="/blog/2025/09/04/oauth/">OAuth：为什么登录要绕一大圈？</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/06</span>
+            <a class="archive-post-title" href="/blog/2025/08/06/js-arrow-function/">别再乱用箭头函数了！JavaScript 三种函数写法的终极指南</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/01</span>
+            <a class="archive-post-title" href="/blog/2025/08/01/send-off-1/">离别，是为了更好的重逢 —— 送别老同事的一晚</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">06/20</span>
+            <a class="archive-post-title" href="/blog/2025/06/20/promise/">Promise 深度解析：从原理到实战</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">06/04</span>
+            <a class="archive-post-title" href="/blog/2025/06/04/codex/">🚀 我们正在进入“任务级编程”时代，Copilot 已经过时了</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">06/03</span>
+            <a class="archive-post-title" href="/blog/2025/06/03/css-scope/">从 scoped 到 @scope：CSS 样式隔离的进化</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/23</span>
+            <a class="archive-post-title" href="/blog/2025/05/23/javelin-unit-testing/">手写一个微型 Spring 框架（五）：单元测试实践</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/12</span>
+            <a class="archive-post-title" href="/blog/2025/05/12/javelin-dal/">手写一个微型 Spring 框架（四）：数据访问层设计实战</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/06</span>
+            <a class="archive-post-title" href="/blog/2025/05/06/javelin-servlet/">构建自己的微型 Spring 框架（三）：接入内嵌 Tomcat 与 Servlet</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/30</span>
+            <a class="archive-post-title" href="/blog/2025/04/30/javelin-nhttpcontext/">手写一个微型Spring框架（三）：NHttpContext的详解</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/27</span>
+            <a class="archive-post-title" href="/blog/2025/04/27/javelin-2/">手写一个微型 Spring 框架（二）:从路由到生命周期管理</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/14</span>
+            <a class="archive-post-title" href="/blog/2025/04/14/javelin-1/">手写一个微型 Spring 框架：从端口监听到依赖注入</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/02</span>
+            <a class="archive-post-title" href="/blog/2025/04/02/java-init/">👨‍💻 十年开发老兵，从.NET到Java：我为何选择重新出发？ 🚀</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/28</span>
+            <a class="archive-post-title" href="/blog/2025/03/28/js-monitoring/">从入门到实战：一文搞定JS无埋点监控方案</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/18</span>
+            <a class="archive-post-title" href="/blog/2025/03/18/MCP/">MCP：AI 时代的“USB-C”，解锁模型上下文新范式</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/14</span>
+            <a class="archive-post-title" href="/blog/2025/03/14/deepseek-rag/">DeepSeek + RAG： 让大模型更智能、更精准</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/27</span>
+            <a class="archive-post-title" href="/blog/2025/02/27/midscenejs/">AI驱动的自动化测试：探索MidScene.js的强大功能</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/21</span>
+            <a class="archive-post-title" href="/blog/2025/02/21/function-calling/">让AI模型不再只是“说话”——探索AI模型的函数调用</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/12</span>
+            <a class="archive-post-title" href="/blog/2025/02/12/openai-operator/">「AI」科普向 | OpenAI Operator：推动数字世界的新纪元</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/12</span>
+            <a class="archive-post-title" href="/blog/2025/02/12/deepseek-vscode/">Cursor平替：把 DeepSeek 接入 VS Code</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/07</span>
+            <a class="archive-post-title" href="/blog/2025/02/07/deepseek-1/">DeepSeek 本地部署+web端访问 指南</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/05</span>
+            <a class="archive-post-title" href="/blog/2025/02/05/docker-log/">减少 Docker 日志大小：实用的日志管理指南</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">01/07</span>
+            <a class="archive-post-title" href="/blog/2025/01/07/parallelism/">并发不是并行！</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> 2024 </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/18</span>
+            <a class="archive-post-title" href="/blog/2024/12/18/log/">程序日志设计与存储：实践与注意事项(一)</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/16</span>
+            <a class="archive-post-title" href="/blog/2024/12/16/web-rtc/">WebRTC入门：让浏览器之间的实时通信变得简单</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/11</span>
+            <a class="archive-post-title" href="/blog/2024/12/11/k8s-helm/">Kubernetes 分享：如何使用 Helm 优化 Kubernetes 应用部署</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/29</span>
+            <a class="archive-post-title" href="/blog/2024/11/29/rspack/">Rspack：一个新一代的 JavaScript 打包工具</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/20</span>
+            <a class="archive-post-title" href="/blog/2024/11/20/mfa/">深入解读 MFA 和 TOTP 的实现原理与应用</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/08</span>
+            <a class="archive-post-title" href="/blog/2024/11/08/stream-output/">解读大型语言模型（LLM）API：了解流式输出的工作原理</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/06</span>
+            <a class="archive-post-title" href="/blog/2024/11/06/encrypt-hash-signature/">加密、哈希与签名：基本原理与区别解析</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/30</span>
+            <a class="archive-post-title" href="/blog/2024/10/30/js-signal/">JavaScript 信号：如何将响应式功能带到普通 Web 开发中</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/28</span>
+            <a class="archive-post-title" href="/blog/2024/08/28/sticky-packet/">深入探讨 TCP 粘包现象：问题、原因与解决方案</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/16</span>
+            <a class="archive-post-title" href="/blog/2024/08/16/quic/">QUIC:被寄予厚望的下一代互联网传输协议</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/08</span>
+            <a class="archive-post-title" href="/blog/2024/08/08/docker-layer/">深入理解容器镜像层</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/01</span>
+            <a class="archive-post-title" href="/blog/2024/08/01/daemonset/">Kubernetes DaemonSet – 它是什么以及如何使用</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/11</span>
+            <a class="archive-post-title" href="/blog/2024/07/11/rabbitmq-quorum/">RabbitMQ之三种队列之间的区别及如何选型</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/09</span>
+            <a class="archive-post-title" href="/blog/2024/07/09/rabbitmq-basic/">深入理解 RabbitMQ 中的基础概念</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/08</span>
+            <a class="archive-post-title" href="/blog/2024/07/08/docker-2/">Docker镜像构建优化</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/05</span>
+            <a class="archive-post-title" href="/blog/2024/07/05/docker-1/">Docker隐藏在细节中的技术基础</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">06/20</span>
+            <a class="archive-post-title" href="/blog/2024/06/20/proxy/">代理服务解析：正向代理、反向代理和透明代理</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/30</span>
+            <a class="archive-post-title" href="/blog/2024/05/30/similar-image-search/">从零开始搭建自己的相似图片搜索引擎</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/30</span>
+            <a class="archive-post-title" href="/blog/2024/05/30/TaskCompletionSource/">C# 学习笔记： TaskCompletionSource</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/22</span>
+            <a class="archive-post-title" href="/blog/2024/05/22/dead-message/">深入解析消息队列中的死信队列</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/28</span>
+            <a class="archive-post-title" href="/blog/2024/04/28/dump/">Dump分析入门指南</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/11</span>
+            <a class="archive-post-title" href="/blog/2024/04/11/https/">HTTPS的工作原理以及安装</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/07</span>
+            <a class="archive-post-title" href="/blog/2024/04/07/garnet/">Garnet，缓存的新选择！</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> Invalid date </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span>
+            <a class="archive-post-title" href="/blog/2026/10/15/hello-world/">欢迎来到 ITProHub！</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> 2024 </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/18</span>
+            <a class="archive-post-title" href="/blog/2024/04/18/redis-interview-1/">Redis成长记 - Redis的陷阱（一）</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/28</span>
+            <a class="archive-post-title" href="/blog/2024/03/28/organization-internal-loss/">组织发展致命杀手：内耗</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/19</span>
+            <a class="archive-post-title" href="/blog/2024/03/19/http/">深入理解 HTTP Connection 头</a>
+        </li>
+    
+    </div>
+</div>
+
+        <div class="sidebar-panel-tags">
+    <div class="sidebar-tags-name">
+        
+            <span class="sidebar-tag-name" data-tags="dump 性能 异常">
+                <span class="iconfont-archer">&#xe606;</span>
+                dump 性能 异常
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="Garnet 缓存 微软">
+                <span class="iconfont-archer">&#xe606;</span>
+                Garnet 缓存 微软
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="HTML">
+                <span class="iconfont-archer">&#xe606;</span>
+                HTML
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="SEO">
+                <span class="iconfont-archer">&#xe606;</span>
+                SEO
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="Web 性能">
+                <span class="iconfont-archer">&#xe606;</span>
+                Web 性能
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="Hexo">
+                <span class="iconfont-archer">&#xe606;</span>
+                Hexo
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="http http协议 Connection">
+                <span class="iconfont-archer">&#xe606;</span>
+                http http协议 Connection
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="https http ssl tls">
+                <span class="iconfont-archer">&#xe606;</span>
+                https http ssl tls
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="前端监控 JavaScript Ajax">
+                <span class="iconfont-archer">&#xe606;</span>
+                前端监控 JavaScript Ajax
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="组织 内耗">
+                <span class="iconfont-archer">&#xe606;</span>
+                组织 内耗
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="redis 面试 求职">
+                <span class="iconfont-archer">&#xe606;</span>
+                redis 面试 求职
+            </span>
+        
+    </div>
+    <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
+    <div class="tag-load-fail" style="display: none; color: #ccc; font-size: 0.6rem;">
+        缺失模块，请参考主题文档进行安装配置：https://github.com/fi3ework/hexo-theme-archer#%E5%AE%89%E8%A3%85%E4%B8%BB%E9%A2%98
+    </div> 
+    <div class="sidebar-tags-list"></div>
+</div>
+
+        <div class="sidebar-panel-categories">
+    <div class="sidebar-categories-name">
+    
+    </div>
+    <div class="iconfont-archer sidebar-categories-empty">&#xe678;</div>
+    <div class="sidebar-categories-list"></div>
+</div>
+
+    </div>
+</div>
+
+        <!-- site-meta -->
+        <script>
+    var siteMetaRoot = "/blog/"
+    if (siteMetaRoot === "undefined") {
+        siteMetaRoot = '/'
+    }
+    var siteMeta = {
+        url: "https://itprohub.github.io/blog",
+        root: siteMetaRoot,
+        author: "乐予吕"
+    }
+</script>
+
+        <!-- import experimental options here -->
+        <!-- Custom Font -->
+
+
+        <!-- main func -->
+        <script src="/blog/scripts/main.js?v=20211217"></script>
+        <!-- dark mode -->
+        <script src="/blog/scripts/dark.js?v=20211217"></script>
+        <!-- fancybox -->
+        <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" defer></script>
+        <!-- algolia -->
+        
+        <!-- busuanzi -->
+        
+            <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+        
+        <!-- CNZZ -->
+        
+        <!-- async load share.js -->
+        
+            <script src="/blog/scripts/share.js?v=20211217" async></script>
+        
+        <!-- mermaid -->
+        
+    </body>
+</html>
