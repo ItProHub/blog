@@ -6,8 +6,10 @@ tags:
   - SEO
   - Web 性能
   - Hexo
-abstract: 我从没逐行读过自己博客的 head，直到把它 dump 出来数了数：38 个标签里，6 个是历史包袱、6 个是真 bug——分享卡片上我的站点名甚至一直显示成 Hexo。这是一次给自己博客做的元标签体检：哪些该删、哪些该修、哪些值得留。
+abstract: 我把自己博客的 head 逐个数了一遍：38 个标签里 6 个是历史包袱、6 个是真 bug，分享卡片上的站点名甚至一直显示成 Hexo。这篇是一次不给面子的自我体检：哪些该删、哪些该修、哪些值得留。
 description: 一次给博客 HTML head 做的逐项体检：38 个标签里挑出 6 个历史包袱和 6 个真 bug，附上判断依据与修法。
+photos:
+  - /blog/images/html-head/cover.png
 ---
 
 > 最近读到 Vale.Rocks 的《My HTML Boilerplate》，作者把自己手写的 HTML 骨架逐行拆开讲了一遍取舍，读起来很过瘾。
