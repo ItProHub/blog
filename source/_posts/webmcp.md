@@ -2,7 +2,7 @@
 title: WebMCP：让网站直接对 AI Agent 说话
 date: 2026-10-15 16:20:00
 tags:
-abstract: AI 操作网页不该靠截屏猜按钮。WebMCP 让网页自己把能力声明成结构化工具，由浏览器里的 Agent 直接调用。本文用一个能跑的求职项目，实测 14 个工具的三层权限、人工闸门与踩坑。
+abstract: 别让 AI 截屏猜按钮。WebMCP 让网页自己把能力声明成结构化工具，浏览器里的 Agent 直接调用——14 个工具的实测记录，含三层权限、人工闸门与国内源绕行。
 description: 网页自己把能力声明成结构化工具，浏览器里的 AI Agent 直接调用——这才是 WebMCP 想做的事。本文用 Career Copilot 项目实测 14 个工具的三层权限与人工闸门，并附国内数据源的绕行方案。
 photos:
   - /blog/images/webmcp/cover.png
